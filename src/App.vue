@@ -53,4 +53,7 @@ export default {
 .navbar-burger {
   color: white
 }
+.has-text-link {
+  color: #3273DC !important
+}
 </style>

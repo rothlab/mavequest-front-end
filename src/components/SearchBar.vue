@@ -34,9 +34,9 @@
             </header>
             <div class="card-content">
               <div class="content has-text-left is-medium">
-                <a>List all genes with potential assays</a>
+                <a class="has-text-link">List all genes with potential assays</a>
                 <br>
-                <a>List all genes with disease phenotypes</a>
+                <a class="has-text-link">List all genes with disease phenotypes</a>
               </div>
             </div>
           </div>

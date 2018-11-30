@@ -9,7 +9,7 @@
               <h1 class="title">Search Results</h1>
             </div>
             <div class="level-right">
-              <SearchBar v-bind:genes="genes"></SearchBar>
+              <SearchBar showButton v-bind:genes="genes"></SearchBar>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@ export default {
 
     // Get the genes from the router
     this.genes = query.gene;
-    this.genes = this.genes.toUpperCase().split(",");
+    this.genes = this.genes.split(",");
 
     // If no gene was in there, pass an empty array
     if (this.genes == "") {
@@ -141,7 +141,7 @@ export default {
 
 <style scoped>
 .level-right {
-  width: 40%;
+  width: 50%;
 }
 .search-bar {
   width: 100%;

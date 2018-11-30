@@ -113,27 +113,26 @@ export default {
   },
   data() {
     return {
-      // data: [
-      //   {
-      //     gene_name: "UBE2I",
-      //     entrez_id: "7329",
-      //     potential_assay: ["Y2H", "Y-Comp", "RNAi", "CRISPR"],
-      //     disease_phenotype: ["OMIM", "HGMD"]
-      //   },
-      //   {
-      //     gene_name: "CBS",
-      //     entrez_id: "875",
-      //     potential_assay: ["Y2H", "Y-Comp"],
-      //     disease_phenotype: ["OMIM", "HGMD"]
-      //   },
-      //   {
-      //     gene_name: "LDLRAP1",
-      //     entrez_id: "26119",
-      //     potential_assay: ["Y2H", "RNAi", "CRISPR"],
-      //     disease_phenotype: ["OMIM", "HGMD"]
-      //   }
-      // ]
-      data: []
+      data: [
+        {
+          gene_name: "UBE2I",
+          entrez_id: "7329",
+          potential_assay: ["Y2H", "Y-Comp", "RNAi", "CRISPR"],
+          disease_phenotype: ["OMIM", "HGMD"]
+        },
+        {
+          gene_name: "CBS",
+          entrez_id: "875",
+          potential_assay: ["Y2H", "Y-Comp"],
+          disease_phenotype: ["OMIM", "HGMD"]
+        },
+        {
+          gene_name: "LDLRAP1",
+          entrez_id: "26119",
+          potential_assay: ["Y2H", "RNAi", "CRISPR"],
+          disease_phenotype: ["OMIM", "HGMD"]
+        }
+      ]
     };
   }
 };

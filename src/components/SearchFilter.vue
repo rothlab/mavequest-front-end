@@ -7,10 +7,10 @@
       <div class="card-content">
         <section class="has-text-left">
           <div class="field">
-            <b-switch>Has Assay</b-switch>
+            <b-switch v-model="assayStatus" @input="emitFilterChanged">Has Assay</b-switch>
           </div>
           <div class="field">
-            <b-switch>Has Disease Phenotype</b-switch>
+            <b-switch v-model="diseaesPhenotypeStatus" @input="emitFilterChanged">Has Disease Phenotype</b-switch>
           </div>
         </section>
       </div>
@@ -20,6 +20,31 @@
 
 <script>
 export default {
-  name: "SearchFilter"
+  name: "SearchFilter",
+  props: {
+    hasAssay: {
+      default: false,
+      type: Boolean
+    },
+    hasDiseasePhenotype: {
+      default: false,
+      type: Boolean
+    }
+  },
+  data () {
+    return {
+      assayStatus: this.hasAssay,
+      diseaesPhenotypeStatus: this.hasDiseasePhenotype
+    }
+  },
+  methods: {
+    emitFilterChanged () {
+      let filter = {
+        hasAssay: this.assayStatus,
+        hasDiseasePhenotype: this.diseaesPhenotypeStatus
+      };
+      this.$emit('updatedSearchFilter', filter);
+    }
+  }
 };
 </script>

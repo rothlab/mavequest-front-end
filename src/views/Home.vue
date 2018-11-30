@@ -5,10 +5,10 @@
         <h1 class="title">Search Database</h1>
         <h2 class="subtitle">Search with Gene Symbol, Entrez ID or Ensembl ID</h2>
         <div class="container">
-          <SearchBar showButton></SearchBar>
+          <SearchBar showButton v-bind:hasAssay="filter.hasAssay" v-bind:hasDiseasePhenotype="filter.hasDiseasePhenotype"></SearchBar>
           <div class="columns">
             <div class="column is-half">
-              <SearchFilter></SearchFilter>
+              <SearchFilter @updatedSearchFilter="setSearchFilter"></SearchFilter>
             </div>
             <div class="column is-half">
               <div class="card below-search">
@@ -40,6 +40,21 @@ export default {
   components: {
     SearchBar,
     SearchFilter
+  },
+  data () {
+    return {
+      filter: {
+        hasAssay: false,
+        hasDiseasePhenotype: false
+      }
+    }
+  },
+  methods: {
+    setSearchFilter (update) {
+      // Capture changes on search filters
+      this.filter.hasAssay = update.hasAssay;
+      this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
+    }
   }
 };
 </script>

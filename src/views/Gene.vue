@@ -1,7 +1,7 @@
 <template>
   <div class="details">
     <!-- Header -->
-    <Header v-bind:title="geneName"></Header>
+    <Header v-bind:title="geneName" v-observe-visibility="visibilityChanged"></Header>
 
     <!-- Main -->
     <section class="section">
@@ -9,7 +9,7 @@
         <div class="columns">
           <!-- Table of Contents -->
           <div class="column is-3">
-            <aside class="menu">
+            <aside class="menu" :class="{float: isFloat}">
               <p class="menu-label">Assay</p>
               <ul class="menu-list">
                 <li>
@@ -197,6 +197,7 @@ export default {
   },
   data() {
     return {
+      isFloat: false,
       description: "Ubiquitin Conjugating Enzyme E2 I",
       entrezID: "7329",
       ensemblID: "ENSG00000103275",
@@ -270,6 +271,12 @@ export default {
       ],
       deoEtalPhenotype: []
     };
+  },
+  methods: {
+    visibilityChanged(visible) {
+      // Position the table of contents absolutely so that it will stay on the screen
+      this.isFloat = !visible;
+    }
   }
 };
 </script>
@@ -278,5 +285,9 @@ export default {
 .image.cytoscape {
   max-width: 60%;
   width: auto;
+}
+.float {
+  position: fixed;
+  top: 3rem;
 }
 </style>

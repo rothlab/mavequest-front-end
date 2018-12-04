@@ -1,21 +1,8 @@
 <template>
   <div class="details">
     <!-- Header -->
-    <section class="hero is-info">
-      <div class="hero-body">
-        <div class="container">
-          <div class="level">
-            <div class="level-left">
-              <h1 class="title">Gene: {{ geneName }}</h1>
-            </div>
-            <div class="level-right">
-              <SearchBar showButton></SearchBar>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    <Header v-bind:title="geneName"></Header>
+    
     <!-- Main -->
     <section class="section">
       <div class="container">
@@ -80,12 +67,12 @@
 </template>
 
 <script>
-import SearchBar from "@/components/SearchBar.vue";
+import Header from "@/components/Header.vue";
 
 export default {
   name: "gene-details",
   components: {
-    SearchBar
+    Header
   },
   created() {
     this.geneName = this.$route.params.name;
@@ -101,12 +88,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.level-right {
-  width: 50%;
-}
-.search-bar {
-  width: 100%;
-}
-</style>

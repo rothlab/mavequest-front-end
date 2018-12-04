@@ -1,20 +1,7 @@
 <template>
   <div class="summary">
     <!-- Header -->
-    <section class="hero is-info">
-      <div class="hero-body">
-        <div class="container">
-          <div class="level">
-            <div class="level-left">
-              <h1 class="title">Search Results</h1>
-            </div>
-            <div class="level-right">
-              <SearchBar showButton v-bind:genes="genes"></SearchBar>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <Header title="Search Results"></Header>
 
     <!-- Main -->
     <section class="section">
@@ -83,13 +70,13 @@
 </template>
 
 <script>
-import SearchBar from "@/components/SearchBar.vue";
+import Header from "@/components/Header.vue";
 import SearchFilter from "@/components/SearchFilter.vue";
 
 export default {
   name: "gene-summary",
   components: {
-    SearchBar,
+    Header,
     SearchFilter
   },
   created() {
@@ -139,12 +126,6 @@ export default {
 </script>
 
 <style scoped>
-.level-right {
-  width: 50%;
-}
-.search-bar {
-  width: 100%;
-}
 .assay-phenotype {
   margin-right: 5px;
 }

@@ -4,7 +4,6 @@ import router from './router'
 
 // Import UI framework related libraries
 import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
 import '@fortawesome/fontawesome-free/css/all.css'
 import 'bulma-divider'
 

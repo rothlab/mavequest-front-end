@@ -1,16 +1,13 @@
 <template>
   <div id="app">
     <!-- Navbar -->
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-info is-fixed-top" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="/">{{ appName }}</a>
-        <span class="navbar-burger burger" data-target="navbarMenuHero">
-          <span></span>
-          <span></span>
-          <span></span>
-        </span>
       </div>
-      <div id="navbarMenuHero" class="navbar-menu">
+
+      <div class="navbar-menu">
+        <div class="navbar-start"></div>
         <div class="navbar-end">
           <router-link to="/" class="navbar-item is-active">Search</router-link>
           <router-link to="/about" class="navbar-item">About</router-link>
@@ -23,42 +20,51 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="content has-text-centered">
-            <p>
-              <strong>{{ appName }}</strong> by {{ author }} from {{ organization }} with <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
-            </p>
-            <p>
-              Version {{ version }}
-            </p>
-        </div>
+      <div class="content has-text-centered">
+        <p>
+          <strong>{{ appName }}</strong>
+          by {{ author }} from {{ organization }} with
+          <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
+        </p>
+        <p>Version {{ version }}. Copyright ©2018.</p>
+      </div>
     </footer>
   </div>
 </template>
 
 <script>
 export default {
-  data () {
+  data() {
     return {
       appName: "Assay & Phenotype Database",
       author: "Kevin Kuang",
       organization: "Roth Lab",
       version: "pre-release v.1"
-    }
+    };
   }
-}
+};
 </script>
 
 <style>
-.navbar-burger {
-  color: white;
-}
 .has-text-link {
   color: #3273dc !important;
 }
 .is-vcentered {
-  align-items: center
+  align-items: center;
 }
 .in-paragraph {
-  margin-bottom:1.5rem
+  margin-bottom: 1.5rem;
 }
+</style>
+
+<style lang="scss">
+// Import Bulma's core
+@import "~bulma/sass/utilities/_all";
+
+// Navbar related styles
+$navbar-breakpoint: 0px;
+
+// Import Bulma and Buefy styles
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
 </style>

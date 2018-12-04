@@ -13,31 +13,31 @@
               <p class="menu-label">Assay</p>
               <ul class="menu-list">
                 <li>
-                  <a>Yeast Complementation</a>
+                  <a href="#yeast-comp">Yeast Complementation</a>
                 </li>
                 <li>
-                  <a>Human Complementation</a>
+                  <a href="#human-comp">Human Complementation</a>
                 </li>
                 <li>
-                  <a>Yeast Two-Hybrid</a>
+                  <a href="#y2h">Yeast Two-Hybrid</a>
                 </li>
               </ul>
               <p class="menu-label">Disease Phenotype</p>
               <ul class="menu-list">
                 <li>
-                  <a>OMIM</a>
+                  <a href="#omim">OMIM</a>
                 </li>
                 <li>
-                  <a>HGMD</a>
+                  <a href="#hgmd">HGMD</a>
                 </li>
                 <li>
-                  <a>Cancer Gene Census</a>
+                  <a href="#cancer-census">Cancer Gene Census</a>
                 </li>
                 <li>
-                  <a>Orphanet</a>
+                  <a href="#orphanet">Orphanet</a>
                 </li>
                 <li>
-                  <a>Other Sources</a>
+                  <a href="other-phenotype">Other Sources</a>
                 </li>
               </ul>
             </aside>
@@ -81,7 +81,7 @@
             <section class="section is-paddingless">
               <h1 class="title">Assay</h1>
               <div class="container is-fluid">
-                <AssayTitle title="Yeast Complementation Assay"></AssayTitle>
+                <AssayTitle id="yeast-comp" title="Yeast Complementation Assay"></AssayTitle>
                 <div class="block">
                   <li>Essentiality:</li>
                 </div>
@@ -91,7 +91,7 @@
               </div>
 
               <div class="container is-fluid">
-                <AssayTitle title="Human Complementation Assay"></AssayTitle>
+                <AssayTitle id="human-comp" title="Human Complementation Assay"></AssayTitle>
                 <div class="block">
                   <li>GenomeRNAi Phenotype:</li>
                 </div>
@@ -110,7 +110,7 @@
               </div>
 
               <div class="container is-fluid">
-                <AssayTitle title="Yeast Two-Hybrid Assay"></AssayTitle>
+                <AssayTitle id="y2h" title="Yeast Two-Hybrid Assay"></AssayTitle>
                 <div class="block">
                   <li>Interaction Partners:</li>
                 </div>
@@ -128,21 +128,21 @@
             <section class="section is-paddingless">
               <h1 class="title">Diseaes Phenotype</h1>
               <div class="container is-fluid">
-                <AssayTitle title="Online Mendelian Inheritance in Man (OMIM) Database"></AssayTitle>
+                <AssayTitle id="omim" title="Online Mendelian Inheritance in Man (OMIM) Database"></AssayTitle>
                 <div class="block">
                   <li>OMIM Phenotype: {{omimPhenotype}} </li>
                 </div>
               </div>
 
               <div class="container is-fluid">
-                <AssayTitle title="The Human Gene Mutation Database (HGMD)"></AssayTitle>
+                <AssayTitle id="hgmd" title="The Human Gene Mutation Database (HGMD)"></AssayTitle>
                 <div class="block">
                   <li>HGMD Phenotype: {{omimPhenotype}} </li>
                 </div>
               </div>
 
               <div class="container is-fluid">
-                <AssayTitle title="Cancer Gene Census Database"></AssayTitle>
+                <AssayTitle id="cancer-census" title="Cancer Gene Census Database"></AssayTitle>
                 <div class="block">
                   <li>Somatic Phenotype: {{cancerGeneCensusPhenotype.somatic}} </li>
                   <li>Germline Phenotype: {{cancerGeneCensusPhenotype.germline}} </li>
@@ -150,14 +150,14 @@
               </div>
 
               <div class="container is-fluid">
-                <AssayTitle title="Orphanet Database"></AssayTitle>
+                <AssayTitle id="orphanet" title="Orphanet Database"></AssayTitle>
                 <div class="card in-paragraph">
                   <b-table :data="orphanetData" :columns="orphanetColumns"></b-table>
                 </div>
               </div>
 
               <div class="container is-fluid">
-                <AssayTitle title="Other Sources"></AssayTitle>
+                <AssayTitle id="other-phenotype" title="Other Sources"></AssayTitle>
                 <div class="block">
                   <li>Dei et al.: {{deoEtalPhenotype}} </li>
                 </div>

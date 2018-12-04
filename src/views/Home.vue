@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-info is-bold is-fullheight">
+  <section class="hero is-info is-bold is-large">
     <div class="hero-body">
       <div class="container has-text-left">
         <h1 class="title">Search Database</h1>

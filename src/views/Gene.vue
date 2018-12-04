@@ -12,11 +12,34 @@
             <aside class="menu">
               <p class="menu-label">Assay</p>
               <ul class="menu-list">
-                <li><a>Yeast Complementation</a></li>
-                <li><a>Human Complementation</a></li>
-                <li><a>Yeast Two-Hybrid</a></li>
+                <li>
+                  <a>Yeast Complementation</a>
+                </li>
+                <li>
+                  <a>Human Complementation</a>
+                </li>
+                <li>
+                  <a>Yeast Two-Hybrid</a>
+                </li>
               </ul>
               <p class="menu-label">Disease Phenotype</p>
+              <ul class="menu-list">
+                <li>
+                  <a>OMIM</a>
+                </li>
+                <li>
+                  <a>HGMD</a>
+                </li>
+                <li>
+                  <a>Cancer Gene Census</a>
+                </li>
+                <li>
+                  <a>Orphanet</a>
+                </li>
+                <li>
+                  <a>Other Sources</a>
+                </li>
+              </ul>
             </aside>
           </div>
 
@@ -92,8 +115,52 @@
                   <li>Interaction Partners:</li>
                 </div>
                 <figure class="image cytoscape">
-                  <img src="https://cytoscape.org/images/logo/cy3logoOrange.svg" alt="Placeholder image">
+                  <img
+                    src="https://cytoscape.org/images/logo/cy3logoOrange.svg"
+                    alt="Placeholder image"
+                  >
                 </figure>
+              </div>
+            </section>
+
+            <div class="is-divider"></div>
+
+            <section class="section is-paddingless">
+              <h1 class="title">Diseaes Phenotype</h1>
+              <div class="container is-fluid">
+                <AssayTitle title="Online Mendelian Inheritance in Man (OMIM) Database"></AssayTitle>
+                <div class="block">
+                  <li>OMIM Phenotype: {{omimPhenotype}} </li>
+                </div>
+              </div>
+
+              <div class="container is-fluid">
+                <AssayTitle title="The Human Gene Mutation Database (HGMD)"></AssayTitle>
+                <div class="block">
+                  <li>HGMD Phenotype: {{omimPhenotype}} </li>
+                </div>
+              </div>
+
+              <div class="container is-fluid">
+                <AssayTitle title="Cancer Gene Census Database"></AssayTitle>
+                <div class="block">
+                  <li>Somatic Phenotype: {{cancerGeneCensusPhenotype.somatic}} </li>
+                  <li>Germline Phenotype: {{cancerGeneCensusPhenotype.germline}} </li>
+                </div>
+              </div>
+
+              <div class="container is-fluid">
+                <AssayTitle title="Orphanet Database"></AssayTitle>
+                <div class="card in-paragraph">
+                  <b-table :data="orphanetData" :columns="orphanetColumns"></b-table>
+                </div>
+              </div>
+
+              <div class="container is-fluid">
+                <AssayTitle title="Other Sources"></AssayTitle>
+                <div class="block">
+                  <li>Dei et al.: {{deoEtalPhenotype}} </li>
+                </div>
               </div>
             </section>
           </div>
@@ -179,7 +246,29 @@ export default {
           field: "screen",
           label: "Screen"
         }
-      ]
+      ],
+      omimPhenotype: [],
+      hgmdPhenotype: [],
+      cancerGeneCensusPhenotype: {
+        somatic: [],
+        germline: []
+      },
+      orphanetData: [],
+      orphanetColumns: [
+        {
+          field: "id",
+          label: "ORPHA ID"
+        },
+        {
+          field: "disorder",
+          label: "Disorder"
+        },
+        {
+          field: "prevalence",
+          label: "Prevalence"
+        }
+      ],
+      deoEtalPhenotype: []
     };
   }
 };
@@ -188,6 +277,6 @@ export default {
 <style scoped>
 .image.cytoscape {
   max-width: 60%;
-  width: auto
+  width: auto;
 }
 </style>

@@ -30,4 +30,10 @@
 .has-text-link {
   color: #3273dc !important;
 }
+.is-vcentered {
+  align-items: center
+}
+.in-paragraph {
+  margin-bottom:1.5rem
+}
 </style>

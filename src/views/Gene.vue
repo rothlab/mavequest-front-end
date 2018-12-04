@@ -2,7 +2,7 @@
   <div class="details">
     <!-- Header -->
     <Header v-bind:title="geneName"></Header>
-    
+
     <!-- Main -->
     <section class="section">
       <div class="container">
@@ -11,6 +11,11 @@
           <div class="column is-3">
             <aside class="menu">
               <p class="menu-label">Assay</p>
+              <ul class="menu-list">
+                <li><a>Yeast Complementation</a></li>
+                <li><a>Human Complementation</a></li>
+                <li><a>Yeast Two-Hybrid</a></li>
+              </ul>
               <p class="menu-label">Disease Phenotype</p>
             </aside>
           </div>
@@ -52,11 +57,43 @@
 
             <section class="section is-paddingless">
               <h1 class="title">Assay</h1>
-              <div class="container">
+              <div class="container is-fluid">
+                <AssayTitle title="Yeast Complementation Assay"></AssayTitle>
                 <div class="block">
-                  <b-icon size="is-medium" icon="fas fa-angle-right"></b-icon>
-                  <span class="is-size-4">Yeast Complementation Assay</span>
+                  <li>Essentiality:</li>
                 </div>
+                <div class="card">
+                  <b-table :data="yeastHomologData" :columns="yeastHomologColumns"></b-table>
+                </div>
+              </div>
+
+              <div class="container is-fluid">
+                <AssayTitle title="Human Complementation Assay"></AssayTitle>
+                <div class="block">
+                  <li>GenomeRNAi Phenotype:</li>
+                </div>
+                <div class="card in-paragraph">
+                  <b-table :data="genomeRNAiData" :columns="genomeRNAiColumns"></b-table>
+                </div>
+                <div class="block">
+                  <li>GenomeCRISPR</li>
+                </div>
+                <div class="card in-paragraph">
+                  <b-table :data="genomeCRISPRData" :columns="genomeCRISPRColumns"></b-table>
+                </div>
+                <div class="block">
+                  <li>TKO Cell Lines:</li>
+                </div>
+              </div>
+
+              <div class="container is-fluid">
+                <AssayTitle title="Yeast Two-Hybrid Assay"></AssayTitle>
+                <div class="block">
+                  <li>Interaction Partners:</li>
+                </div>
+                <figure class="image cytoscape">
+                  <img src="https://cytoscape.org/images/logo/cy3logoOrange.svg" alt="Placeholder image">
+                </figure>
               </div>
             </section>
           </div>
@@ -69,10 +106,24 @@
 <script>
 import Header from "@/components/Header.vue";
 
+// Declare assay title as a little in-line component as it is not going to be used by another component/view
+const AssayTitle = {
+  props: ["title"],
+  render() {
+    return (
+      <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
+        <b-icon size="is-medium" icon="fas fa-angle-right" />
+        <span class="is-size-4">{this.title}</span>
+      </div>
+    );
+  }
+};
+
 export default {
   name: "gene-details",
   components: {
-    Header
+    Header,
+    AssayTitle
   },
   created() {
     this.geneName = this.$route.params.name;
@@ -83,8 +134,60 @@ export default {
       entrezID: "7329",
       ensemblID: "ENSG00000103275",
       omimID: "601661",
-      alias: ["ARH", "ARH1", "ARH2", "FHCB1", "FHCB2"]
+      alias: ["ARH", "ARH1", "ARH2", "FHCB1", "FHCB2"],
+      yeastHomologData: [],
+      yeastHomologColumns: [
+        {
+          field: "yeast_homolog",
+          label: "Yeast Homolog"
+        },
+        {
+          field: "synthetic_lethal_partners",
+          label: "Synthetic Lethal Partners"
+        }
+      ],
+      genomeRNAiData: [],
+      genomeRNAiColumns: [
+        {
+          field: "id",
+          label: "ID"
+        },
+        {
+          field: "pubmed",
+          label: "PubMed Source"
+        },
+        {
+          field: "cell_line",
+          label: "Cell Line"
+        }
+      ],
+      genomeCRISPRData: [],
+      genomeCRISPRColumns: [
+        {
+          field: "pubmed",
+          label: "PubMed Source"
+        },
+        {
+          field: "cell-line",
+          label: "Cell Line"
+        },
+        {
+          field: "condition",
+          label: "Condition"
+        },
+        {
+          field: "screen",
+          label: "Screen"
+        }
+      ]
     };
   }
 };
 </script>
+
+<style scoped>
+.image.cytoscape {
+  max-width: 60%;
+  width: auto
+}
+</style>

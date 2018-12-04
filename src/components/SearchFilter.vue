@@ -7,10 +7,10 @@
       <div class="card-content">
         <section class="has-text-left">
           <div class="field">
-            <b-switch v-model="assayStatus" @input="emitFilterChanged">Has Assay</b-switch>
+            <b-switch type="is-info" v-model="assayStatus" @input="emitFilterChanged">Has Assay</b-switch>
           </div>
           <div class="field">
-            <b-switch v-model="diseaesPhenotypeStatus" @input="emitFilterChanged">Has Disease Phenotype</b-switch>
+            <b-switch type="is-info" v-model="diseaesPhenotypeStatus" @input="emitFilterChanged">Has Disease Phenotype</b-switch>
           </div>
         </section>
       </div>

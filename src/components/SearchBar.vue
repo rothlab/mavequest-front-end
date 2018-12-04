@@ -38,7 +38,17 @@ export default {
   },
   methods: {
     searchGenes() {
-      // TODO: Give an error message if no gene was inputed
+      // Give a warning if no gene was inputed
+      if (this.genes.length == 0) {
+        this.$snackbar.open({
+          message: "Please enter at least one gene to search.",
+          type: "is-warning",
+          position: "is-top",
+          actionText: "Retry",
+          indefinite: "true"
+        });
+        return;
+      }
 
       // Call router
       const dest = {

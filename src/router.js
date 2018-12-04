@@ -20,7 +20,7 @@ export default new Router({
       props: true
     },
     {
-      path: '/gene',
+      path: '/gene/:name',
       name: 'gene-details',
       component: () => import('./views/Gene.vue'),
     },

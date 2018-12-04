@@ -87,9 +87,11 @@ export default {
   components: {
     SearchBar
   },
+  created() {
+    this.geneName = this.$route.params.name;
+  },
   data() {
     return {
-      geneName: "UBE2I",
       description: "Ubiquitin Conjugating Enzyme E2 I",
       entrezID: "7329",
       ensemblID: "ENSG00000103275",

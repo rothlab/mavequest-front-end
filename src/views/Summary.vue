@@ -95,29 +95,17 @@ export default {
     SearchFilter
   },
   created() {
-    const query = this.$route.query;
-
-    // Get the genes from the router
-    this.genes = query.gene;
-    this.genes = this.genes.split(",");
-
-    // If no gene was in there, pass an empty array
-    if (this.genes == "") {
-      this.genes = [];
-    }
-
-    // Get advanced search status from the routher
-    this.filter.hasAssay =
-      typeof query.hasAssay == "string"
-        ? query.hasAssay.toLowerCase() == "true"
-        : query.hasAssay;
-    this.filter.hasDiseasePhenotype =
-      typeof query.hasDiseasePhenotype == "string"
-        ? query.hasDiseasePhenotype.toLowerCase() == "true"
-        : query.hasDiseasePhenotype;
+    this.setGenesFromQuery(this.$route.query);
   },
   mounted() {
-    this.getGeneInfo();
+    // Query gene info from the API
+    this.setGeneInfo();
+  },
+  beforeRouteUpdate(to, from, next) {
+    // Set gene names and query again when the page is about to be updated (when user tries to search again in the summary page)
+    this.setGenesFromQuery(to.query);
+    this.setGeneInfo();
+    next();
   },
   data() {
     return {
@@ -132,7 +120,7 @@ export default {
     };
   },
   methods: {
-    getGeneInfo() {
+    setGeneInfo () {
       // Set the table to loading status
       this.isLoading = true;
 
@@ -214,6 +202,26 @@ export default {
       // Capture changes on search filters
       this.filter.hasAssay = update.hasAssay;
       this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
+    },
+    setGenesFromQuery (query) {
+      // Get the genes from the router
+      this.genes = query.gene;
+      this.genes = this.genes.split(",");
+
+      // If no gene was in there, pass an empty array
+      if (this.genes == "") {
+        this.genes = [];
+      }
+
+      // Get advanced search status from the routher
+      this.filter.hasAssay =
+        typeof query.hasAssay == "string"
+          ? query.hasAssay.toLowerCase() == "true"
+          : query.hasAssay;
+      this.filter.hasDiseasePhenotype =
+        typeof query.hasDiseasePhenotype == "string"
+          ? query.hasDiseasePhenotype.toLowerCase() == "true"
+          : query.hasDiseasePhenotype;
     }
   }
 };

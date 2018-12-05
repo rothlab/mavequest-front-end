@@ -1,7 +1,7 @@
 <template>
   <div class="summary">
     <!-- Header -->
-    <Header title="Search Results"></Header>
+    <Header title="Search Results" :genes="genes"></Header>
 
     <!-- Main -->
     <section class="section">
@@ -15,7 +15,8 @@
           <!-- Table -->
           <div class="column">
             <b-table
-              :data="data"
+              :data="geneInfo"
+              :loading="isLoading"
               :striped="true"
               :hoverable="true"
               :paginated="true"
@@ -92,35 +93,79 @@ export default {
     }
 
     // Get advanced search status from the routher
-
-    this.filter = {
-      hasAssay: query.hasAssay ? query.hasAssay : false,
-      hasDiseasePhenotype: query.hasDiseasePhenotype ? query.hasDiseasePhenotype : false
-    }
+    this.filter.hasAssay = typeof query.hasAssay == "string" ? query.hasAssay.toLowerCase() == 'true' : query.hasAssay;
+    this.filter.hasDiseasePhenotype = typeof query.hasDiseasePhenotype == "string" ? query.hasDiseasePhenotype.toLowerCase() == 'true' : query.hasDiseasePhenotype;
+  },
+  mounted() {
+    this.getGeneInfo();
   },
   data() {
     return {
-      data: [
-        {
-          gene_name: "UBE2I",
-          entrez_id: "7329",
-          potential_assay: ["Y2H", "Y-Comp", "RNAi", "CRISPR"],
-          disease_phenotype: ["OMIM", "HGMD"]
-        },
-        {
-          gene_name: "CBS",
-          entrez_id: "875",
-          potential_assay: ["Y2H", "Y-Comp"],
-          disease_phenotype: ["OMIM", "HGMD"]
-        },
-        {
-          gene_name: "LDLRAP1",
-          entrez_id: "26119",
-          potential_assay: ["Y2H", "RNAi", "CRISPR"],
-          disease_phenotype: ["OMIM", "HGMD"]
-        }
-      ]
+      geneInfo: [],
+      isLoading: false,
+      filter: {
+        hasAssay: false,
+        hasDiseasePhenotype: false
+      }
     };
+  },
+  methods: {
+    getGeneInfo() {
+      // Set the table to loading status
+      this.isLoading = true
+
+      // Get gene info
+      this.$http.get('https://demo6436483.mockable.io/gene/' + this.genes)
+      .then(response => {
+        // Make sure the response has a non-empty body
+        if (!response.hasOwnProperty('body') || typeof response.body == "string" ) {
+          return;
+        }
+
+        const json = response.body
+
+        // Make sure the response contains gene info
+        // TODO: validate response fingerprint
+        if (json.hasOwnProperty('found')) {
+          this.geneInfo = json.found;
+        }
+
+        // Give a warning if some genes are missing
+        if (json.hasOwnProperty('missing') && json.missing.length > 0) {
+          this.$snackbar.open({
+            message: `Some gene names had no matches: ${json.missing.join(", ")}`,
+            type: "is-warning",
+            position: "is-top",
+            actionText: "Dismiss",
+            indefinite: true
+          });
+        }
+      }, response => {
+        // Error callback
+        const error = response.status;
+        let errorMsg = "Other Errors";
+
+        // Handle common error
+        switch (error) {
+          case 404:
+            errorMsg = "No record was found."
+            break;
+          default:
+            break;
+        }
+        this.$snackbar.open({
+          message: `Failed. Error Message: [${response.status}] ${errorMsg}`,
+          type: "is-danger",
+          position: "is-top",
+          actionText: "Dismiss",
+          indefinite: true
+        });
+      })
+      .then(() => {
+        // Set the table to complete status
+        this.isLoading = false;
+      });
+    }
   }
 };
 </script>

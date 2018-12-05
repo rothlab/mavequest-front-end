@@ -45,7 +45,7 @@ export default {
           type: "is-warning",
           position: "is-top",
           actionText: "Retry",
-          indefinite: "true"
+          indefinite: true
         });
         return;
       }

@@ -10,6 +10,7 @@ import 'bulma-divider'
 // Import plugins
 import VueObserveVisibility from 'vue-observe-visibility'
 import BackToTop from 'vue-backtotop'
+import VueResource from 'vue-resource'
 
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
@@ -20,7 +21,8 @@ Vue.use(Buefy, {
   defaultIconPack: 'fas'
 })
 .use(VueObserveVisibility)
-.use(BackToTop);
+.use(BackToTop)
+.use(VueResource);
 
 new Vue({
   router,

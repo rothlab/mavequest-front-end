@@ -9,7 +9,7 @@
               <h2 class="subtitle" v-if="subtitle">{{subtitle}}</h2>
             </div>
             <div class="level-right">
-              <SearchBar showButton></SearchBar>
+              <SearchBar showButton :genes="genes"></SearchBar>
             </div>
           </div>
         </div>
@@ -33,7 +33,8 @@ export default {
   },
   props: {
     title: String,
-    subtitle: String
+    subtitle: String,
+    genes: Array
   }
 };
 </script>

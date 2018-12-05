@@ -9,7 +9,11 @@
         <div class="columns">
           <!-- Filter -->
           <div class="column is-narrow">
-            <SearchFilter v-bind:hasAssay="this.filter.hasAssay" v-bind:hasDiseasePhenotype="this.filter.hasDiseasePhenotype"></SearchFilter>
+            <SearchFilter
+              v-bind:hasAssay="this.filter.hasAssay"
+              v-bind:hasDiseasePhenotype="this.filter.hasDiseasePhenotype"
+              @updatedSearchFilter="setSearchFilter"
+            ></SearchFilter>
           </div>
 
           <!-- Table -->
@@ -22,11 +26,19 @@
               :paginated="true"
               :pagination-simple="true"
               :per-page="20"
+              :row-class="(row, index) => {
+                // Hide rows based on search filter status
+                return ((filter.hasAssay && geneWOAssay.includes(row.gene_name)) || 
+                (filter.hasDiseasePhenotype && geneWOPhenotype.includes(row.gene_name))) ? 'is-hidden' : '';
+              }"
             >
               <!-- Customized table columns -->
               <template slot-scope="props">
                 <b-table-column field="gene_name" label="Gene Name" width="0.1">
-                  <a v-bind:href="'gene/' + props.row.gene_name" target="_blank">{{props.row.gene_name}}</a>
+                  <a
+                    v-bind:href="'gene/' + props.row.gene_name"
+                    target="_blank"
+                  >{{props.row.gene_name}}</a>
                 </b-table-column>
                 <b-table-column field="entrez_id" label="Entrez ID" width="0.1">
                   <a
@@ -57,7 +69,9 @@
               <template slot="empty">
                 <section class="section">
                   <div class="content has-text-grey has-text-centered">
-                    <p><b-icon icon="meh" size="is-large"></b-icon></p>
+                    <p>
+                      <b-icon icon="meh" size="is-large"></b-icon>
+                    </p>
                     <p>Nothing found.</p>
                   </div>
                 </section>
@@ -93,8 +107,14 @@ export default {
     }
 
     // Get advanced search status from the routher
-    this.filter.hasAssay = typeof query.hasAssay == "string" ? query.hasAssay.toLowerCase() == 'true' : query.hasAssay;
-    this.filter.hasDiseasePhenotype = typeof query.hasDiseasePhenotype == "string" ? query.hasDiseasePhenotype.toLowerCase() == 'true' : query.hasDiseasePhenotype;
+    this.filter.hasAssay =
+      typeof query.hasAssay == "string"
+        ? query.hasAssay.toLowerCase() == "true"
+        : query.hasAssay;
+    this.filter.hasDiseasePhenotype =
+      typeof query.hasDiseasePhenotype == "string"
+        ? query.hasDiseasePhenotype.toLowerCase() == "true"
+        : query.hasDiseasePhenotype;
   },
   mounted() {
     this.getGeneInfo();
@@ -106,65 +126,94 @@ export default {
       filter: {
         hasAssay: false,
         hasDiseasePhenotype: false
-      }
+      },
+      geneWOAssay: [],
+      geneWOPhenotype: []
     };
   },
   methods: {
     getGeneInfo() {
       // Set the table to loading status
-      this.isLoading = true
+      this.isLoading = true;
 
       // Get gene info
-      this.$http.get('https://demo6436483.mockable.io/gene/' + this.genes)
-      .then(response => {
-        // Make sure the response has a non-empty body
-        if (!response.hasOwnProperty('body') || typeof response.body == "string" ) {
-          return;
-        }
+      this.$http
+        .get("https://demo6436483.mockable.io/gene/" + this.genes)
+        .then(
+          response => {
+            // Make sure the response has a non-empty body
+            if (
+              !response.hasOwnProperty("body") ||
+              typeof response.body == "string"
+            ) {
+              return;
+            }
 
-        const json = response.body
+            const json = response.body;
 
-        // Make sure the response contains gene info
-        // TODO: validate response fingerprint
-        if (json.hasOwnProperty('found')) {
-          this.geneInfo = json.found;
-        }
+            // Make sure the response contains gene info
+            // TODO: validate response fingerprint
+            if (json.hasOwnProperty("found")) {
+              this.geneInfo = json.found;
 
-        // Give a warning if some genes are missing
-        if (json.hasOwnProperty('missing') && json.missing.length > 0) {
-          this.$snackbar.open({
-            message: `Some gene names had no matches: ${json.missing.join(", ")}`,
-            type: "is-warning",
-            position: "is-top",
-            actionText: "Dismiss",
-            indefinite: true
-          });
-        }
-      }, response => {
-        // Error callback
-        const error = response.status;
-        let errorMsg = "Other Errors";
+              // Find genes that don't have potential assay or disease phenotype
+              this.geneInfo.forEach((element) => {
+                if (element.potential_assay.length < 1) {
+                  this.geneWOAssay.push(element.gene_name);
+                }
 
-        // Handle common error
-        switch (error) {
-          case 404:
-            errorMsg = "No record was found."
-            break;
-          default:
-            break;
-        }
-        this.$snackbar.open({
-          message: `Failed. Error Message: [${response.status}] ${errorMsg}`,
-          type: "is-danger",
-          position: "is-top",
-          actionText: "Dismiss",
-          indefinite: true
+                if (element.disease_phenotype.length < 1) {
+                  this.geneWOPhenotype.push(element.gene_name);
+                }
+              });
+            }
+
+            // Give a warning if some genes are missing
+            if (json.hasOwnProperty("missing") && json.missing.length > 0) {
+              this.$snackbar.open({
+                message: `Some gene names had no matches: ${json.missing.join(
+                  ", "
+                )}`,
+                type: "is-warning",
+                position: "is-top",
+                actionText: "Dismiss",
+                indefinite: true
+              });
+            }
+          },
+          response => {
+            // Error callback
+            const error = response.status;
+            let errorMsg = "Other Errors";
+
+            // Handle common error
+            switch (error) {
+              case 404:
+                errorMsg = "No record was found.";
+                break;
+              default:
+                break;
+            }
+            this.$snackbar.open({
+              message: `Failed. Error Message: [${
+                response.status
+              }] ${errorMsg}`,
+              type: "is-danger",
+              position: "is-top",
+              actionText: "Dismiss",
+              indefinite: true
+            });
+          }
+        )
+        .then(() => {
+          // Set the table to complete status
+          this.isLoading = false;
         });
-      })
-      .then(() => {
-        // Set the table to complete status
-        this.isLoading = false;
-      });
+    },
+    setSearchFilter (update) {
+      // Capture changes on search filters
+      this.filter.hasAssay = update.hasAssay;
+      this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
     }
   }
 };

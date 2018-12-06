@@ -55,6 +55,9 @@ export default {
 .in-paragraph {
   margin-bottom: 1.5rem;
 }
+.in-list {
+  margin-top: 1rem;
+}
 </style>
 
 <style lang="scss">

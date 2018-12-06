@@ -26,21 +26,16 @@
               :paginated="true"
               :pagination-simple="true"
               :per-page="20"
-              :row-class="(row, index) => {
-                // Hide rows based on search filter status
-                return ((filter.hasAssay && geneWOAssay.includes(row.gene_name)) || 
-                (filter.hasDiseasePhenotype && geneWOPhenotype.includes(row.gene_name))) ? 'is-hidden' : '';
-              }"
             >
               <!-- Customized table columns -->
               <template slot-scope="props">
-                <b-table-column field="gene_name" label="Gene Name" width="0.1">
+                <b-table-column field="gene_name" label="Gene Name">
                   <a
                     v-bind:href="'gene/' + props.row.gene_name"
                     target="_blank"
                   >{{props.row.gene_name}}</a>
                 </b-table-column>
-                <b-table-column field="entrez_id" label="Entrez ID" width="0.1">
+                <b-table-column field="entrez_id" label="Entrez ID">
                   <a
                     v-bind:href="'https://www.ncbi.nlm.nih.gov/gene/' + props.row.entrez_id"
                     target="_blank"
@@ -49,14 +44,14 @@
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
                   </a>
                 </b-table-column>
-                <b-table-column field="potential_assay" label="Potential Assay" width="0.4">
+                <b-table-column field="potential_assay" label="Potential Assay">
                   <b-tag
                     class="assay-phenotype"
                     v-for="assay in props.row.potential_assay"
                     :key="assay.id"
                   >{{ assay }}</b-tag>
                 </b-table-column>
-                <b-table-column field="disease_phenotype" label="Dispease Phenotype" width="0.4">
+                <b-table-column field="disease_phenotype" label="Dispease Phenotype">
                   <b-tag
                     class="assay-phenotype"
                     v-for="phenotype in props.row.disease_phenotype"
@@ -110,6 +105,7 @@ export default {
   data() {
     return {
       geneInfo: [],
+      completeGeneInfo: [],
       isLoading: false,
       filter: {
         hasAssay: false,
@@ -142,7 +138,8 @@ export default {
             // Make sure the response contains gene info
             // TODO: validate response fingerprint
             if (json.hasOwnProperty("found")) {
-              this.geneInfo = json.found;
+              this.completeGeneInfo = json.found;
+              this.geneInfo = this.completeGeneInfo;
 
               // Find genes that don't have potential assay or disease phenotype
               this.geneInfo.forEach((element) => {
@@ -202,6 +199,24 @@ export default {
       // Capture changes on search filters
       this.filter.hasAssay = update.hasAssay;
       this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
+
+      if (!this.filter.hasAssay && !this.filter.hasDiseasePhenotype) {
+        this.geneInfo = this.completeGeneInfo;
+        return;
+      }
+
+      // Update the table data based on search filter changes
+      this.geneInfo = this.geneInfo.filter(element => {
+        if (this.filter.hasAssay && this.geneWOAssay.includes(element.gene_name)) {
+          return false;
+        }
+
+        if (this.filter.hasDiseasePhenotype && this.geneWOPhenotype.includes(element.gene_name)) {
+          return false;
+        }
+
+        return true;
+      });
     },
     setGenesFromQuery (query) {
       // Get the genes from the router

@@ -22,21 +22,21 @@
                   <a href="#y2h">Yeast Two-Hybrid</a>
                 </li>
               </ul>
-              <p class="menu-label">Disease Phenotype</p>
-              <ul class="menu-list">
-                <li>
+              <p class="menu-label" v-if="hasPhenotype.any">Disease Phenotype</p>
+              <ul class="menu-list" v-if="hasPhenotype.any">
+                <li v-if="hasPhenotype.omim">
                   <a href="#omim">OMIM</a>
                 </li>
-                <li>
+                <li v-if="hasPhenotype.hgmd">
                   <a href="#hgmd">HGMD</a>
                 </li>
-                <li>
+                <li v-if="hasPhenotype.cancer_census">
                   <a href="#cancer-census">Cancer Gene Census</a>
                 </li>
-                <li>
+                <li v-if="hasPhenotype.orphanet">
                   <a href="#orphanet">Orphanet</a>
                 </li>
-                <li>
+                <li v-if="hasPhenotype.others">
                   <a href="#other-phenotype">Other Sources</a>
                 </li>
               </ul>
@@ -151,41 +151,69 @@
 
             <div class="is-divider" v-if="hasAssay.any"></div>
 
-            <section class="section is-paddingless">
+            <section class="section is-paddingless" v-if="hasPhenotype.any">
               <h1 class="title">Diseaes Phenotype</h1>
-              <div class="container is-fluid">
+              <div class="container is-fluid" v-if="hasPhenotype.omim">
                 <AssayTitle id="omim" title="Online Mendelian Inheritance in Man (OMIM) Database"></AssayTitle>
-                <div class="block">
-                  <li>OMIM Phenotype: {{omimPhenotype}}</li>
+                <div class="content">
+                  <ul>
+                    <li>OMIM Phenotype:
+                      <ol>
+                        <li v-for="item in omimPhenotype" :key="item">{{item}}</li>
+                      </ol>
+                    </li>
+                  </ul>
                 </div>
               </div>
 
-              <div class="container is-fluid">
+              <div class="container is-fluid" v-if="hasPhenotype.hgmd">
                 <AssayTitle id="hgmd" title="The Human Gene Mutation Database (HGMD)"></AssayTitle>
-                <div class="block">
-                  <li>HGMD Phenotype: {{omimPhenotype}}</li>
+                <div class="content">
+                  <ul>
+                    <li>HGMD Phenotype:
+                      <ol>
+                        <li v-for="item in hgmdPhenotype" :key="item">{{item}}</li>
+                      </ol>
+                    </li>
+                  </ul>
                 </div>
               </div>
 
-              <div class="container is-fluid">
+              <div class="container is-fluid" v-if="hasPhenotype.cancer_census">
                 <AssayTitle id="cancer-census" title="Cancer Gene Census Database"></AssayTitle>
-                <div class="block">
-                  <li>Somatic Phenotype: {{cancerGeneCensusPhenotype.somatic}}</li>
-                  <li>Germline Phenotype: {{cancerGeneCensusPhenotype.germline}}</li>
+                <div class="content">
+                  <ul>
+                    <li>Somatic Phenotype:
+                      <ol>
+                        <li v-for="item in cancerGeneCensusPhenotype.somatic" :key="item">{{item}}</li>
+                      </ol>
+                    </li>
+                    <li>Germline Phenotype:
+                      <ol>
+                        <li v-for="item in cancerGeneCensusPhenotype.germline" :key="item">{{item}}</li>
+                      </ol>
+                    </li>
+                  </ul>
                 </div>
               </div>
 
-              <div class="container is-fluid">
+              <div class="container is-fluid" v-if="hasPhenotype.orphanet">
                 <AssayTitle id="orphanet" title="Orphanet Database"></AssayTitle>
                 <div class="card in-paragraph">
                   <b-table :data="orphanetData" :columns="orphanetColumns"></b-table>
                 </div>
               </div>
 
-              <div class="container is-fluid">
+              <div class="container is-fluid" v-if="hasPhenotype.others">
                 <AssayTitle id="other-phenotype" title="Other Sources"></AssayTitle>
-                <div class="block">
-                  <li>Dei et al.: {{deoEtalPhenotype}}</li>
+                <div class="content">
+                  <ul>
+                    <li>Dei et al. Phenotype:
+                      <ol>
+                        <li v-for="item in deoEtalPhenotype" :key="item">{{item}}</li>
+                      </ol>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </section>
@@ -253,6 +281,7 @@ export default {
             json.hasOwnProperty("yeast_comp") ||
             json.hasOwnProperty("human_comp") ||
             json.hasOwnProperty("y2h");
+
           if (json.hasOwnProperty("yeast_comp")) {
             // Yeast Complementation
             this.hasAssay.yeast_comp = true;
@@ -289,6 +318,45 @@ export default {
             this.hasAssay.y2h = true;
             this.y2hInteractors = json.y2h.y2h_interactors;
           }
+
+          // Populate Disease Phenotype information
+          this.hasPhenotype.any =
+            json.hasOwnProperty("omim") ||
+            json.hasOwnProperty("hgmd") ||
+            json.hasOwnProperty("cancer_census") ||
+            json.hasOwnProperty("orphanet") ||
+            json.hasOwnProperty("deo_etal");
+
+          if (json.hasOwnProperty("omim")) {
+            // OMIM Phenotype
+            this.hasPhenotype.omim = true;
+            this.omimPhenotype = json.omim.omim_phenotype;
+          }
+
+          if (json.hasOwnProperty("hgmd")) {
+            // HGMD Phenotype
+            this.hasPhenotype.hgmd = true;
+            this.hgmdPhenotype = json.hgmd.hgmd_phenotype;
+          }
+
+          if (json.hasOwnProperty("cancer_census")) {
+            // Cancer Census Phenotype
+            this.hasPhenotype.cancer_census = true;
+            this.cancerGeneCensusPhenotype.somatic = json.cancer_census.cancer_census_somatic;
+            this.cancerGeneCensusPhenotype.germline = json.cancer_census.cancer_census_germline;
+          }
+
+          if (json.hasOwnProperty("orphanet")) {
+            // Orphanet Phenotype
+            this.hasPhenotype.orphanet = true;
+            this.orphanetData = json.orphanet.orphanet_data;
+          }
+
+          if (json.hasOwnProperty("deo_etal")) {
+            // Deo et. al Phenotype
+            this.hasPhenotype.others = true;
+            this.deoEtalPhenotype = json.deo_etal.deo_etal_phenotype;
+          }
         },
         response => {
           // Error handling
@@ -301,7 +369,7 @@ export default {
               errorMsg = "No record was found.";
               break;
             case 406:
-              errorMsg = "Only single gene is allowed."
+              errorMsg = "Only single gene is allowed.";
               break;
             default:
               break;
@@ -336,6 +404,14 @@ export default {
         genome_crispr: false,
         tko: false,
         y2h: false
+      },
+      hasPhenotype: {
+        any: false,
+        omim: false,
+        hgmd: false,
+        cancer_census: false,
+        orphanet: false,
+        others: false
       },
       yeastEssentiality: false,
       yeastHomologData: [],
@@ -426,6 +502,6 @@ export default {
 }
 .float {
   position: fixed;
-  top: 3rem;
+  top: 4rem;
 }
 </style>

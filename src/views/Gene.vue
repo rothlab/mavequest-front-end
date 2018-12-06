@@ -37,7 +37,7 @@
                   <a href="#orphanet">Orphanet</a>
                 </li>
                 <li>
-                  <a href="other-phenotype">Other Sources</a>
+                  <a href="#other-phenotype">Other Sources</a>
                 </li>
               </ul>
             </aside>
@@ -192,17 +192,42 @@ export default {
     Header,
     AssayTitle
   },
-  created() {
+  created () {
     this.geneName = this.$route.params.name;
   },
-  data() {
+  mounted () {
+    // Display loading animation
+    const loadingComponent = this.$loading.open();
+
+    // Get detail info
+    this.$http.get("https://demo6436483.mockable.io/detail/"+this.geneName)
+    .then(response => {
+      // Make sure the response has a non-empty body
+      if (!response.hasOwnProperty("body") || typeof response.body == "string") {
+        return;
+      }
+
+      const json = response.body;
+      // TODO: validate response fingerprint
+      this.description = json.description;
+      this.entrezID = json.entrezID;
+      this.ensemblID = json.ensemblID;
+      this.omimID = json.omimID;
+      this.alias = json.alias;
+    })
+    .then(() => {
+      // Close loading animation
+      loadingComponent.close();
+    });
+  },
+  data () {
     return {
       isFloat: false,
-      description: "Ubiquitin Conjugating Enzyme E2 I",
-      entrezID: "7329",
-      ensemblID: "ENSG00000103275",
-      omimID: "601661",
-      alias: ["ARH", "ARH1", "ARH2", "FHCB1", "FHCB2"],
+      description: "",
+      entrezID: "",
+      ensemblID: "",
+      omimID: "",
+      alias: [],
       yeastHomologData: [],
       yeastHomologColumns: [
         {

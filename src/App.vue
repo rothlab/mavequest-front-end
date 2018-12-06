@@ -24,7 +24,7 @@
         <p>
           <strong>{{ appName }}</strong>
           by {{ author }} from {{ organization }} with
-          <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
+          <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>.
         </p>
         <p>Version {{ version }}. Copyright ©2018.</p>
       </div>
@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       appName: "Assay & Phenotype Database",
-      author: "Kevin Kuang",
+      author: "Kevin Kuang & Jarry Barber",
       organization: "Roth Lab",
       version: "pre-release v.1"
     };

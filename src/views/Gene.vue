@@ -6,7 +6,12 @@
     <!-- Main -->
     <section class="section">
       <div class="container">
-        <div class="columns">
+        <!-- Display an error component if received a bad response from the back-end -->
+        <section class="section is-medium has-text-centered" v-if="showErrorComponent">
+          <h1 class="title has-text-grey"><b-icon icon="meh"></b-icon></h1>
+          <h1 class="subtitle has-text-grey">Nothing Found</h1>
+        </section>
+        <div class="columns" v-if="!showErrorComponent">
           <!-- Table of Contents -->
           <div class="column is-3">
             <aside class="menu" :class="{float: isFloat}">
@@ -247,7 +252,7 @@ export default {
     AssayTitle
   },
   created() {
-    this.geneName = this.$route.params.name;
+    this.geneName = this.$route.params.name.toUpperCase();
   },
   mounted() {
     // Display loading animation
@@ -366,10 +371,10 @@ export default {
           // Handle common error
           switch (error) {
             case 404:
-              errorMsg = "No record was found.";
+              errorMsg = "No record.";
               break;
             case 406:
-              errorMsg = "Only single gene is allowed.";
+              errorMsg = "One gene per request.";
               break;
             default:
               break;
@@ -381,6 +386,9 @@ export default {
             actionText: "Dismiss",
             indefinite: true
           });
+
+          // Show error component
+          this.showErrorComponent = true;
         }
       )
       .then(() => {
@@ -390,6 +398,7 @@ export default {
   },
   data() {
     return {
+      showErrorComponent: false,
       isFloat: false,
       description: "",
       entrezID: "",

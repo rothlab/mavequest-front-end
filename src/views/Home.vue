@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-info is-large">
+  <section class="hero is-info fill-screen">
     <div class="hero-body">
       <div class="container has-text-left">
         <h1 class="title">Search Database</h1>
@@ -62,5 +62,12 @@ export default {
 <style>
 .card.below-search {
   height: 100%;
+}
+.fill-screen {
+  min-height: calc(100vh - 3.25rem - 13rem);
+}
+.fill-screen > .hero-body {
+  display: flex;
+  align-items: center;
 }
 </style>

@@ -220,7 +220,7 @@ export default {
     },
     setGenesFromQuery (query) {
       // Get the genes from the router
-      this.genes = query.gene;
+      this.genes = query.gene.toUpperCase();
       this.genes = this.genes.split(",");
 
       // If no gene was in there, pass an empty array

@@ -41,11 +41,10 @@ export default {
       // Give a warning if no gene was inputed
       if (this.genes.length == 0) {
         this.$snackbar.open({
-          message: "Please enter at least one gene to search.",
+          message: "Please enter a gene.",
           type: "is-warning",
           position: "is-top",
           actionText: "Retry",
-          indefinite: true
         });
         return;
       }

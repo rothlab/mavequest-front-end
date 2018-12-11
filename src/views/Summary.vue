@@ -4,7 +4,7 @@
     <Header title="Search Results" :genes="genes"></Header>
 
     <!-- Main -->
-    <section class="section">
+    <section class="section fill-screen-withheader">
       <div class="container">
         <div class="columns">
           <!-- Filter -->
@@ -162,7 +162,6 @@ export default {
                 type: "is-warning",
                 position: "is-top",
                 actionText: "Dismiss",
-                indefinite: true
               });
             }
           },
@@ -186,7 +185,6 @@ export default {
               type: "is-danger",
               position: "is-top",
               actionText: "Dismiss",
-              indefinite: true
             });
           }
         )

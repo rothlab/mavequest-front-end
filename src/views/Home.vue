@@ -4,7 +4,7 @@
       <div class="container search-display">
         <h1 class="title">Search Database</h1>
         <h2 class="subtitle">Search with Gene Symbol, Entrez ID or Ensembl ID</h2>
-        <div class="container">
+        <div class="container is-marginless is-fullwidth">
           <SearchBar showButton v-bind:hasAssay="filter.hasAssay" v-bind:hasDiseasePhenotype="filter.hasDiseasePhenotype"></SearchBar>
           <section class="section no-leftright-padding">
           <div class="columns">
@@ -79,7 +79,14 @@ export default {
 .is-fullheight {
   height: 100%;
 }
+.is-fullwidth {
+  max-width: 100% !important;
+  width: 100% !important;
+}
 .search-display {
   min-width: 80vw;
+}
+.fill-screen-withheader {
+  min-height: calc(100vh - 3.25rem - 19rem);
 }
 </style>

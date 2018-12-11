@@ -42,6 +42,7 @@ export default {
 <style scoped>
 .level-right {
   min-width: 50%;
+  max-width: 70%;
 }
 .search-bar {
   width: 100%;

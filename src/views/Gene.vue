@@ -4,7 +4,7 @@
     <Header v-bind:title="geneName" v-observe-visibility="visibilityChanged"></Header>
 
     <!-- Main -->
-    <section class="section">
+    <section class="section fill-screen-withheader">
       <div class="container">
         <!-- Display an error component if received a bad response from the back-end -->
         <section class="section is-medium has-text-centered" v-if="showErrorComponent">
@@ -383,8 +383,7 @@ export default {
             message: `Failed. Error Message: [${response.status}] ${errorMsg}`,
             type: "is-danger",
             position: "is-top",
-            actionText: "Dismiss",
-            indefinite: true
+            actionText: "Dismiss"
           });
 
           // Show error component

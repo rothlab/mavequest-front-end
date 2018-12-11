@@ -8,8 +8,8 @@
           class="is-uppercase"
         ></b-taginput>
       </div>
-      <div class="column is-narrow" v-if="showButton">
-        <button class="button is-medium" @click="searchGenes">
+      <div class="column is-narrow no-topbottom-padding" v-if="showButton">
+        <button class="button is-medium is-fullwidth" @click="searchGenes">
           <b-icon icon="search"></b-icon>
           <span>Search</span>
         </button>
@@ -64,3 +64,12 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.no-topbottom-padding {
+  display: flex;
+  align-items: center;
+  padding-top: 0%;
+  padding-bottom: 0%;
+}
+</style>

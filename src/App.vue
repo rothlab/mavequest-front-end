@@ -19,7 +19,7 @@
     <router-view/>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer footer-padding">
       <div class="content has-text-centered">
         <p>
           <strong>{{ appName }}</strong>
@@ -57,6 +57,9 @@ export default {
 }
 .in-list {
   margin-top: 1rem;
+}
+.footer-padding {
+  padding: 3rem 1.5rem 3rem !important;
 }
 </style>
 

@@ -1,14 +1,15 @@
 <template>
   <section class="hero is-info fill-screen">
     <div class="hero-body">
-      <div class="container has-text-left">
+      <div class="container search-display">
         <h1 class="title">Search Database</h1>
         <h2 class="subtitle">Search with Gene Symbol, Entrez ID or Ensembl ID</h2>
         <div class="container">
           <SearchBar showButton v-bind:hasAssay="filter.hasAssay" v-bind:hasDiseasePhenotype="filter.hasDiseasePhenotype"></SearchBar>
+          <section class="section no-leftright-padding">
           <div class="columns">
             <div class="column is-half">
-              <SearchFilter @updatedSearchFilter="setSearchFilter"></SearchFilter>
+              <SearchFilter @updatedSearchFilter="setSearchFilter" class="is-fullheight"></SearchFilter>
             </div>
             <div class="column is-half">
               <div class="card below-search">
@@ -17,14 +18,15 @@
                 </header>
                 <div class="card-content">
                   <div class="content has-text-left is-medium">
-                    <a class="has-text-link">List all genes with potential assays</a>
+                    <a class="has-text-link">Genes with potential assays</a>
                     <br>
-                    <a class="has-text-link">List all genes with disease phenotypes</a>
+                    <a class="has-text-link">Genes with phenotypes</a>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          </section>
         </div>
       </div>
     </div>
@@ -64,10 +66,20 @@ export default {
   height: 100%;
 }
 .fill-screen {
-  min-height: calc(100vh - 3.25rem - 13rem);
+  min-height: calc(100vh - 3.25rem - 10rem);
 }
 .fill-screen > .hero-body {
   display: flex;
   align-items: center;
+}
+.no-leftright-padding {
+  padding-left: 0% !important;
+  padding-right: 0% !important;
+}
+.is-fullheight {
+  height: 100%;
+}
+.search-display {
+  min-width: 80vw;
 }
 </style>

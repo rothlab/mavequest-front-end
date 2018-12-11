@@ -13,7 +13,7 @@
         </section>
         <div class="columns" v-if="!showErrorComponent">
           <!-- Table of Contents -->
-          <div class="column is-3">
+          <div class="column is-3 is-hidden-mobile">
             <aside class="menu" :class="{float: isFloat}">
               <p class="menu-label" v-if="hasAssay.any">Assay</p>
               <ul class="menu-list" v-if="hasAssay.any">

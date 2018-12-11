@@ -48,3 +48,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.card-content {
+  display: flex;
+  height: calc(100% - 48px);
+  align-items: center;
+}
+</style>

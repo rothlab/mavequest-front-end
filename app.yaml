@@ -1,0 +1,11 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+handlers:
+- url: /(.*\.(js|css|png|jpg|ttf|woff|woff2))$
+  static_files: dist/\1
+  upload: dist/.*\.(js|css|png|jpg|ttf|woff|woff2)$
+  # catch all handler to index.html
+- url: /.*
+  static_files: dist/index.html
+  upload: dist/index.html

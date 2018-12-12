@@ -1,0 +1,7 @@
+# Ignore everything
+/[!.]*
+/.?*
+
+# Except the webpack compiled files and the App Engine config file
+!/dist/
+!/app.yaml

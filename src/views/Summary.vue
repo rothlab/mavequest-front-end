@@ -122,7 +122,7 @@ export default {
 
       // Get gene info
       this.$http
-        .get("https://demo6436483.mockable.io/gene/" + this.genes)
+        .get("https://api-dot-glass-ally-143617.appspot.com/gene/" + this.genes)
         .then(
           response => {
             // Make sure the response has a non-empty body

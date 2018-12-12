@@ -355,6 +355,7 @@ export default {
             // Orphanet Phenotype
             this.hasPhenotype.orphanet = true;
             this.orphanetData = json.orphanet.orphanet_data;
+            alert(JSON.stringify(this.orphanetData));
           }
 
           if (json.hasOwnProperty("deo_etal")) {

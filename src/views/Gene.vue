@@ -260,7 +260,7 @@ export default {
 
     // Get detail info
     this.$http
-      .get("https://demo6436483.mockable.io/detail/" + this.geneName)
+      .get("http://localhost:3001/detail/" + this.geneName)
       .then(
         response => {
           // Make sure the response has a non-empty body
@@ -355,6 +355,7 @@ export default {
             // Orphanet Phenotype
             this.hasPhenotype.orphanet = true;
             this.orphanetData = json.orphanet.orphanet_data;
+            alert(JSON.stringify(this.orphanetData));
           }
 
           if (json.hasOwnProperty("deo_etal")) {

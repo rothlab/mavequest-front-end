@@ -260,7 +260,7 @@ export default {
 
     // Get detail info
     this.$http
-      .get("https://demo6436483.mockable.io/detail/" + this.geneName)
+      .get("https://api-dot-glass-ally-143617.appspot.com/detail/" + this.geneName)
       .then(
         response => {
           // Make sure the response has a non-empty body

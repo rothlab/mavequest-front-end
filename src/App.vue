@@ -26,7 +26,7 @@
           by {{ author }} from {{ organization }} with
           <b-icon icon="heart" size="is-small" type="is-dark"></b-icon>
         </p>
-        <p>Version {{ version }}. Copyright ©2018.</p>
+        <p>Version {{version}}. ©2018 Roth Lab.</p>
       </div>
     </footer>
   </div>
@@ -36,10 +36,10 @@
 export default {
   data() {
     return {
-      appName: "Assay & Phenotype Database",
+      appName: "MaveQuest",
       author: "Kevin Kuang & Jarry Barber",
       organization: "Roth Lab",
-      version: "pre-release v.1"
+      version: process.env.GIT_VERSION
     };
   }
 };

@@ -15,7 +15,10 @@ import VueResource from 'vue-resource'
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
 
-Vue.config.productionTip = false
+// Define instance properties
+Vue.prototype.$apiEntryPoint = 'https://api-dot-glass-ally-143617.appspot.com';
+
+Vue.config.productionTip = false;
 
 Vue.use(Buefy, {
   defaultIconPack: 'fas'

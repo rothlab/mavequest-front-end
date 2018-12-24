@@ -16,7 +16,11 @@ import VueResource from 'vue-resource'
 import App from './App.vue'
 
 // Define instance properties
-Vue.prototype.$apiEntryPoint = 'https://api-dot-glass-ally-143617.appspot.com';
+if (process.env.NODE_ENV == "development") {
+  Vue.prototype.$apiEntryPoint = 'http://localhost:3001';
+} else {
+  Vue.prototype.$apiEntryPoint = 'https://api-dot-glass-ally-143617.appspot.com';
+}
 
 Vue.config.productionTip = false;
 

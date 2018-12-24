@@ -175,13 +175,14 @@ export default {
               case 404:
                 errorMsg = "No record was found.";
                 break;
+              case 413: case 400:
+                errorMsg = response.body;
+                break;
               default:
                 break;
             }
             this.$snackbar.open({
-              message: `Failed. Error Message: [${
-                response.status
-              }] ${errorMsg}`,
+              message: `[ERROR ${response.status}] ${errorMsg}`,
               type: "is-danger",
               position: "is-top",
               actionText: "Dismiss",
@@ -219,7 +220,7 @@ export default {
     setGenesFromQuery (query) {
       // Get the genes from the router
       this.genes = query.gene.toUpperCase();
-      this.genes = this.genes.split(",");
+      this.genes = this.genes.split(",").filter(Boolean).map(res => res.trim());
 
       // If no gene was in there, pass an empty array
       if (this.genes == "") {

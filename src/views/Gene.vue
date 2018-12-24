@@ -355,7 +355,6 @@ export default {
             // Orphanet Phenotype
             this.hasPhenotype.orphanet = true;
             this.orphanetData = json.orphanet.orphanet_data;
-            alert(JSON.stringify(this.orphanetData));
           }
 
           if (json.hasOwnProperty("deo_etal")) {
@@ -374,14 +373,14 @@ export default {
             case 404:
               errorMsg = "No record.";
               break;
-            case 406:
-              errorMsg = "One gene per request.";
+            case 406: case 400:
+              errorMsg = response.body;
               break;
             default:
               break;
           }
           this.$snackbar.open({
-            message: `Failed. Error Message: [${response.status}] ${errorMsg}`,
+            message: `[ERROR ${response.status}] ${errorMsg}`,
             type: "is-danger",
             position: "is-top",
             actionText: "Dismiss"

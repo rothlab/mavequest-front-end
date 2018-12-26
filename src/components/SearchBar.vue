@@ -6,20 +6,34 @@
           v-model="genes"
           :data="autoCompleteRes"
           size="is-medium"
-          class="is-uppercase"
           :loading="isFetching"
           autocomplete
           field="gene_symbol"
-          @typing="getGeneNames" >
-          
+          @typing="getGeneNames"
+        >
           <template slot-scope="props">
-            <strong>HGNC: {{props.option.hgnc_id}}</strong> {{props.option.gene_symbol}} <i>{{props.option.gene_description}}</i>
+            <!-- Desktop autocomplete list -->
+            <div class="columns is-hidden-touch is-marginless">
+              <div class="column is-one-quarter no-topbottom-padding">
+                <p class="is-size-5" v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"></p>
+              </div>
+
+              <div class="column autocomplete-right">
+                HGNC: {{props.option.hgnc_id}}<i v-if="props.option.alias_symbol.length > 0">, Alias: <span v-html="props.option.alias_symbol.join(', ')"></span></i>
+                <br>
+                <p class="is-size-7 is-capitalized">{{props.option.gene_description}}</p>
+              </div>
+            </div>
+
+            <!-- Mobile autocomplete list -->
+            <div class="is-hidden-desktop">
+              <span v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"></span>
+               ({{props.option.hgnc_id}})<i v-if="props.option.alias_symbol.length > 0"> Alias: <span v-html="props.option.alias_symbol.join(', ')"></span></i>
+            </div>
           </template>
 
-          <template slot="empty">
-            There are no items
-          </template>
-          </b-taginput>
+          <template slot="empty">There are no items</template>
+        </b-taginput>
       </div>
       <div class="column is-narrow no-topbottom-padding" v-if="showButton">
         <button class="button is-medium is-fullwidth" @click="searchGenes">
@@ -32,7 +46,7 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
+import debounce from "lodash/debounce";
 
 export default {
   name: "SearchBar",
@@ -54,15 +68,19 @@ export default {
   data() {
     return {
       autoCompleteRes: [],
-      isFetching: false,
-    }
+      isFetching: false
+    };
   },
   methods: {
     searchGenes() {
       // Extract gene names
       this.geneNames = [];
-      for (const gene of this.genes) {
-        this.geneNames.push(gene.gene_symbol);
+      for (let gene of this.genes) {
+        if (typeof gene === "object") {
+          this.geneNames.push(gene.gene_symbol);
+        } else if (typeof gene === "string") {
+          this.geneNames.push(gene);
+        }
       }
 
       // Give a warning if no gene was inputed
@@ -71,7 +89,7 @@ export default {
           message: "Please enter a gene.",
           type: "is-warning",
           position: "is-top",
-          actionText: "Retry",
+          actionText: "Retry"
         });
         return;
       }
@@ -97,29 +115,42 @@ export default {
 
       // Initiaite an autocomplete search
       // Here we use the NCBI Autocomplete API
+      this.text = text;
       this.isFetching = true;
       this.autoCompleteRes = [];
-      this.$http.get(`https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${text}&df=symbol,name&sf=symbol`)
-      .then((data) => {
-        const response = data.body;
+      this.$http
+        .get(
+          `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${text}&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
+        )
+        .then(data => {
+          const response = data.body;
 
-        // Separate properties and populate the autocomplete list
-        const hgncID = response[1];
-        const fields = response[3];
-        for (let index = 0; index < hgncID.length; index++) {
-          const id = hgncID[index];
-          const content = fields[index];
+          // Separate properties and populate the autocomplete list
+          const hgncID = response[1];
+          const fields = response[3];
+          const aliasList = [];
+          for (let index = 0; index < hgncID.length; index++) {
+            const id = hgncID[index];
+            const content = fields[index];
 
-          const res = {
-            hgnc_id: id,
-            gene_symbol: content[0],
-            gene_description: content[1]
+            const res = {
+              hgnc_id: id,
+              gene_symbol: content[0],
+              gene_description: content[1],
+              alias_symbol: content[2].split('|').filter(Boolean).map(res => res.trim().replace(RegExp(text, 'ig'), '<strong>$&</strong>'))
+            };
+
+            // Rank autocomplete results so that direct matches of gene symbols will come first
+            if (res.gene_symbol.match(RegExp(text, 'ig'))) {
+              this.autoCompleteRes.push(res);
+            } else {
+              aliasList.push(res);
+            }
           }
-          this.autoCompleteRes.push(res);
-        }
 
-        this.isFetching = false;
-      });
+          this.autoCompleteRes = this.autoCompleteRes.concat(aliasList);
+          this.isFetching = false;
+        });
     })
   }
 };
@@ -131,5 +162,9 @@ export default {
   align-items: center;
   padding-top: 0%;
   padding-bottom: 0%;
+}
+.autocomplete-right {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
 }
 </style>

@@ -15,11 +15,17 @@
             <!-- Desktop autocomplete list -->
             <div class="columns is-hidden-touch is-marginless">
               <div class="column is-one-quarter no-topbottom-padding">
-                <p class="is-size-5" v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"></p>
+                <p
+                  class="is-size-5"
+                  v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"
+                ></p>
               </div>
 
               <div class="column autocomplete-right">
-                HGNC: {{props.option.hgnc_id}}<i v-if="props.option.alias_symbol.length > 0">, Alias: <span v-html="props.option.alias_symbol.join(', ')"></span></i>
+                HGNC: {{props.option.hgnc_id}}
+                <i v-if="props.option.alias_symbol.length > 0">, Alias:
+                  <span v-html="props.option.alias_symbol.join(', ')"></span>
+                </i>
                 <br>
                 <p class="is-size-7 is-capitalized">{{props.option.gene_description}}</p>
               </div>
@@ -27,8 +33,13 @@
 
             <!-- Mobile autocomplete list -->
             <div class="is-hidden-desktop">
-              <span v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"></span>
-               ({{props.option.hgnc_id}})<i v-if="props.option.alias_symbol.length > 0"> Alias: <span v-html="props.option.alias_symbol.join(', ')"></span></i>
+              <span
+                v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"
+              ></span>
+              ({{props.option.hgnc_id}})
+              <i v-if="props.option.alias_symbol.length > 0">Alias:
+                <span v-html="props.option.alias_symbol.join(', ')"></span>
+              </i>
             </div>
           </template>
 
@@ -115,12 +126,12 @@ export default {
 
       // Initiaite an autocomplete search
       // Here we use the NCBI Autocomplete API
-      this.text = text;
+      this.text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       this.isFetching = true;
       this.autoCompleteRes = [];
       this.$http
         .get(
-          `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${text}&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
+          `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${this.text}&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
         )
         .then(data => {
           const response = data.body;
@@ -137,11 +148,16 @@ export default {
               hgnc_id: id,
               gene_symbol: content[0],
               gene_description: content[1],
-              alias_symbol: content[2].split('|').filter(Boolean).map(res => res.trim().replace(RegExp(text, 'ig'), '<strong>$&</strong>'))
+              alias_symbol: content[2]
+                .split("|")
+                .filter(Boolean)
+                .map(res =>
+                  res.trim().replace(RegExp(this.text, "ig"), "<strong>$&</strong>")
+                )
             };
 
             // Rank autocomplete results so that direct matches of gene symbols will come first
-            if (res.gene_symbol.match(RegExp(text, 'ig'))) {
+            if (res.gene_symbol.match(RegExp(this.text, "ig"))) {
               this.autoCompleteRes.push(res);
             } else {
               aliasList.push(res);

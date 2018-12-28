@@ -43,7 +43,7 @@
             </div>
           </template>
 
-          <template slot="empty">There are no items</template>
+          <template slot="empty">{{emptyMessage}}</template>
         </b-taginput>
       </div>
       <div class="column is-narrow no-topbottom-padding" v-if="showButton">
@@ -79,7 +79,8 @@ export default {
   data() {
     return {
       autoCompleteRes: [],
-      isFetching: false
+      isFetching: false,
+      emptyMessage: "No genes found."
     };
   },
   methods: {
@@ -120,6 +121,7 @@ export default {
       // User have to type in at least two characters before initialting an autocomplete search to save computing resources
       if (text.length < 2) {
         this.isFetching = false;
+        this.emptyMessage = "Please enter at least 2 characters."
         this.autoCompleteRes = [];
         return;
       }
@@ -129,6 +131,7 @@ export default {
       this.text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       this.isFetching = true;
       this.autoCompleteRes = [];
+      this.emptyMessage = "No genes found.";
       this.$http
         .get(
           `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${this.text}&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`

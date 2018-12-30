@@ -1,14 +1,14 @@
 <template>
   <div class="summary">
     <!-- Header -->
-    <Header title="Search Results" :genes="genes"></Header>
+    <Header :title="title"></Header>
 
     <!-- Main -->
     <section class="section fill-screen-withheader">
       <div class="container">
         <div class="columns">
           <!-- Filter -->
-          <div class="column is-narrow">
+          <div class="column is-narrow" v-if="showLeftPanel">
             <SearchFilter
               v-bind:hasAssay="this.filter.hasAssay"
               v-bind:hasDiseasePhenotype="this.filter.hasDiseasePhenotype"
@@ -23,9 +23,12 @@
               :loading="isLoading"
               :striped="true"
               :hoverable="true"
+              :backend-pagination="listAllGenes"
               :paginated="true"
               :pagination-simple="true"
-              :per-page="20"
+              :total="totalGenes"
+              :per-page="pagination.limit"
+              @page-change="onPageChange"
             >
               <!-- Customized table columns -->
               <template slot-scope="props">
@@ -93,8 +96,15 @@ export default {
     this.setGenesFromQuery(this.$route.query);
   },
   mounted() {
-    // Query gene info from the API
-    this.setGeneInfo();
+    if (this.listAllGenes) {
+      // List all genes from the API
+      this.showLeftPanel = false;
+      this.listGenes();
+    } else {
+      // Query gene info from the API
+      this.title = "Search Result"
+      this.setGeneInfo();
+    }
   },
   beforeRouteUpdate(to, from, next) {
     // Set gene names and query again when the page is about to be updated (when user tries to search again in the summary page)
@@ -104,6 +114,14 @@ export default {
   },
   data() {
     return {
+      listAllGenes: false,
+      title: "",
+      showLeftPanel: true,
+      totalGenes: 0,
+      pagination: {
+        offset: 0,
+        limit: 20
+      },
       geneInfo: [],
       completeGeneInfo: [],
       isLoading: false,
@@ -116,7 +134,7 @@ export default {
     };
   },
   methods: {
-    setGeneInfo () {
+    setGeneInfo() {
       // Set the table to loading status
       this.isLoading = true;
 
@@ -142,7 +160,7 @@ export default {
               this.geneInfo = this.completeGeneInfo;
 
               // Find genes that don't have potential assay or disease phenotype
-              this.geneInfo.forEach((element) => {
+              this.geneInfo.forEach(element => {
                 if (element.potential_assay.length < 1) {
                   this.geneWOAssay.push(element.gene_name);
                 }
@@ -161,7 +179,7 @@ export default {
                 )}`,
                 type: "is-warning",
                 position: "is-top",
-                actionText: "Dismiss",
+                actionText: "Dismiss"
               });
             }
           },
@@ -175,7 +193,8 @@ export default {
               case 404:
                 errorMsg = "No record was found.";
                 break;
-              case 413: case 400:
+              case 413:
+              case 400:
                 errorMsg = response.body;
                 break;
               default:
@@ -185,7 +204,7 @@ export default {
               message: `[ERROR ${response.status}] ${errorMsg}`,
               type: "is-danger",
               position: "is-top",
-              actionText: "Dismiss",
+              actionText: "Dismiss"
             });
           }
         )
@@ -194,10 +213,97 @@ export default {
           this.isLoading = false;
         });
     },
-    setSearchFilter (update) {
+    listGenes() {
+      // Set the table to loading status
+      this.isLoading = true;
+      
+      // Check for a valid filter
+      if (!(this.filter.hasAssay || this.filter.hasDiseasePhenotype)) {
+        this.$snackbar.open({
+          message: "No filters were specified.",
+          type: "is-error",
+          position: "is-top",
+          actionText: "Dismiss"
+        });
+        return;
+      }
+
+      // Set filter status
+      const filter = this.filter.hasAssay
+        ? "has_assay"
+        : "has_disease_phenotype";
+      
+      // Set page title
+      this.title = "Genes " + (filter == "has_assay" ? "with Potential Assays" : "Phenotype");
+
+      // Set pagination parameters
+      const offset = this.pagination.offset;
+      const limit = this.pagination.limit;
+
+      // Get gene info
+      this.$http
+        .get(`${this.$apiEntryPoint}/genes/?filter=${filter}&offset=${offset}&limit=${limit}`)
+        .then(response => {
+          // Make sure the response has a non-empty body
+          if (
+            !response.hasOwnProperty("body") ||
+            typeof response.body == "string"
+          ) {
+            return;
+          }
+
+          const json = response.body;
+          
+          // Make sure the response contains gene info
+          // TODO: validate response fingerprint
+          if (json.hasOwnProperty("genes")) {
+            this.totalGenes = json.total;
+            this.pagination = json.pagination;
+            this.geneInfo = json.genes;
+          }
+        }, response => {
+            // Error callback
+            const error = response.status;
+            let errorMsg = "Other Errors";
+
+            // Handle common error
+            switch (error) {
+              case 404:
+                errorMsg = "No record was found.";
+                break;
+              case 400:
+                errorMsg = response.body;
+                break;
+              default:
+                break;
+            }
+            this.$snackbar.open({
+              message: `[ERROR ${response.status}] ${errorMsg}`,
+              type: "is-danger",
+              position: "is-top",
+              actionText: "Dismiss"
+            });
+        })
+        .then(() => {
+          // Set the table to complete status
+          this.isLoading = false;
+        });
+    },
+    onPageChange(page) {
+      // Update pagination parameters and list
+      this.pagination.offset = (page - 1) * this.pagination.limit;
+      this.listGenes();
+    },
+    setSearchFilter(update) {
       // Capture changes on search filters
       this.filter.hasAssay = update.hasAssay;
       this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
+
+      // Call the API directly if we are listing all genes
+      if (this.listAllGenes) {
+        this.listGenes();
+        return;
+      }
 
       if (!this.filter.hasAssay && !this.filter.hasDiseasePhenotype) {
         this.geneInfo = this.completeGeneInfo;
@@ -206,25 +312,40 @@ export default {
 
       // Update the table data based on search filter changes
       this.geneInfo = this.geneInfo.filter(element => {
-        if (this.filter.hasAssay && this.geneWOAssay.includes(element.gene_name)) {
+        if (
+          this.filter.hasAssay &&
+          this.geneWOAssay.includes(element.gene_name)
+        ) {
           return false;
         }
 
-        if (this.filter.hasDiseasePhenotype && this.geneWOPhenotype.includes(element.gene_name)) {
+        if (
+          this.filter.hasDiseasePhenotype &&
+          this.geneWOPhenotype.includes(element.gene_name)
+        ) {
           return false;
         }
 
         return true;
       });
     },
-    setGenesFromQuery (query) {
-      // Get the genes from the router
-      this.genes = query.gene.toUpperCase();
-      this.genes = this.genes.split(",").filter(Boolean).map(res => res.trim());
+    setGenesFromQuery(query) {
+      // Set the mode of the page based on the existance of gene param.
+      // If it's not existed, then a list of all genes that passed a certain filter will be displayed.
+      // Otherwise, only list the genes requested.
+      if (query.hasOwnProperty("gene")) {
+        // Get the genes from the router
+        this.listAllGenes = false;
+        this.genes = query.gene.toUpperCase();
+        this.genes = this.genes
+          .split(",")
+          .filter(Boolean)
+          .map(res => res.trim());
 
-      // If no gene was in there, pass an empty array
-      if (this.genes == "") {
-        this.genes = [];
+        // If no gene was in there, pass an empty array
+        if (this.genes == "") this.genes = [];
+      } else {
+        this.listAllGenes = true;
       }
 
       // Get advanced search status from the routher

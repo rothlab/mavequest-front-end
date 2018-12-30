@@ -18,9 +18,9 @@
                 </header>
                 <div class="card-content">
                   <div class="content has-text-left is-medium">
-                    <a class="has-text-link">Genes with potential assays</a>
+                    <a class="has-text-link" href="summary?hasAssay=true">Genes with potential assays</a>
                     <br>
-                    <a class="has-text-link">Genes with phenotypes</a>
+                    <a class="has-text-link" href="summary?hasDiseasePhenotype=true">Genes with phenotypes</a>
                   </div>
                 </div>
               </div>

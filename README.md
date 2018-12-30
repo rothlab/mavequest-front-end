@@ -1,4 +1,6 @@
-# front-end
+# maveQuest Front-End
+
+Project created by vue-cli.
 
 ## Project setup
 ```

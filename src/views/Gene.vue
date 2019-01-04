@@ -144,34 +144,9 @@
 
                             <!-- More than five cell lines -->
                             <div v-if="props.row.cell_line.length > 5">
-                              <div v-if="!isExpandDetail">
-                                <b-tag
-                                  class="is-light cell-line"
-                                  v-for="cell in props.row.cell_line.slice(0, 5)"
-                                  v-bind:key="cell"
-                                >{{cell}}</b-tag>
-                                <button
-                                  class="button is-small has-background-grey-lighter cell-line is-rounded"
-                                  @click="isExpandDetail = !isExpandDetail"
-                                >
-                                <b-icon class="fas fa-caret-down"></b-icon>
-                                </button>
-                              </div>
-                              
-                              <b-collapse :open.sync="isExpandDetail">
-                                <b-tag
-                                  class="is-light cell-line"
-                                  v-for="cell in props.row.cell_line"
-                                  v-bind:key="cell"
-                                >{{cell}}</b-tag>
-                                <button
-                                  class="button is-small has-background-grey-lighter cell-line is-rounded"
-                                  @click="isExpandDetail = !isExpandDetail"
-                                >
-                                <b-icon class="fas fa-caret-up"></b-icon>
-                                </button>
-                              </b-collapse>
+                              <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
                             </div>
+
                           </b-table-column>
                         </template>
 
@@ -190,8 +165,55 @@
                 <div class="content" v-if="hasAssay.genome_crispr">
                   <ul>
                     <li>GenomeCRISPR Records:</li>
-                    <div class="card in-paragraph in-list" v-if="hasAssay.genome_crispr">
-                      <b-table :data="genomeCRISPRData" :columns="genomeCRISPRColumns"></b-table>
+                    <div class="card has-table-padding in-paragraph in-list" v-if="hasAssay.genome_crispr">
+                      <b-table
+                        :data="genomeCRISPRData"
+                        paginated
+                        per-page="10"
+                        pagination-simple
+                        hoverable
+                        narrowed
+                      >
+                        <template slot-scope="props">
+                          <b-table-column field="pubmed" label="Pubmed Source" width="150">
+                            <a
+                              :href='"https://www.ncbi.nlm.nih.gov/pubmed/" + props.row.pubmed'
+                            >{{props.row.pubmed}}</a>
+                          </b-table-column>
+
+                          <b-table-column field="condition" label="Condition" width="200">
+                            {{props.row.condition}}
+                          </b-table-column>
+
+                          <b-table-column field="screen" label="Screen" width="150">
+                            {{props.row.screen}}
+                          </b-table-column>
+
+                          <b-table-column field="cell_line" label="Cell Lines">
+                            <!-- Less than five cell lines -->
+                            <div v-if="props.row.cell_line.length <= 5">
+                              <b-tag
+                                class="is-light cell-line"
+                                v-for="cell in props.row.cell_line"
+                                v-bind:key="cell"
+                              >{{cell}}</b-tag>
+                            </div>
+
+                            <!-- More than five cell lines -->
+                            <div v-if="props.row.cell_line.length > 5">
+                              <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
+                            </div>
+                          </b-table-column>
+                        </template>
+
+                        <template slot="detail" slot-scope="props">
+                          <b-tag
+                            class="is-light is-size-6 cell-line"
+                            v-for="cell in props.row.cell_line"
+                            v-bind:key="cell"
+                          >{{cell}}</b-tag>
+                        </template>
+                      </b-table>
                     </div>
                   </ul>
                 </div>
@@ -304,6 +326,7 @@
 
 <script>
 import Header from "@/components/Header.vue";
+import ExpandableRow from "@/components/ExpandableRow.vue"
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
@@ -322,6 +345,7 @@ export default {
   name: "gene-details",
   components: {
     Header,
+    ExpandableRow,
     AssayTitle
   },
   created() {
@@ -514,39 +538,7 @@ export default {
       y2hInteractors: [],
       genomeRNAiPhenotype: [],
       genomeRNAiData: [],
-      genomeRNAiColumns: [
-        {
-          field: "id",
-          label: "ID"
-        },
-        {
-          field: "pubmed",
-          label: "PubMed Source"
-        },
-        {
-          field: "cell_line",
-          label: "Cell Line"
-        }
-      ],
       genomeCRISPRData: [],
-      genomeCRISPRColumns: [
-        {
-          field: "pubmed",
-          label: "PubMed Source"
-        },
-        {
-          field: "cell_line",
-          label: "Cell Line"
-        },
-        {
-          field: "condition",
-          label: "Condition"
-        },
-        {
-          field: "screen",
-          label: "Screen"
-        }
-      ],
       omimPhenotype: [],
       hgmdPhenotype: [],
       cancerGeneCensusPhenotype: {
@@ -589,10 +581,10 @@ export default {
   position: fixed;
   top: 4rem;
 }
-.cell-line {
-  margin-right: 5px;
-}
 .has-table-padding {
   padding: 0.5rem;
+}
+.cell-line {
+  margin-right: 5px;
 }
 </style>

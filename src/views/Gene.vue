@@ -8,7 +8,9 @@
       <div class="container">
         <!-- Display an error component if received a bad response from the back-end -->
         <section class="section is-medium has-text-centered" v-if="showErrorComponent">
-          <h1 class="title has-text-grey"><b-icon icon="meh"></b-icon></h1>
+          <h1 class="title has-text-grey">
+            <b-icon icon="meh"></b-icon>
+          </h1>
           <h1 class="subtitle has-text-grey">Nothing Found</h1>
         </section>
         <div class="columns" v-if="!showErrorComponent">
@@ -108,8 +110,79 @@
                       </ol>
                     </li>
                     <li>GenomeRNAi Records:</li>
-                    <div class="card in-paragraph in-list">
-                      <b-table :data="genomeRNAiData" :columns="genomeRNAiColumns"></b-table>
+                    <div class="card has-table-padding in-paragraph in-list">
+                      <b-table
+                        :data="genomeRNAiData"
+                        paginated
+                        per-page="10"
+                        pagination-simple
+                        hoverable
+                        narrowed
+                      >
+                        <template slot-scope="props">
+                          <b-table-column field="id" label="ID" width="150">
+                            <a
+                              :href='"http://www.genomernai.org/v17/singleExpPhenotypes/" + props.row.id'
+                            >{{props.row.id}}</a>
+                          </b-table-column>
+
+                          <b-table-column field="pubmed" label="Pubmed Source" width="150">
+                            <a
+                              :href='"https://www.ncbi.nlm.nih.gov/pubmed/" + props.row.pubmed'
+                            >{{props.row.pubmed}}</a>
+                          </b-table-column>
+
+                          <b-table-column field="cell_line" label="Cell Lines">
+                            <!-- Less than five cell lines -->
+                            <div v-if="props.row.cell_line.length <= 5">
+                              <b-tag
+                                class="is-light cell-line"
+                                v-for="cell in props.row.cell_line"
+                                v-bind:key="cell"
+                              >{{cell}}</b-tag>
+                            </div>
+
+                            <!-- More than five cell lines -->
+                            <div v-if="props.row.cell_line.length > 5">
+                              <div v-if="!isExpandDetail">
+                                <b-tag
+                                  class="is-light cell-line"
+                                  v-for="cell in props.row.cell_line.slice(0, 5)"
+                                  v-bind:key="cell"
+                                >{{cell}}</b-tag>
+                                <button
+                                  class="button is-small has-background-grey-lighter cell-line is-rounded"
+                                  @click="isExpandDetail = !isExpandDetail"
+                                >
+                                <b-icon class="fas fa-caret-down"></b-icon>
+                                </button>
+                              </div>
+                              
+                              <b-collapse :open.sync="isExpandDetail">
+                                <b-tag
+                                  class="is-light cell-line"
+                                  v-for="cell in props.row.cell_line"
+                                  v-bind:key="cell"
+                                >{{cell}}</b-tag>
+                                <button
+                                  class="button is-small has-background-grey-lighter cell-line is-rounded"
+                                  @click="isExpandDetail = !isExpandDetail"
+                                >
+                                <b-icon class="fas fa-caret-up"></b-icon>
+                                </button>
+                              </b-collapse>
+                            </div>
+                          </b-table-column>
+                        </template>
+
+                        <template slot="detail" slot-scope="props">
+                          <b-tag
+                            class="is-light is-size-6 cell-line"
+                            v-for="cell in props.row.cell_line"
+                            v-bind:key="cell"
+                          >{{cell}}</b-tag>
+                        </template>
+                      </b-table>
                     </div>
                   </ul>
                 </div>
@@ -347,8 +420,10 @@ export default {
           if (json.hasOwnProperty("cancer_census")) {
             // Cancer Census Phenotype
             this.hasPhenotype.cancer_census = true;
-            this.cancerGeneCensusPhenotype.somatic = json.cancer_census.cancer_census_somatic;
-            this.cancerGeneCensusPhenotype.germline = json.cancer_census.cancer_census_germline;
+            this.cancerGeneCensusPhenotype.somatic =
+              json.cancer_census.cancer_census_somatic;
+            this.cancerGeneCensusPhenotype.germline =
+              json.cancer_census.cancer_census_germline;
           }
 
           if (json.hasOwnProperty("orphanet")) {
@@ -373,7 +448,8 @@ export default {
             case 404:
               errorMsg = "No record.";
               break;
-            case 406: case 400:
+            case 406:
+            case 400:
               errorMsg = response.body;
               break;
             default:
@@ -397,6 +473,7 @@ export default {
   },
   data() {
     return {
+      isExpandDetail: false,
       showErrorComponent: false,
       isFloat: false,
       description: "",
@@ -511,5 +588,11 @@ export default {
 .float {
   position: fixed;
   top: 4rem;
+}
+.cell-line {
+  margin-right: 5px;
+}
+.has-table-padding {
+  padding: 0.5rem;
 }
 </style>

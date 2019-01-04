@@ -45,6 +45,18 @@ export default {
 };
 </script>
 
+<style lang="scss">
+// Import Bulma's core
+@import "~bulma/sass/utilities/_all";
+
+// Navbar related styles
+$navbar-breakpoint: 0px;
+
+// Import Bulma and Buefy styles
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
+</style>
+
 <style>
 .has-text-link {
   color: #3273dc !important;
@@ -61,16 +73,7 @@ export default {
 .footer-padding {
   padding: 3rem 1.5rem 3rem !important;
 }
-</style>
-
-<style lang="scss">
-// Import Bulma's core
-@import "~bulma/sass/utilities/_all";
-
-// Navbar related styles
-$navbar-breakpoint: 0px;
-
-// Import Bulma and Buefy styles
-@import "~bulma";
-@import "~buefy/src/scss/buefy";
+.b-table .level {
+  padding-bottom: 0rem !important;
+}
 </style>

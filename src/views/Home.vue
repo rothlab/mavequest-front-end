@@ -76,6 +76,10 @@ export default {
   padding-left: 0% !important;
   padding-right: 0% !important;
 }
+.no-topbottom-padding {
+  padding-top: 0% !important;
+  padding-bottom: 0% !important;
+}
 .is-fullheight {
   height: 100%;
 }

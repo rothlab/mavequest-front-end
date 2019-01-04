@@ -26,7 +26,7 @@
           by {{ author }} from {{ organization }} with
           <b-icon icon="heart" size="is-small" type="is-dark"></b-icon>
         </p>
-        <p>Version {{version}}. ©2018 Roth Lab.</p>
+        <p>Version {{version}} © {{organization}}</p>
       </div>
     </footer>
   </div>
@@ -36,9 +36,9 @@
 export default {
   data() {
     return {
-      appName: "MaveQuest",
-      author: "Kevin Kuang & Jarry Barber",
-      organization: "Roth Lab",
+      appName: process.env.VUE_APP_NAME,
+      author: process.env.VUE_APP_AUTHORS,
+      organization: process.env.VUE_APP_ORGANIZATION,
       version: process.env.GIT_VERSION
     };
   }

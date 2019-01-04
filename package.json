@@ -1,6 +1,6 @@
 {
-  "name": "front-end",
-  "version": "0.1.0",
+  "name": "mavequest",
+  "version": "0.3.0-alpha",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

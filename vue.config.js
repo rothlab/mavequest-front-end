@@ -8,8 +8,8 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new Webpack.DefinePlugin({
-       'process.env.GIT_VERSION': JSON.stringify(gitRevisionPlugin.version()),
-       'process.env.GIT_COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash())
+        'process.env.GIT_VERSION': JSON.stringify(gitRevisionPlugin.version()),
+        'process.env.GIT_COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash())
       })
     ]
   }

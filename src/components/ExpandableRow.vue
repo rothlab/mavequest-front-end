@@ -38,7 +38,7 @@
 export default {
     name: "ExpandableRow",
     props: {
-        elements: []
+        elements: Array
     },
     data() {
         return {

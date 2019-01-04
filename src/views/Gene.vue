@@ -122,13 +122,13 @@
                         <template slot-scope="props">
                           <b-table-column field="id" label="ID" width="150">
                             <a
-                              :href='"http://www.genomernai.org/v17/singleExpPhenotypes/" + props.row.id'
+                              :href="'http://www.genomernai.org/v17/singleExpPhenotypes/' + props.row.id"
                             >{{props.row.id}}</a>
                           </b-table-column>
 
                           <b-table-column field="pubmed" label="Pubmed Source" width="150">
                             <a
-                              :href='"https://www.ncbi.nlm.nih.gov/pubmed/" + props.row.pubmed'
+                              :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
                             >{{props.row.pubmed}}</a>
                           </b-table-column>
 
@@ -146,7 +146,6 @@
                             <div v-if="props.row.cell_line.length > 5">
                               <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
                             </div>
-
                           </b-table-column>
                         </template>
 
@@ -165,7 +164,10 @@
                 <div class="content" v-if="hasAssay.genome_crispr">
                   <ul>
                     <li>GenomeCRISPR Records:</li>
-                    <div class="card has-table-padding in-paragraph in-list" v-if="hasAssay.genome_crispr">
+                    <div
+                      class="card has-table-padding in-paragraph in-list"
+                      v-if="hasAssay.genome_crispr"
+                    >
                       <b-table
                         :data="genomeCRISPRData"
                         paginated
@@ -177,17 +179,21 @@
                         <template slot-scope="props">
                           <b-table-column field="pubmed" label="Pubmed Source" width="150">
                             <a
-                              :href='"https://www.ncbi.nlm.nih.gov/pubmed/" + props.row.pubmed'
+                              :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
                             >{{props.row.pubmed}}</a>
                           </b-table-column>
 
-                          <b-table-column field="condition" label="Condition" width="200">
-                            {{props.row.condition}}
-                          </b-table-column>
+                          <b-table-column
+                            field="condition"
+                            label="Condition"
+                            width="200"
+                          >{{props.row.condition}}</b-table-column>
 
-                          <b-table-column field="screen" label="Screen" width="150">
-                            {{props.row.screen}}
-                          </b-table-column>
+                          <b-table-column
+                            field="screen"
+                            label="Screen"
+                            width="150"
+                          >{{props.row.screen}}</b-table-column>
 
                           <b-table-column field="cell_line" label="Cell Lines">
                             <!-- Less than five cell lines -->
@@ -270,11 +276,7 @@
                 <AssayTitle id="hgmd" title="The Human Gene Mutation Database (HGMD)"></AssayTitle>
                 <div class="content">
                   <ul>
-                    <li>HGMD Phenotype:
-                      <ol>
-                        <li v-for="item in hgmdPhenotype" :key="item">{{item}}</li>
-                      </ol>
-                    </li>
+                      <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList>
                   </ul>
                 </div>
               </div>
@@ -283,24 +285,22 @@
                 <AssayTitle id="cancer-census" title="Cancer Gene Census Database"></AssayTitle>
                 <div class="content">
                   <ul>
-                    <li>Somatic Phenotype:
-                      <ol>
-                        <li v-for="item in cancerGeneCensusPhenotype.somatic" :key="item">{{item}}</li>
-                      </ol>
-                    </li>
-                    <li>Germline Phenotype:
-                      <ol>
-                        <li v-for="item in cancerGeneCensusPhenotype.germline" :key="item">{{item}}</li>
-                      </ol>
-                    </li>
+                    <ExpandableList heading="Cancer Gene Census Phenotype" 
+                    :names="['Somatic', 'Germline']" 
+                    :elements="[cancerGeneCensusPhenotype.somatic, cancerGeneCensusPhenotype.germline]"
+                    ></ExpandableList>
                   </ul>
                 </div>
               </div>
 
               <div class="container is-fluid" v-if="hasPhenotype.orphanet">
                 <AssayTitle id="orphanet" title="Orphanet Database"></AssayTitle>
-                <div class="card in-paragraph">
-                  <b-table :data="orphanetData" :columns="orphanetColumns"></b-table>
+                <div class="content">
+                  <ul>
+                    <div class="card has-table-padding in-paragraph in-list">
+                      <b-table :data="orphanetData" :columns="orphanetColumns" narrowed></b-table>
+                    </div>
+                  </ul>
                 </div>
               </div>
 
@@ -326,7 +326,8 @@
 
 <script>
 import Header from "@/components/Header.vue";
-import ExpandableRow from "@/components/ExpandableRow.vue"
+import ExpandableRow from "@/components/ExpandableRow.vue";
+import ExpandableList from "@/components/ExpandableList.vue";
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
@@ -346,6 +347,7 @@ export default {
   components: {
     Header,
     ExpandableRow,
+    ExpandableList,
     AssayTitle
   },
   created() {
@@ -586,5 +588,9 @@ export default {
 }
 .cell-line {
   margin-right: 5px;
+}
+/* Overwrite tabs' margin mis position*/
+.content li + li {
+  margin: 0 !important;
 }
 </style>

@@ -11,6 +11,7 @@ import 'bulma-divider'
 import VueObserveVisibility from 'vue-observe-visibility'
 import BackToTop from 'vue-backtotop'
 import VueResource from 'vue-resource'
+import VueCytoscape from 'vue-cytoscape'
 
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
@@ -29,7 +30,8 @@ Vue.use(Buefy, {
 })
 .use(VueObserveVisibility)
 .use(BackToTop)
-.use(VueResource);
+.use(VueResource)
+.use(VueCytoscape);
 
 new Vue({
   router,

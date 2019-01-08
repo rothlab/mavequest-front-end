@@ -91,10 +91,16 @@
                 <AssayTitle id="yeast-comp" title="Yeast Complementation Assay"></AssayTitle>
                 <div class="content">
                   <ul>
-                    <li>Essentiality: {{yeastEssentiality}}</li>
-                    <li>Yeast Synthetic Lethality:</li>
-                    <div class="card in-list">
-                      <b-table :data="yeastHomologData" :columns="yeastHomologColumns"></b-table>
+                    <b-taglist attached>
+                      <b-tag size="is-medium" type="is-dark">Essentiality</b-tag>
+                      <b-tag size="is-medium" type="is-info">
+                        <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
+                        <b-icon icon="fas fa-times" v-else></b-icon>
+                      </b-tag>
+                    </b-taglist>
+                    <li v-if="yeastHomologData">Yeast Synthetic Lethality:</li>
+                    <div class="card in-list has-table-padding" v-if="yeastHomologData">
+                      <b-table :data="yeastHomologData" :columns="yeastHomologColumns" narrowed></b-table>
                     </div>
                   </ul>
                 </div>
@@ -104,11 +110,11 @@
                 <AssayTitle id="human-comp" title="Human Complementation Assay"></AssayTitle>
                 <div class="content" v-if="hasAssay.genome_rnai">
                   <ul>
-                    <li>GenomeRNAi Phenotype:
-                      <ol>
-                        <li v-for="item in genomeRNAiPhenotype" :key="item">{{item}}</li>
-                      </ol>
-                    </li>
+                    <ExpandableList
+                      class="in-paragraph in-list"
+                      heading="GenomeRNAi Phenotype"
+                      :elements="genomeRNAiPhenotype"
+                    ></ExpandableList>
                     <li>GenomeRNAi Records:</li>
                     <div class="card has-table-padding in-paragraph in-list">
                       <b-table
@@ -227,9 +233,14 @@
                 <div class="content" v-if="hasAssay.tko">
                   <ul>
                     <li>TKO Cell Lines:
-                      <ol>
-                        <li v-for="item in tkoCellLine" :key="item">{{item.toUpperCase()}}</li>
-                      </ol>
+                      <b-taglist class="in-paragraph in-list">
+                        <b-tag
+                          size="is-medium"
+                          type="is-info"
+                          v-for="item in tkoCellLine"
+                          :key="item"
+                        >{{item.toUpperCase()}}</b-tag>
+                      </b-taglist>
                     </li>
                   </ul>
                 </div>
@@ -239,19 +250,10 @@
                 <AssayTitle id="y2h" title="Yeast Two-Hybrid Assay"></AssayTitle>
                 <div class="content">
                   <ul>
-                    <li>Interaction Partners:
-                      <ol>
-                        <li v-for="item in y2hInteractors" :key="item">{{item}}</li>
-                      </ol>
-                    </li>
+                    <!-- <ExpandableList heading="Y2H Interaction Partners" :elements="y2hInteractors"></ExpandableList> -->
+                    <cytoscape :config="cytoscapeConfig" style="width: 100%; height: 500px"/>
                   </ul>
                 </div>
-                <figure class="image cytoscape">
-                  <img
-                    src="https://cytoscape.org/images/logo/cy3logoOrange.svg"
-                    alt="Placeholder image"
-                  >
-                </figure>
               </div>
             </section>
 
@@ -263,11 +265,7 @@
                 <AssayTitle id="omim" title="Online Mendelian Inheritance in Man (OMIM) Database"></AssayTitle>
                 <div class="content">
                   <ul>
-                    <li>OMIM Phenotype:
-                      <ol>
-                        <li v-for="item in omimPhenotype" :key="item">{{item}}</li>
-                      </ol>
-                    </li>
+                    <ExpandableList heading="OMIM Phenotype" :elements="omimPhenotype"></ExpandableList>
                   </ul>
                 </div>
               </div>
@@ -276,7 +274,7 @@
                 <AssayTitle id="hgmd" title="The Human Gene Mutation Database (HGMD)"></AssayTitle>
                 <div class="content">
                   <ul>
-                      <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList>
+                    <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList>
                   </ul>
                 </div>
               </div>
@@ -285,9 +283,10 @@
                 <AssayTitle id="cancer-census" title="Cancer Gene Census Database"></AssayTitle>
                 <div class="content">
                   <ul>
-                    <ExpandableList heading="Cancer Gene Census Phenotype" 
-                    :names="['Somatic', 'Germline']" 
-                    :elements="[cancerGeneCensusPhenotype.somatic, cancerGeneCensusPhenotype.germline]"
+                    <ExpandableList
+                      heading="Cancer Gene Census Phenotype"
+                      :names="['Somatic', 'Germline']"
+                      :elements="[cancerGeneCensusPhenotype.somatic, cancerGeneCensusPhenotype.germline]"
                     ></ExpandableList>
                   </ul>
                 </div>
@@ -328,6 +327,9 @@
 import Header from "@/components/Header.vue";
 import ExpandableRow from "@/components/ExpandableRow.vue";
 import ExpandableList from "@/components/ExpandableList.vue";
+// import jquery from 'jquery';
+// import contextMenus from 'cytoscape-context-menus';
+// import 'cytoscape-context-menus/cytoscape-context-menus.css'
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
@@ -493,6 +495,98 @@ export default {
         }
       )
       .then(() => {
+        // Initalize Cytoscape canvas
+        if (this.hasAssay.y2h) {
+          // Declare cytoscape config
+          let cytoscapeConfig = {
+            elements: [
+  // nodes
+  { data: { id: 'a' } },
+  { data: { id: 'b' } },
+  { data: { id: 'c' } },
+  { data: { id: 'd' } },
+  { data: { id: 'e' } },
+  { data: { id: 'f' } },
+  // edges
+  {
+    data: {
+      id: 'ab',
+      source: 'a',
+      target: 'b'
+    }
+  },
+  {
+    data: {
+      id: 'cd',
+      source: 'c',
+      target: 'd'
+    }
+  },
+  {
+    data: {
+      id: 'ef',
+      source: 'e',
+      target: 'f'
+    }
+  },
+  {
+    data: {
+      id: 'ac',
+      source: 'a',
+      target: 'd'
+    }
+  },
+  {
+    data: {
+      id: 'be',
+      source: 'b',
+      target: 'e'
+    }
+  }
+],
+            style: [
+              {
+                selector: "node",
+                style: {
+                  "background-color": "#666",
+                  label: "data(id)"
+                }
+              },
+              {
+                selector: "edge",
+                style: {
+                  width: 3,
+                  "line-color": "#ccc",
+                  "target-arrow-color": "#ccc",
+                  "target-arrow-shape": "triangle"
+                }
+              }
+            ],
+            layout: {
+              name: "grid"
+            }
+          };
+
+          // Push nodes and edges
+          // this.y2hInteractors.forEach(gene => {
+          //   cytoscapeConfig.elements.push({
+          //     data: {
+          //       id: gene
+          //     }
+          //   });
+          //   cytoscapeConfig.elements.push({
+          //     data: {
+          //       id: gene + this.geneName,
+          //       source: gene,
+          //       target: this.geneName
+          //     }
+          //   });
+          // });
+
+          this.cytoscapeConfig = cytoscapeConfig;
+        }
+      })
+      .then(() => {
         // Close loading animation
         loadingComponent.close();
       });
@@ -507,6 +601,7 @@ export default {
       ensemblID: "",
       omimID: "",
       alias: [],
+      cytoscapeConfig: {},
       hasAssay: {
         any: false,
         yeast_comp: false,
@@ -569,7 +664,11 @@ export default {
     visibilityChanged(visible) {
       // Position the table of contents absolutely so that it will stay on the screen
       this.isFloat = !visible;
-    }
+    },
+    // preConfig (cytoscape) {
+    //   // it can be used both ways
+    //   contextMenus(cytoscape, jquery);
+    // }
   }
 };
 </script>
@@ -588,9 +687,5 @@ export default {
 }
 .cell-line {
   margin-right: 5px;
-}
-/* Overwrite tabs' margin mis position*/
-.content li + li {
-  margin: 0 !important;
 }
 </style>

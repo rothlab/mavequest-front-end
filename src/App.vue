@@ -55,6 +55,9 @@ $navbar-breakpoint: 0px;
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
+
+// Import cytoscape styles
+@import "~vue-cytoscape/dist/vue-cytoscape.css";
 </style>
 
 <style>
@@ -75,5 +78,9 @@ $navbar-breakpoint: 0px;
 }
 .b-table .level {
   padding-bottom: 0rem !important;
+}
+/* Overwrite tabs' margin mis position*/
+.content li + li {
+  margin: 0 !important;
 }
 </style>

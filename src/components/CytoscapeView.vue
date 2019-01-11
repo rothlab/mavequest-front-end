@@ -1,9 +1,5 @@
 <template>
   <div class="card">
-    <div class="card-header">
-      <p class="card-header-title is-marginless">Cytoscape.js Viewer</p>
-    </div>
-
     <div class="card-content is-paddingless">
       <div class="content cytoscape">
         <cytoscape :config="config" :preConfig="preConfig"/>
@@ -142,7 +138,7 @@ export default {
 
 <style>
 .cytoscape {
-  width: inherit;
+  max-width: 500px;
   height: 500px;
 }
 .cy-panzoom-zoom-button > .icon {

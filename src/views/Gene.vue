@@ -251,7 +251,7 @@
                 <div class="content">
                   <ul>
                     <!-- <ExpandableList heading="Y2H Interaction Partners" :elements="y2hInteractors"></ExpandableList> -->
-                    <cytoscape :config="cytoscapeConfig" style="width: 100%; height: 500px"/>
+                    <CytoscapeView />
                   </ul>
                 </div>
               </div>
@@ -327,9 +327,7 @@
 import Header from "@/components/Header.vue";
 import ExpandableRow from "@/components/ExpandableRow.vue";
 import ExpandableList from "@/components/ExpandableList.vue";
-// import jquery from 'jquery';
-// import contextMenus from 'cytoscape-context-menus';
-// import 'cytoscape-context-menus/cytoscape-context-menus.css'
+import CytoscapeView from "@/components/CytoscapeView.vue"
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
@@ -350,7 +348,8 @@ export default {
     Header,
     ExpandableRow,
     ExpandableList,
-    AssayTitle
+    AssayTitle,
+    CytoscapeView
   },
   created() {
     this.geneName = this.$route.params.name.toUpperCase();
@@ -495,98 +494,6 @@ export default {
         }
       )
       .then(() => {
-        // Initalize Cytoscape canvas
-        if (this.hasAssay.y2h) {
-          // Declare cytoscape config
-          let cytoscapeConfig = {
-            elements: [
-  // nodes
-  { data: { id: 'a' } },
-  { data: { id: 'b' } },
-  { data: { id: 'c' } },
-  { data: { id: 'd' } },
-  { data: { id: 'e' } },
-  { data: { id: 'f' } },
-  // edges
-  {
-    data: {
-      id: 'ab',
-      source: 'a',
-      target: 'b'
-    }
-  },
-  {
-    data: {
-      id: 'cd',
-      source: 'c',
-      target: 'd'
-    }
-  },
-  {
-    data: {
-      id: 'ef',
-      source: 'e',
-      target: 'f'
-    }
-  },
-  {
-    data: {
-      id: 'ac',
-      source: 'a',
-      target: 'd'
-    }
-  },
-  {
-    data: {
-      id: 'be',
-      source: 'b',
-      target: 'e'
-    }
-  }
-],
-            style: [
-              {
-                selector: "node",
-                style: {
-                  "background-color": "#666",
-                  label: "data(id)"
-                }
-              },
-              {
-                selector: "edge",
-                style: {
-                  width: 3,
-                  "line-color": "#ccc",
-                  "target-arrow-color": "#ccc",
-                  "target-arrow-shape": "triangle"
-                }
-              }
-            ],
-            layout: {
-              name: "grid"
-            }
-          };
-
-          // Push nodes and edges
-          // this.y2hInteractors.forEach(gene => {
-          //   cytoscapeConfig.elements.push({
-          //     data: {
-          //       id: gene
-          //     }
-          //   });
-          //   cytoscapeConfig.elements.push({
-          //     data: {
-          //       id: gene + this.geneName,
-          //       source: gene,
-          //       target: this.geneName
-          //     }
-          //   });
-          // });
-
-          this.cytoscapeConfig = cytoscapeConfig;
-        }
-      })
-      .then(() => {
         // Close loading animation
         loadingComponent.close();
       });
@@ -601,7 +508,6 @@ export default {
       ensemblID: "",
       omimID: "",
       alias: [],
-      cytoscapeConfig: {},
       hasAssay: {
         any: false,
         yeast_comp: false,
@@ -664,11 +570,7 @@ export default {
     visibilityChanged(visible) {
       // Position the table of contents absolutely so that it will stay on the screen
       this.isFloat = !visible;
-    },
-    // preConfig (cytoscape) {
-    //   // it can be used both ways
-    //   contextMenus(cytoscape, jquery);
-    // }
+    }
   }
 };
 </script>

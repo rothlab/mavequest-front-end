@@ -13,7 +13,7 @@
         </div>
       </div>
       <b-tabs @change="changeActive" v-if="isMultiPages" class="panel-block is-marginless is-vcentered block" position="is-centered" size="is-small" expanded>
-        <b-tab-item v-for="name in names" v-bind:key="name" :label="name"></b-tab-item>
+        <b-tab-item v-for="name in tabNames" v-bind:key="name" :label="name"></b-tab-item>
       </b-tabs>
       <div class="is-scrollable">
         <a
@@ -38,6 +38,7 @@ export default {
   data() {
     return {
       filter: "",
+      tabNames: [],
       isMultiPages: false,
       currentElements: []
     };
@@ -49,6 +50,9 @@ export default {
   },
   mounted() {
     if (this.names) {
+      // Filter out undefined tabs
+      this.tabNames = [this.names[this.elements.map(Boolean).indexOf(true)]];
+
       this.isMultiPages = true;
       this.changeActive(0);
     } else {

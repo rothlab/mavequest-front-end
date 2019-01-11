@@ -250,8 +250,7 @@
                 <AssayTitle id="y2h" title="Yeast Two-Hybrid Assay"></AssayTitle>
                 <div class="content">
                   <ul>
-                    <!-- <ExpandableList heading="Y2H Interaction Partners" :elements="y2hInteractors"></ExpandableList> -->
-                    <CytoscapeView />
+                    <CytoscapeView :head="geneName" :elements="y2hInteractors"/>
                   </ul>
                 </div>
               </div>
@@ -327,7 +326,7 @@
 import Header from "@/components/Header.vue";
 import ExpandableRow from "@/components/ExpandableRow.vue";
 import ExpandableList from "@/components/ExpandableList.vue";
-import CytoscapeView from "@/components/CytoscapeView.vue"
+import CytoscapeView from "@/components/CytoscapeView.vue";
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {

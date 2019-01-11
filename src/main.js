@@ -12,6 +12,7 @@ import VueObserveVisibility from 'vue-observe-visibility'
 import BackToTop from 'vue-backtotop'
 import VueResource from 'vue-resource'
 import VueCytoscape from 'vue-cytoscape'
+import VueResize from 'vue-resize'
 
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
@@ -31,7 +32,8 @@ Vue.use(Buefy, {
 .use(VueObserveVisibility)
 .use(BackToTop)
 .use(VueResource)
-.use(VueCytoscape);
+.use(VueCytoscape)
+.use(VueResize);
 
 new Vue({
   router,

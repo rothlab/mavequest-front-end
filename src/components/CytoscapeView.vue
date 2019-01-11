@@ -1,91 +1,160 @@
 <template>
-  <div id="holder">
-    <cytoscape :key="'cyKey()'" :config="config" :preConfig="preConfig" :afterCreated="afterCreated"/>
+  <div class="card">
+    <div class="card-header">
+      <p class="card-header-title is-marginless">Cytoscape.js Viewer</p>
+    </div>
+
+    <div class="card-content is-paddingless">
+      <div class="content cytoscape">
+        <cytoscape :config="config" :preConfig="preConfig"/>
+        <b-loading :active.sync="isLoading" :is-full-page="false" :can-cancel="true"></b-loading>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import config from '@/assets/dummy-cytoscape-config'
-import CyObj from '@/assets/cy-object'
-// import jquery from 'jquery'
-// import contextMenus from 'cytoscape-context-menus'
-import cxtmenu from 'cytoscape-cxtmenu'
+import Panzoom from "cytoscape-panzoom";
+import "cytoscape-panzoom/cytoscape.js-panzoom.css";
 
 export default {
-  name: 'CytoscopeView',
-  data () {
-    return {
-      config: config,
-      i: 0
+  name: "CytoscapeView",
+  props: {
+    head: {
+      type: String,
+      required: true
+    },
+    elements: {
+      type: Array,
+      required: true
     }
   },
-  methods: {
-    preConfig (cytoscape) {
-      // contextMenus(cytoscape, jquery)
-      // cytoscape.use(cxtmenu)
-    },
-    afterCreated (cy) {
-    //   let menu = cy.cxtmenu({
-    //     selector: 'core',
-    //     commands: [
-    //       {
-    //         content: 'bg1',
-    //         select () {
-    //         }
-    //       },
-    //       {
-    //         content: 'bg2',
-    //         select () {
-    //         }
-    //       }
-    //     ]
-    //   })
-      // demo your core ext
-      /* cy.contextMenus({
-        menuItems: [
+  data() {
+    return {
+      config: {
+        elements: [],
+        style: [
           {
-            id: 'remove',
-            content: 'remove',
-            tooltipText: 'remove',
-            image: {src: 'remove.svg', width: 12, height: 12, x: 6, y: 4},
-            selector: 'node, edge',
-            onClickFunction: function (event) {
-              var target = event.target || event.cyTarget
-              target.remove()
-            },
-            hasTrailingDivider: true
+            selector: "node",
+            style: {
+              "background-color": "#3273DC",
+              label: "data(id)"
+            }
           },
           {
-            id: 'hide',
-            content: 'hide',
-            tooltipText: 'hide',
-            selector: '*',
-            onClickFunction: function (event) {
-              var target = event.target || event.cyTarget
-              target.hide()
-            },
-            disabled: false
+            selector: ".head",
+            style: {
+              "background-color": "#FF3860",
+              label: "data(id)"
+            }
+          },
+          {
+            selector: "edge",
+            style: {
+              width: 3,
+              "line-color": "#ccc",
+              "target-arrow-color": "#ccc",
+              "target-arrow-shape": "triangle"
+            }
           }
         ]
-      }) */
+      },
+      isLoading: false,
+      cy: Object
+    };
+  },
+  mounted() {
+    this.cyUpdate();
+  },
+  methods: {
+    parseElement() {
+      let nodes = [];
+      let edges = [];
+
+      // Add head node
+      nodes.push({
+        data: { id: this.head },
+        classes: "head"
+      });
+
+      // Add other nodes and edges
+      this.elements.forEach(node => {
+        nodes.push({
+          data: { id: node }
+        });
+        edges.push({
+          data: { id: this.head + node, source: this.head, target: node }
+        });
+      });
+
+      return nodes.concat(edges);
     },
-    cyKey () {
-      const that = this
-      CyObj.reset()
-      CyObj.instance.then(cy => {
-        cy.on('tap', event => {
-          that.i++
+    preConfig(cytoscape) {
+      // Register zoom panel
+      if (typeof cytoscape("core", "panzoom") !== "function") {
+        Panzoom(cytoscape);
+      }
+    },
+    cyUpdate() {
+      this.isLoading = true;
+
+      // Update the cytoscape instance
+      this.$cytoscape.instance
+        .then(cy => {
+          // Remove all elements
+          cy.remove(cy.elements());
+
+          // Add the panzoom control
+          cy.panzoom({
+            sliderHandleIcon: "fas fa-minus",
+            zoomInIcon: "fas fa-plus",
+            zoomOutIcon: "fas fa-minus",
+            resetIcon: "fas fa-expand"
+          });
+
+          // Add nodes and edges
+          cy.add(this.parseElement());
+
+          // Draw the graph and fit to the page
+          cy.layout({
+            name: "concentric",
+            padding: 80,
+            spacingFactor: 2,
+            concentric: node => {
+              return node.degree();
+            },
+            levelWidth: nodes => {
+              // the letiation of concentric values in each level
+              return nodes.maxDegree() / 4;
+            }
+          }).run();
+          cy.reset();
+          cy.center();
+          cy.fit(80);
         })
-      })
-      return 'cy' + this.i
+        .then(() => {
+          this.isLoading = false;
+        });
     }
   }
-}
+};
 </script>
 
 <style>
-#holder {
-  width: 80%;
-  height: 400px;
+.cytoscape {
+  width: inherit;
+  height: 500px;
+}
+.cy-panzoom-zoom-button > .icon {
+  height: 0 !important;
+  width: 0 !important;
+}
+.cy-panzoom-slider-handle > .icon {
+  height: 0 !important;
+  width: 0.5rem !important;
+}
+.cy-panzoom {
+  margin: 1rem;
+  z-index: 9 !important;
 }
 </style>

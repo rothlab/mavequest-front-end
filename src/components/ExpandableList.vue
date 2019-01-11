@@ -1,7 +1,7 @@
 <template>
   <div class="expandable-list">
     <nav class="panel">
-      <div class="level panel-heading is-marginless">
+      <div class="level panel-heading is-marginless is-hidden-mobile">
         <div class="level-left">{{heading}}</div>
         <div class="level-right">
           <b-field>
@@ -12,7 +12,24 @@
           </b-field>
         </div>
       </div>
-      <b-tabs @change="changeActive" v-if="isMultiPages" class="panel-block is-marginless is-vcentered block" position="is-centered" size="is-small" expanded>
+
+      <div class="panel-heading is-marginless is-hidden-tablet">
+        <b-field>
+          <b-input placeholder="Filter..." type="search" icon="fas fa-search" v-model="filter" class="is-fullwidth"></b-input>
+          <p class="control">
+            <button class="button" @click="filter = ''">Reset</button>
+          </p>
+        </b-field>
+      </div>
+
+      <b-tabs
+        @change="changeActive"
+        v-if="isMultiPages"
+        class="panel-block is-marginless is-vcentered block"
+        position="is-centered"
+        size="is-small"
+        expanded
+      >
         <b-tab-item v-for="name in tabNames" v-bind:key="name" :label="name"></b-tab-item>
       </b-tabs>
       <div class="is-scrollable">

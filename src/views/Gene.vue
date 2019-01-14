@@ -17,7 +17,7 @@
           <!-- Table of Contents -->
           <div class="column is-3 is-hidden-mobile">
             <aside class="menu" :class="{float: isFloat}">
-              <p class="menu-label" v-if="hasAssay.any">Assay</p>
+              <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
               <ul class="menu-list" v-if="hasAssay.any">
                 <li v-if="hasAssay.yeast_comp">
                   <a href="#yeast-comp">Yeast Complementation</a>
@@ -56,7 +56,7 @@
               <div class="card gene-basic has-background-light">
                 <div class="columns">
                   <div class="column is-3 is-flex is-vcentered">
-                    <h1 class="title gene-name has-text-centered">{{geneName}}</h1>
+                    <h1 class="title is-fullwidth has-text-centered">{{geneName}}</h1>
                   </div>
 
                   <div class="is-divider-vertical is-paddingless is-marginless is-hidden-mobile"></div>
@@ -64,61 +64,59 @@
                   <!-- Gene info card -->
                   <div class="column gene-summary">
                     <p
-                      class="is-capitalized is-italic"
-                    >{{description}} (Alias: {{alias.join(", ")}})</p>
-
-                    <br>
+                      class="is-capitalized is-italic" style="margin-bottom:0.5rem"
+                    >{{description}} <span v-if="alias.length > 1">(Alias: {{alias.join(", ")}})</span></p>
 
                     <b-field grouped group-multiline>
                       <div class="control">
-                      <b-taglist attached>
-                        <b-tag type="is-dark" size="is-medium">Entrez</b-tag>
-                        <b-tag type="is-info" size="is-medium">
-                          <a
-                            v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
-                            target="_blank"
-                            class="has-text-white"
-                          >
-                            {{entrezID}}
-                            &nbsp;
-                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                          </a>
-                        </b-tag>
-                      </b-taglist>
+                        <b-taglist attached>
+                          <b-tag type="is-dark" size="is-medium">Entrez</b-tag>
+                          <b-tag type="is-info" size="is-medium">
+                            <a
+                              v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
+                              target="_blank"
+                              class="has-text-white"
+                            >
+                              {{entrezID}}
+                              &nbsp;
+                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            </a>
+                          </b-tag>
+                        </b-taglist>
                       </div>
 
                       <div class="control">
-                      <b-taglist attached>
-                        <b-tag type="is-dark" size="is-medium">Ensembl</b-tag>
-                        <b-tag type="is-primary" size="is-medium">
-                          <a
-                            v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
-                            target="_blank"
-                            class="has-text-white"
-                          >
-                            {{ensemblID}}
-                            &nbsp;
-                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                          </a>
-                        </b-tag>
-                      </b-taglist>
+                        <b-taglist attached>
+                          <b-tag type="is-dark" size="is-medium">Ensembl</b-tag>
+                          <b-tag type="is-primary" size="is-medium">
+                            <a
+                              v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
+                              target="_blank"
+                              class="has-text-white"
+                            >
+                              {{ensemblID}}
+                              &nbsp;
+                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            </a>
+                          </b-tag>
+                        </b-taglist>
                       </div>
 
                       <div class="control">
-                      <b-taglist attached>
-                        <b-tag type="is-dark" size="is-medium">OMIM</b-tag>
-                        <b-tag type="is-link" size="is-medium">
-                          <a
-                            v-bind:href="'https://omim.org/entry/' + omimID"
-                            target="_blank"
-                            class="has-text-white"
-                          >
-                            {{omimID}}
-                            &nbsp;
-                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                          </a>
-                        </b-tag>
-                      </b-taglist>
+                        <b-taglist attached>
+                          <b-tag type="is-dark" size="is-medium">OMIM</b-tag>
+                          <b-tag type="is-link" size="is-medium">
+                            <a
+                              v-bind:href="'https://omim.org/entry/' + omimID"
+                              target="_blank"
+                              class="has-text-white"
+                            >
+                              {{omimID}}
+                              &nbsp;
+                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            </a>
+                          </b-tag>
+                        </b-taglist>
                       </div>
                     </b-field>
                   </div>
@@ -127,172 +125,161 @@
             </section>
 
             <section class="section is-paddingless" v-if="hasAssay.any">
-              <h1 class="title">Assay</h1>
-              <div class="container is-fluid" v-if="hasAssay.yeast_comp">
-                <AssayTitle id="yeast-comp" title="Yeast Complementation Assay"></AssayTitle>
+              <h1 class="title">Potential Assay</h1>
+              <div v-if="hasAssay.yeast_comp">
+                <AssayTitle id="yeast-comp" title="Yeast Complementation Assay" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
-                  <ul>
-                    <b-taglist attached>
-                      <b-tag size="is-medium" type="is-dark">Essentiality</b-tag>
-                      <b-tag size="is-medium" type="is-info">
-                        <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
-                        <b-icon icon="fas fa-times" v-else></b-icon>
-                      </b-tag>
-                    </b-taglist>
-                    <li v-if="yeastHomologData">Yeast Synthetic Lethality:</li>
-                    <div class="card in-list has-table-padding" v-if="yeastHomologData">
-                      <b-table :data="yeastHomologData" :columns="yeastHomologColumns" narrowed></b-table>
-                    </div>
-                  </ul>
+                  <b-taglist attached>
+                    <b-tag size="is-medium" type="is-dark">Has Essential Yeast Paralogs</b-tag>
+                    <b-tag size="is-medium" type="is-info">
+                      <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
+                      <b-icon icon="fas fa-times" v-else></b-icon>
+                    </b-tag>
+                  </b-taglist>
+                  <li v-if="yeastHomologData">Yeast Synthetic Lethality:</li>
+                  <div class="card in-list has-table-padding" v-if="yeastHomologData">
+                    <b-table :data="yeastHomologData" :columns="yeastHomologColumns" narrowed></b-table>
+                  </div>
                 </div>
               </div>
 
-              <div class="container is-fluid" v-if="hasAssay.human_comp">
-                <AssayTitle id="human-comp" title="Human Complementation Assay"></AssayTitle>
+              <div v-if="hasAssay.human_comp">
+                <AssayTitle id="human-comp" title="Human Complementation Assay" icon="fas fa-bars"></AssayTitle>
                 <div class="content" v-if="hasAssay.genome_rnai">
-                  <ul>
-                    <ExpandableList
-                      class="in-paragraph in-list"
-                      heading="GenomeRNAi Phenotype"
-                      :elements="genomeRNAiPhenotype"
-                    ></ExpandableList>
-                    <li>GenomeRNAi Records:</li>
-                    <div class="card has-table-padding in-paragraph in-list">
-                      <b-table
-                        :data="genomeRNAiData"
-                        paginated
-                        per-page="10"
-                        pagination-simple
-                        hoverable
-                        narrowed
-                      >
-                        <template slot-scope="props">
-                          <b-table-column field="id" label="ID" width="150">
-                            <a
-                              :href="'http://www.genomernai.org/v17/singleExpPhenotypes/' + props.row.id"
-                            >{{props.row.id}}</a>
-                          </b-table-column>
+                  <ExpandableList
+                    class="in-paragraph in-list"
+                    heading="GenomeRNAi Phenotype"
+                    :elements="genomeRNAiPhenotype"
+                  ></ExpandableList>
+                  <h4 class="title">GenomeRNAi Records</h4>
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table
+                      :data="genomeRNAiData"
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                      narrowed
+                    >
+                      <template slot-scope="props">
+                        <b-table-column field="id" label="ID" width="150">
+                          <a
+                            :href="'http://www.genomernai.org/v17/singleExpPhenotypes/' + props.row.id"
+                          >{{props.row.id}}</a>
+                        </b-table-column>
 
-                          <b-table-column field="pubmed" label="Pubmed Source" width="150">
-                            <a
-                              :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
-                            >{{props.row.pubmed}}</a>
-                          </b-table-column>
+                        <b-table-column field="pubmed" label="Pubmed Source" width="150">
+                          <a
+                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
+                          >{{props.row.pubmed}}</a>
+                        </b-table-column>
 
-                          <b-table-column field="cell_line" label="Cell Lines">
-                            <!-- Less than five cell lines -->
-                            <div v-if="props.row.cell_line.length <= 5">
-                              <b-tag
-                                class="is-light cell-line"
-                                v-for="cell in props.row.cell_line"
-                                v-bind:key="cell"
-                              >{{cell}}</b-tag>
-                            </div>
+                        <b-table-column field="cell_line" label="Cell Lines">
+                          <!-- Less than five cell lines -->
+                          <div v-if="props.row.cell_line.length <= 5">
+                            <b-tag
+                              class="is-light cell-line"
+                              v-for="cell in props.row.cell_line"
+                              v-bind:key="cell"
+                            >{{cell}}</b-tag>
+                          </div>
 
-                            <!-- More than five cell lines -->
-                            <div v-if="props.row.cell_line.length > 5">
-                              <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
-                            </div>
-                          </b-table-column>
-                        </template>
+                          <!-- More than five cell lines -->
+                          <div v-if="props.row.cell_line.length > 5">
+                            <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
+                          </div>
+                        </b-table-column>
+                      </template>
 
-                        <template slot="detail" slot-scope="props">
-                          <b-tag
-                            class="is-light is-size-6 cell-line"
-                            v-for="cell in props.row.cell_line"
-                            v-bind:key="cell"
-                          >{{cell}}</b-tag>
-                        </template>
-                      </b-table>
-                    </div>
-                  </ul>
+                      <template slot="detail" slot-scope="props">
+                        <b-tag
+                          class="is-light is-size-6 cell-line"
+                          v-for="cell in props.row.cell_line"
+                          v-bind:key="cell"
+                        >{{cell}}</b-tag>
+                      </template>
+                    </b-table>
+                  </div>
                 </div>
 
                 <div class="content" v-if="hasAssay.genome_crispr">
-                  <ul>
-                    <li>GenomeCRISPR Records:</li>
-                    <div
-                      class="card has-table-padding in-paragraph in-list"
-                      v-if="hasAssay.genome_crispr"
+                  <h4 class="title">GenomeCRISPR Records</h4>
+                  <div
+                    class="card has-table-padding in-paragraph in-list"
+                    v-if="hasAssay.genome_crispr"
+                  >
+                    <b-table
+                      :data="genomeCRISPRData"
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                      narrowed
                     >
-                      <b-table
-                        :data="genomeCRISPRData"
-                        paginated
-                        per-page="10"
-                        pagination-simple
-                        hoverable
-                        narrowed
-                      >
-                        <template slot-scope="props">
-                          <b-table-column field="pubmed" label="Pubmed Source" width="150">
-                            <a
-                              :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
-                            >{{props.row.pubmed}}</a>
-                          </b-table-column>
+                      <template slot-scope="props">
+                        <b-table-column field="pubmed" label="Pubmed Source" width="150">
+                          <a
+                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
+                          >{{props.row.pubmed}}</a>
+                        </b-table-column>
 
-                          <b-table-column
-                            field="condition"
-                            label="Condition"
-                            width="200"
-                          >{{props.row.condition}}</b-table-column>
+                        <b-table-column
+                          field="condition"
+                          label="Condition"
+                          width="200"
+                        >{{props.row.condition}}</b-table-column>
 
-                          <b-table-column
-                            field="screen"
-                            label="Screen"
-                            width="150"
-                          >{{props.row.screen}}</b-table-column>
+                        <b-table-column
+                          field="screen"
+                          label="Screen"
+                          width="150"
+                        >{{props.row.screen}}</b-table-column>
 
-                          <b-table-column field="cell_line" label="Cell Lines">
-                            <!-- Less than five cell lines -->
-                            <div v-if="props.row.cell_line.length <= 5">
-                              <b-tag
-                                class="is-light cell-line"
-                                v-for="cell in props.row.cell_line"
-                                v-bind:key="cell"
-                              >{{cell}}</b-tag>
-                            </div>
+                        <b-table-column field="cell_line" label="Cell Lines">
+                          <!-- Less than five cell lines -->
+                          <div v-if="props.row.cell_line.length <= 5">
+                            <b-tag
+                              class="is-light cell-line"
+                              v-for="cell in props.row.cell_line"
+                              v-bind:key="cell"
+                            >{{cell}}</b-tag>
+                          </div>
 
-                            <!-- More than five cell lines -->
-                            <div v-if="props.row.cell_line.length > 5">
-                              <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
-                            </div>
-                          </b-table-column>
-                        </template>
+                          <!-- More than five cell lines -->
+                          <div v-if="props.row.cell_line.length > 5">
+                            <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
+                          </div>
+                        </b-table-column>
+                      </template>
 
-                        <template slot="detail" slot-scope="props">
-                          <b-tag
-                            class="is-light is-size-6 cell-line"
-                            v-for="cell in props.row.cell_line"
-                            v-bind:key="cell"
-                          >{{cell}}</b-tag>
-                        </template>
-                      </b-table>
-                    </div>
-                  </ul>
+                      <template slot="detail" slot-scope="props">
+                        <b-tag
+                          class="is-light is-size-6 cell-line"
+                          v-for="cell in props.row.cell_line"
+                          v-bind:key="cell"
+                        >{{cell}}</b-tag>
+                      </template>
+                    </b-table>
+                  </div>
                 </div>
 
                 <div class="content" v-if="hasAssay.tko">
-                  <ul>
-                    <li>TKO Cell Lines:
-                      <b-taglist class="in-paragraph in-list">
-                        <b-tag
-                          size="is-medium"
-                          type="is-info"
-                          v-for="item in tkoCellLine"
-                          :key="item"
-                        >{{item.toUpperCase()}}</b-tag>
-                      </b-taglist>
-                    </li>
-                  </ul>
+                  <h4 class="title">TKO Cell Lines</h4>
+                    <b-taglist class="in-paragraph in-list">
+                      <b-tag
+                        size="is-medium"
+                        type="is-info"
+                        v-for="item in tkoCellLine"
+                        :key="item"
+                      >{{item.toUpperCase()}}</b-tag>
+                    </b-taglist>
                 </div>
               </div>
 
-              <div class="container is-fluid" v-if="hasAssay.y2h">
-                <AssayTitle id="y2h" title="Yeast Two-Hybrid Assay"></AssayTitle>
+              <div v-if="hasAssay.y2h">
+                <AssayTitle id="y2h" title="Yeast Two-Hybrid Assay" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
-                  <ul>
-                    <CytoscapeView :head="geneName" :elements="y2hInteractors"/>
-                  </ul>
+                  <CytoscapeView :head="geneName" :elements="y2hInteractors"/>
                 </div>
               </div>
             </section>
@@ -301,58 +288,60 @@
 
             <section class="section is-paddingless" v-if="hasPhenotype.any">
               <h1 class="title">Diseaes Phenotype</h1>
-              <div class="container is-fluid" v-if="hasPhenotype.omim">
-                <AssayTitle id="omim" title="Online Mendelian Inheritance in Man (OMIM) Database"></AssayTitle>
+              <div v-if="hasPhenotype.omim">
+                <AssayTitle
+                  id="omim"
+                  title="Online Mendelian Inheritance in Man (OMIM) Database"
+                  icon="fas fa-bars"
+                ></AssayTitle>
                 <div class="content">
-                  <ul>
-                    <ExpandableList heading="OMIM Phenotype" :elements="omimPhenotype"></ExpandableList>
-                  </ul>
+                  <ExpandableList heading="OMIM Phenotype" :elements="omimPhenotype"></ExpandableList>
                 </div>
               </div>
 
-              <div class="container is-fluid" v-if="hasPhenotype.hgmd">
-                <AssayTitle id="hgmd" title="The Human Gene Mutation Database (HGMD)"></AssayTitle>
+              <div v-if="hasPhenotype.hgmd">
+                <AssayTitle
+                  id="hgmd"
+                  title="The Human Gene Mutation Database (HGMD)"
+                  icon="fas fa-bars"
+                ></AssayTitle>
                 <div class="content">
-                  <ul>
-                    <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList>
-                  </ul>
+                  <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList>
                 </div>
               </div>
 
-              <div class="container is-fluid" v-if="hasPhenotype.cancer_census">
-                <AssayTitle id="cancer-census" title="Cancer Gene Census Database"></AssayTitle>
+              <div v-if="hasPhenotype.cancer_census">
+                <AssayTitle
+                  id="cancer-census"
+                  title="Cancer Gene Census Database"
+                  icon="fas fa-bars"
+                ></AssayTitle>
                 <div class="content">
-                  <ul>
-                    <ExpandableList
-                      heading="Cancer Gene Census Phenotype"
-                      :names="['Somatic', 'Germline']"
-                      :elements="[cancerGeneCensusPhenotype.somatic, cancerGeneCensusPhenotype.germline]"
-                    ></ExpandableList>
-                  </ul>
+                  <ExpandableList
+                    heading="Cancer Gene Census Phenotype"
+                    :names="['Somatic', 'Germline']"
+                    :elements="[cancerGeneCensusPhenotype.somatic, cancerGeneCensusPhenotype.germline]"
+                  ></ExpandableList>
                 </div>
               </div>
 
-              <div class="container is-fluid" v-if="hasPhenotype.orphanet">
-                <AssayTitle id="orphanet" title="Orphanet Database"></AssayTitle>
+              <div v-if="hasPhenotype.orphanet">
+                <AssayTitle id="orphanet" title="Orphanet Database" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
-                  <ul>
-                    <div class="card has-table-padding in-paragraph in-list">
-                      <b-table :data="orphanetData" :columns="orphanetColumns" narrowed></b-table>
-                    </div>
-                  </ul>
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table :data="orphanetData" :columns="orphanetColumns" narrowed></b-table>
+                  </div>
                 </div>
               </div>
 
-              <div class="container is-fluid" v-if="hasPhenotype.others">
-                <AssayTitle id="other-phenotype" title="Other Sources"></AssayTitle>
+              <div v-if="hasPhenotype.others">
+                <AssayTitle id="other-phenotype" title="Other Sources" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
-                  <ul>
-                    <li>Dei et al. Phenotype:
-                      <ol>
-                        <li v-for="item in deoEtalPhenotype" :key="item">{{item}}</li>
-                      </ol>
-                    </li>
-                  </ul>
+                  <li>Dei et al. Phenotype:
+                    <ol>
+                      <li v-for="item in deoEtalPhenotype" :key="item">{{item}}</li>
+                    </ol>
+                  </li>
                 </div>
               </div>
             </section>
@@ -371,11 +360,11 @@ import CytoscapeView from "@/components/CytoscapeView.vue";
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
-  props: ["title"],
+  props: ["title", "icon"],
   render() {
     return (
       <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
-        <b-icon size="is-medium" icon="fas fa-angle-right" />
+        <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
         <span class="is-size-4">{this.title}</span>
       </div>
     );
@@ -616,10 +605,6 @@ export default {
 </script>
 
 <style scoped>
-.image.cytoscape {
-  max-width: 60%;
-  width: auto;
-}
 .float {
   position: fixed;
   top: 4rem;
@@ -633,9 +618,6 @@ export default {
 .gene-basic {
   border-radius: 8px;
   padding: 1rem;
-}
-.gene-name {
-  width: 100%;
 }
 .gene-summary {
   margin-left: 2rem;

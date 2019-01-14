@@ -52,38 +52,79 @@
 
           <!-- Main Grid -->
           <div class="column">
-            <section class="section is-paddingless">
-              <h1 class="title">{{geneName}}</h1>
-              <h2 class="subtitle">{{description}}</h2>
+            <section class="section is-paddingless in-paragraph">
+              <div class="card gene-basic has-background-light">
+                <div class="columns">
+                  <div class="column is-3 is-flex is-vcentered">
+                    <h1 class="title gene-name has-text-centered">{{geneName}}</h1>
+                  </div>
 
-              <!-- Gene info -->
-              <div class="block">
-                <li>
-                  Entrez ID:
-                  <a
-                    v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
-                    target="_blank"
-                  >{{entrezID}}</a>
-                </li>
-                <li>
-                  Ensembl ID:
-                  <a
-                    v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
-                    target="_blank"
-                  >{{ensemblID}}</a>
-                </li>
-                <li>
-                  OMIM ID:
-                  <a
-                    v-bind:href="'https://omim.org/entry/' + omimID"
-                    target="_blank"
-                  >{{omimID}}</a>
-                </li>
-                <li>Alias: {{alias.join(", ")}}</li>
+                  <div class="is-divider-vertical is-paddingless is-marginless is-hidden-mobile"></div>
+
+                  <!-- Gene info card -->
+                  <div class="column gene-summary">
+                    <p
+                      class="is-capitalized is-italic"
+                    >{{description}} (Alias: {{alias.join(", ")}})</p>
+
+                    <br>
+
+                    <b-field grouped group-multiline>
+                      <div class="control">
+                      <b-taglist attached>
+                        <b-tag type="is-dark" size="is-medium">Entrez</b-tag>
+                        <b-tag type="is-info" size="is-medium">
+                          <a
+                            v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
+                            target="_blank"
+                            class="has-text-white"
+                          >
+                            {{entrezID}}
+                            &nbsp;
+                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                          </a>
+                        </b-tag>
+                      </b-taglist>
+                      </div>
+
+                      <div class="control">
+                      <b-taglist attached>
+                        <b-tag type="is-dark" size="is-medium">Ensembl</b-tag>
+                        <b-tag type="is-primary" size="is-medium">
+                          <a
+                            v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
+                            target="_blank"
+                            class="has-text-white"
+                          >
+                            {{ensemblID}}
+                            &nbsp;
+                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                          </a>
+                        </b-tag>
+                      </b-taglist>
+                      </div>
+
+                      <div class="control">
+                      <b-taglist attached>
+                        <b-tag type="is-dark" size="is-medium">OMIM</b-tag>
+                        <b-tag type="is-link" size="is-medium">
+                          <a
+                            v-bind:href="'https://omim.org/entry/' + omimID"
+                            target="_blank"
+                            class="has-text-white"
+                          >
+                            {{omimID}}
+                            &nbsp;
+                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                          </a>
+                        </b-tag>
+                      </b-taglist>
+                      </div>
+                    </b-field>
+                  </div>
+                </div>
               </div>
             </section>
-
-            <div class="is-divider"></div>
 
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Assay</h1>
@@ -588,5 +629,19 @@ export default {
 }
 .cell-line {
   margin-right: 5px;
+}
+.gene-basic {
+  border-radius: 8px;
+  padding: 1rem;
+}
+.gene-name {
+  width: 100%;
+}
+.gene-summary {
+  margin-left: 2rem;
+  margin-right: 1rem;
+}
+.gene-description {
+  margin-bottom: 1rem;
 }
 </style>

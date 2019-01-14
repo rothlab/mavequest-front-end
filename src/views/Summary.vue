@@ -54,7 +54,7 @@
                     :key="assay.id"
                   >{{ assay }}</b-tag>
                 </b-table-column>
-                <b-table-column field="disease_phenotype" label="Dispease Phenotype">
+                <b-table-column field="disease_phenotype" label="Disease Phenotype">
                   <b-tag
                     class="assay-phenotype"
                     v-for="phenotype in props.row.disease_phenotype"

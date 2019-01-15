@@ -8,7 +8,7 @@
       <div class="container">
         <div class="columns">
           <!-- Filter -->
-          <div class="column is-narrow" v-if="showLeftPanel">
+          <div class="column is-narrow" v-if="!listAllGenes">
             <SearchFilter
               v-bind:hasAssay="this.filter.hasAssay"
               v-bind:hasDiseasePhenotype="this.filter.hasDiseasePhenotype"
@@ -98,11 +98,10 @@ export default {
   mounted() {
     if (this.listAllGenes) {
       // List all genes from the API
-      this.showLeftPanel = false;
       this.listGenes();
     } else {
       // Query gene info from the API
-      this.title = "Search Result"
+      this.title = "Search Result";
       this.setGeneInfo();
     }
   },
@@ -216,7 +215,7 @@ export default {
     listGenes() {
       // Set the table to loading status
       this.isLoading = true;
-      
+
       // Check for a valid filter
       if (!(this.filter.hasAssay || this.filter.hasDiseasePhenotype)) {
         this.$snackbar.open({
@@ -232,9 +231,11 @@ export default {
       const filter = this.filter.hasAssay
         ? "has_assay"
         : "has_disease_phenotype";
-      
+
       // Set page title
-      this.title = "Genes " + (filter == "has_assay" ? "with Potential Assays" : "Phenotype");
+      this.title =
+        "Genes " +
+        (filter == "has_assay" ? "with Potential Assays" : "Phenotype");
 
       // Set pagination parameters
       const offset = this.pagination.offset;
@@ -242,26 +243,32 @@ export default {
 
       // Get gene info
       this.$http
-        .get(`${this.$apiEntryPoint}/genes/?filter=${filter}&offset=${offset}&limit=${limit}`)
-        .then(response => {
-          // Make sure the response has a non-empty body
-          if (
-            !response.hasOwnProperty("body") ||
-            typeof response.body == "string"
-          ) {
-            return;
-          }
+        .get(
+          `${
+            this.$apiEntryPoint
+          }/genes/?filter=${filter}&offset=${offset}&limit=${limit}`
+        )
+        .then(
+          response => {
+            // Make sure the response has a non-empty body
+            if (
+              !response.hasOwnProperty("body") ||
+              typeof response.body == "string"
+            ) {
+              return;
+            }
 
-          const json = response.body;
-          
-          // Make sure the response contains gene info
-          // TODO: validate response fingerprint
-          if (json.hasOwnProperty("genes")) {
-            this.totalGenes = json.total;
-            this.pagination = json.pagination;
-            this.geneInfo = json.genes;
-          }
-        }, response => {
+            const json = response.body;
+
+            // Make sure the response contains gene info
+            // TODO: validate response fingerprint
+            if (json.hasOwnProperty("genes")) {
+              this.totalGenes = json.total;
+              this.pagination = json.pagination;
+              this.geneInfo = json.genes;
+            }
+          },
+          response => {
             // Error callback
             const error = response.status;
             let errorMsg = "Other Errors";
@@ -283,7 +290,8 @@ export default {
               position: "is-top",
               actionText: "Dismiss"
             });
-        })
+          }
+        )
         .then(() => {
           // Set the table to complete status
           this.isLoading = false;
@@ -291,8 +299,10 @@ export default {
     },
     onPageChange(page) {
       // Update pagination parameters and list
-      this.pagination.offset = (page - 1) * this.pagination.limit;
-      this.listGenes();
+      if (this.listAllGenes) {
+        this.pagination.offset = (page - 1) * this.pagination.limit;
+        this.listGenes();
+      }
     },
     setSearchFilter(update) {
       // Capture changes on search filters
@@ -302,32 +312,31 @@ export default {
       // Call the API directly if we are listing all genes
       if (this.listAllGenes) {
         this.listGenes();
-        return;
-      }
-
-      if (!this.filter.hasAssay && !this.filter.hasDiseasePhenotype) {
-        this.geneInfo = this.completeGeneInfo;
-        return;
-      }
-
-      // Update the table data based on search filter changes
-      this.geneInfo = this.geneInfo.filter(element => {
-        if (
-          this.filter.hasAssay &&
-          this.geneWOAssay.includes(element.gene_name)
-        ) {
-          return false;
+      } else {
+        if (!this.filter.hasAssay && !this.filter.hasDiseasePhenotype) {
+          this.geneInfo = this.completeGeneInfo;
+          return;
         }
 
-        if (
-          this.filter.hasDiseasePhenotype &&
-          this.geneWOPhenotype.includes(element.gene_name)
-        ) {
-          return false;
-        }
+        // Update the table data based on search filter changes
+        this.geneInfo = this.geneInfo.filter(element => {
+          if (
+            this.filter.hasAssay &&
+            this.geneWOAssay.includes(element.gene_name)
+          ) {
+            return false;
+          }
 
-        return true;
-      });
+          if (
+            this.filter.hasDiseasePhenotype &&
+            this.geneWOPhenotype.includes(element.gene_name)
+          ) {
+            return false;
+          }
+
+          return true;
+        });
+      }
     },
     setGenesFromQuery(query) {
       // Set the mode of the page based on the existance of gene param.

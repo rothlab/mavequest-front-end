@@ -24,9 +24,8 @@
         <p>
           <strong>{{ appName }}</strong>
           by {{ author }} from {{ organization }} with
-          <b-icon icon="heart" size="is-small" type="is-dark"></b-icon>
+          <b-icon icon="heart" size="is-small" type="is-dark"></b-icon>. Version {{version}} © {{organization}}
         </p>
-        <p>Version {{version}} © {{organization}}</p>
       </div>
     </footer>
   </div>

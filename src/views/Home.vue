@@ -66,7 +66,7 @@ export default {
   height: 100%;
 }
 .fill-screen {
-  min-height: calc(100vh - 3.25rem - 10rem);
+  min-height: calc(100vh - 3.25rem - 7.5rem);
 }
 .fill-screen > .hero-body {
   display: flex;

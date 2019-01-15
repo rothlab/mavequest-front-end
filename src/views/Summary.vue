@@ -52,14 +52,14 @@
                     class="assay-phenotype"
                     v-for="assay in props.row.potential_assay"
                     :key="assay.id"
-                  >{{ assay }}</b-tag>
+                  >{{ formatTag(assay) }}</b-tag>
                 </b-table-column>
                 <b-table-column field="disease_phenotype" label="Disease Phenotype">
                   <b-tag
                     class="assay-phenotype"
                     v-for="phenotype in props.row.disease_phenotype"
                     :key="phenotype.id"
-                  >{{ phenotype }}</b-tag>
+                  >{{ formatTag(phenotype) }}</b-tag>
                 </b-table-column>
               </template>
 
@@ -233,9 +233,7 @@ export default {
         : "has_disease_phenotype";
 
       // Set page title
-      this.title =
-        "Genes " +
-        (filter == "has_assay" ? "with Potential Assays" : "Phenotype");
+      this.title = (filter == "has_assay" ? "Potential Assay" : "Phenotype");
 
       // Set pagination parameters
       const offset = this.pagination.offset;
@@ -366,6 +364,20 @@ export default {
         typeof query.hasDiseasePhenotype == "string"
           ? query.hasDiseasePhenotype.toLowerCase() == "true"
           : query.hasDiseasePhenotype;
+    },
+    formatTag(tag) {
+      switch (tag) {
+        case "genome_rnai":
+          return "RNAi";
+        case "genome_crispr":
+          return "CRISPR KO";
+        case "yeast_comp":
+          return "Yeast Complementation"
+        case "human_comp":
+          return "Human Complementation"
+        default:
+          return tag.toUpperCase();
+      }
     }
   }
 };
@@ -374,5 +386,6 @@ export default {
 <style scoped>
 .assay-phenotype {
   margin-right: 5px;
+  margin-bottom: 5px;
 }
 </style>

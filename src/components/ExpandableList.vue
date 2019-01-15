@@ -1,25 +1,25 @@
 <template>
   <div class="expandable-list">
     <nav class="panel">
-      <div class="level panel-heading is-marginless is-hidden-mobile">
-        <div class="level-left">{{heading}}</div>
-        <div class="level-right">
-          <b-field>
-            <b-input placeholder="Filter..." type="search" icon="fas fa-search" v-model="filter"></b-input>
-            <p class="control">
-              <button class="button" @click="filter = ''">Reset</button>
-            </p>
-          </b-field>
-        </div>
-      </div>
-
-      <div class="panel-heading is-marginless is-hidden-tablet">
-        <b-field>
-          <b-input placeholder="Filter..." type="search" icon="fas fa-search" v-model="filter" class="is-fullwidth"></b-input>
-          <p class="control">
-            <button class="button" @click="filter = ''">Reset</button>
-          </p>
+      <div class="panel-heading">
+        <b-field class="is-marginless is-hidden-tablet">
+          <b-input
+            placeholder="Filter..."
+            type="search"
+            icon="fas fa-search"
+            v-model="filter"
+            class="is-fullwidth"
+          ></b-input>
         </b-field>
+
+        <div class="level is-marginless is-hidden-mobile">
+          <div class="level-left">{{heading}}</div>
+          <div class="level-right">
+            <b-field>
+              <b-input placeholder="Filter..." type="search" icon="fas fa-search" v-model="filter"></b-input>
+            </b-field>
+          </div>
+        </div>
       </div>
 
       <b-tabs
@@ -35,9 +35,26 @@
       <div class="is-scrollable">
         <a
           class="panel-block"
-          v-for="item in currentElements.filter(item => item.toLowerCase().includes(filter))"
+          v-for="item in currentElements.filter(item => item.toLowerCase().includes(filter.concat(filter, 'recessive')))"
           :key="item"
-        >{{item}}</a>
+        >
+          <b-tag class="is-warning">Recessive</b-tag>
+          &nbsp;{{item.replace("{", "").replace("}", "")}}
+        </a>
+        <a
+          class="panel-block"
+          v-for="item in currentElements.filter(item => item.toLowerCase().includes(filter.concat(filter, 'dominant')))"
+          :key="item"
+        >
+          <b-tag class="is-danger">Dominant</b-tag>
+          &nbsp;{{item.replace("{", "").replace("}", "")}}
+        </a>
+        <a
+          class="panel-block"
+          v-for="item in currentElements.filter(item => (!item.toLowerCase().includes(['recessive']) 
+          && !item.toLowerCase().includes(['dominant'])) && item.toLowerCase().includes(filter))"
+          :key="item"
+        >{{item.replace("{", "").replace("}", "")}}</a>
       </div>
       <a class="panel-block is-paddingless"></a>
     </nav>

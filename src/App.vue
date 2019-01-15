@@ -11,6 +11,7 @@
         <div class="navbar-end">
           <router-link to="/" class="navbar-item is-active">Search</router-link>
           <router-link to="/about" class="navbar-item">About</router-link>
+          <router-link to="/api" class="navbar-item">API</router-link>
         </div>
       </div>
     </nav>

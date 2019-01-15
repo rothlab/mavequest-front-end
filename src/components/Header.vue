@@ -8,7 +8,8 @@
               <h1 class="title" v-if="title">{{title}}</h1>
               <h2 class="subtitle" v-if="subtitle">{{subtitle}}</h2>
             </div>
-            <div class="level-right">
+
+            <div class="level-right search">
               <SearchBar showButton :genes="genes"></SearchBar>
             </div>
           </div>
@@ -40,11 +41,7 @@ export default {
 </script>
 
 <style scoped>
-.level-right {
-  min-width: 50%;
-  max-width: 70%;
-}
-.search-bar {
-  width: 100%;
+.search {
+  width: 60%
 }
 </style>

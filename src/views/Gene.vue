@@ -287,7 +287,7 @@
             <div class="is-divider" v-if="hasAssay.any"></div>
 
             <section class="section is-paddingless" v-if="hasPhenotype.any">
-              <h1 class="title">Diseaes Phenotype</h1>
+              <h1 class="title">Disease Phenotype</h1>
               <div v-if="hasPhenotype.omim">
                 <AssayTitle
                   id="omim"

@@ -1,5 +1,5 @@
 <template>
-  <div class="search-bar">
+  <div class="search-bar is-fullwidth">
     <div class="columns">
       <div class="column">
         <b-taginput
@@ -8,13 +8,15 @@
           size="is-medium"
           :loading="isFetching"
           autocomplete
+          allow-new
           field="gene_symbol"
           @typing="getGeneNames"
+          class="search"
         >
           <template slot-scope="props">
             <!-- Desktop autocomplete list -->
             <div class="columns is-hidden-touch is-marginless">
-              <div class="column is-one-quarter no-topbottom-padding">
+              <div class="column is-one-third no-topbottom-padding">
                 <p
                   class="is-size-5"
                   v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"
@@ -23,7 +25,8 @@
 
               <div class="column autocomplete-right">
                 HGNC: {{props.option.hgnc_id}}
-                <i v-if="props.option.alias_symbol.length > 0">, Alias:
+                <i v-if="props.option.alias_symbol.length > 0">
+                  , Alias:
                   <span v-html="props.option.alias_symbol.join(', ')"></span>
                 </i>
                 <br>
@@ -37,20 +40,23 @@
                 v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"
               ></span>
               ({{props.option.hgnc_id}})
-              <i v-if="props.option.alias_symbol.length > 0">Alias:
+              <i
+                v-if="props.option.alias_symbol.length > 0"
+              >
+                Alias:
                 <span v-html="props.option.alias_symbol.join(', ')"></span>
               </i>
             </div>
           </template>
 
-          <template slot="empty">{{emptyMessage}}</template>
+          <template slot="empty" v-if="!isFetching">{{emptyMessage}}</template>
         </b-taginput>
       </div>
-      <div class="column is-narrow no-topbottom-padding" v-if="showButton">
-        <button class="button is-medium is-fullwidth" @click="searchGenes">
-          <b-icon icon="search"></b-icon>
-          <span>Search</span>
-        </button>
+      <div class="column is-narrow no-topbottom-padding" style="padding-left:0px" v-if="showButton">
+        <button
+          class="button is-medium is-fullwidth is-info is-inverted is-outlined"
+          @click="searchGenes"
+        >Search</button>
       </div>
     </div>
   </div>
@@ -98,7 +104,7 @@ export default {
       // Give a warning if no gene was inputed
       if (this.geneNames.length == 0) {
         this.$snackbar.open({
-          message: "Please enter a gene.",
+          message: "Please select a gene.",
           type: "is-warning",
           position: "is-top",
           actionText: "Retry"
@@ -121,7 +127,7 @@ export default {
       // User have to type in at least two characters before initialting an autocomplete search to save computing resources
       if (text.length < 2) {
         this.isFetching = false;
-        this.emptyMessage = "Please enter at least 2 characters."
+        this.emptyMessage = "Please enter at least 2 characters.";
         this.autoCompleteRes = [];
         return;
       }
@@ -134,7 +140,9 @@ export default {
       this.emptyMessage = "No genes found.";
       this.$http
         .get(
-          `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${this.text}&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
+          `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${
+            this.text
+          }&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
         )
         .then(data => {
           const response = data.body;
@@ -155,7 +163,9 @@ export default {
                 .split("|")
                 .filter(Boolean)
                 .map(res =>
-                  res.trim().replace(RegExp(this.text, "ig"), "<strong>$&</strong>")
+                  res
+                    .trim()
+                    .replace(RegExp(this.text, "ig"), "<strong>$&</strong>")
                 )
             };
 
@@ -176,6 +186,10 @@ export default {
 </script>
 
 <style scoped>
+.search {
+  vertical-align: baseline !important;
+  height: 100%;
+}
 .no-topbottom-padding {
   display: flex;
   align-items: center;

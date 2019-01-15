@@ -65,7 +65,7 @@
 
               <!-- Table empty state -->
               <template slot="empty">
-                <section class="section">
+                <section class="section" v-if="!isLoading">
                   <div class="content has-text-grey has-text-centered">
                     <p>
                       <b-icon icon="meh" size="is-large"></b-icon>

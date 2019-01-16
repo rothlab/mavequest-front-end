@@ -165,12 +165,14 @@
                         <b-table-column field="id" label="ID" width="150">
                           <a
                             :href="'http://www.genomernai.org/v17/singleExpPhenotypes/' + props.row.id"
+                            target="_blank"
                           >{{props.row.id}}</a>
                         </b-table-column>
 
                         <b-table-column field="pubmed" label="Pubmed Source" width="150">
                           <a
                             :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
+                            target="_blank"
                           >{{props.row.pubmed}}</a>
                         </b-table-column>
 
@@ -220,6 +222,7 @@
                         <b-table-column field="pubmed" label="Pubmed Source" width="150">
                           <a
                             :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
+                            target="_blank"
                           >{{props.row.pubmed}}</a>
                         </b-table-column>
 
@@ -329,7 +332,25 @@
                 <AssayTitle id="orphanet" title="Orphanet Database" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
-                    <b-table :data="orphanetData" :columns="orphanetColumns" narrowed></b-table>
+                    <b-table :data="orphanetData" narrowed>
+                      <template slot-scope="props">
+                        <b-table-column field="id" label="ORPHA ID" width="150">
+                          <a
+                            :href="'https://www.orpha.net/consor/cgi-bin/Disease_Search_Simple.php?lng=EN&Disease_Disease_Search_diseaseGroup='
+                             + props.row.id + '&Disease_Disease_Search_diseaseType=ORPHA'"
+                            target="_blank"
+                          >{{props.row.id}}</a>
+                        </b-table-column>
+
+                        <b-table-column field="disorder" label="Disorder" width="300">
+                          {{props.row.disorder}}
+                        </b-table-column>
+
+                        <b-table-column field="prevalence" label="Prevalence">
+                          {{props.row.prevalence}}
+                        </b-table-column>
+                      </template>
+                    </b-table>
                   </div>
                 </div>
               </div>
@@ -578,20 +599,6 @@ export default {
         germline: []
       },
       orphanetData: [],
-      orphanetColumns: [
-        {
-          field: "id",
-          label: "ORPHA ID"
-        },
-        {
-          field: "disorder",
-          label: "Disorder"
-        },
-        {
-          field: "prevalence",
-          label: "Prevalence"
-        }
-      ],
       deoEtalPhenotype: []
     };
   },

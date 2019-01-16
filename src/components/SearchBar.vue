@@ -14,8 +14,9 @@
           class="search"
         >
           <template slot-scope="props">
-            <!-- Desktop autocomplete list -->
-            <div class="columns is-hidden-touch is-marginless">
+            <!-- Full-view autocomplete list -->
+            <div>
+              <div class="columns is-marginless" v-if="isFullView">
               <div class="column is-one-third no-topbottom-padding">
                 <p
                   class="is-size-5"
@@ -34,8 +35,8 @@
               </div>
             </div>
 
-            <!-- Mobile autocomplete list -->
-            <div class="is-hidden-desktop">
+            <!-- Compact-view autocomplete list -->
+            <div v-else>
               <span
                 v-html="props.option.gene_symbol.replace(RegExp(text, 'ig'), '<strong>$&</strong>')"
               ></span>
@@ -46,6 +47,7 @@
                 Alias:
                 <span v-html="props.option.alias_symbol.join(', ')"></span>
               </i>
+            </div>
             </div>
           </template>
 
@@ -86,7 +88,8 @@ export default {
     return {
       autoCompleteRes: [],
       isFetching: false,
-      emptyMessage: "No genes found."
+      emptyMessage: "No genes found.",
+      isFullView: true
     };
   },
   methods: {
@@ -130,6 +133,16 @@ export default {
         this.emptyMessage = "Please enter at least 2 characters.";
         this.autoCompleteRes = [];
         return;
+      }
+
+      // Determine which dropdown style should be used
+      const autocompleteDropdownWidth = document.getElementsByClassName("autocomplete control")[0].clientWidth;
+      if (autocompleteDropdownWidth < 450 ) {
+        // Use full-size style
+        this.isFullView = false;
+      } else {
+        // Use compact style
+        this.isFullView = true;
       }
 
       // Initiaite an autocomplete search

@@ -127,7 +127,7 @@
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
               <div v-if="hasAssay.yeast_comp">
-                <AssayTitle id="yeast-comp" title="Yeast Complementation Assay" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="yeast-comp" title="Yeast Complementation Assay" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
                   <b-taglist attached>
                     <b-tag size="is-medium" type="is-dark">Has Essential Yeast Paralogs</b-tag>
@@ -144,7 +144,7 @@
               </div>
 
               <div v-if="hasAssay.human_comp">
-                <AssayTitle id="human-comp" title="Human Complementation Assay" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="human-comp" title="Human Complementation Assay" icon="fas fa-bars"></AssayTitle>
                 <div class="content" v-if="hasAssay.genome_rnai">
                   <ExpandableList
                     class="in-paragraph in-list"
@@ -280,7 +280,7 @@
               </div>
 
               <div v-if="hasAssay.y2h">
-                <AssayTitle id="y2h" title="Yeast Two-Hybrid Assay" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="y2h" title="Yeast Two-Hybrid Assay" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
                   <CytoscapeView :head="geneName" :elements="y2hInteractors"/>
                 </div>
@@ -293,7 +293,7 @@
               <h1 class="title">Disease Phenotype</h1>
               <div v-if="hasPhenotype.omim">
                 <AssayTitle
-                  id="omim"
+                  anchor="omim"
                   title="Online Mendelian Inheritance in Man (OMIM) Database"
                   icon="fas fa-bars"
                 ></AssayTitle>
@@ -304,7 +304,7 @@
 
               <div v-if="hasPhenotype.hgmd">
                 <AssayTitle
-                  id="hgmd"
+                  anchor="hgmd"
                   title="The Human Gene Mutation Database (HGMD)"
                   icon="fas fa-bars"
                 ></AssayTitle>
@@ -315,7 +315,7 @@
 
               <div v-if="hasPhenotype.cancer_census">
                 <AssayTitle
-                  id="cancer-census"
+                  anchor="cancer-census"
                   title="Cancer Gene Census Database"
                   icon="fas fa-bars"
                 ></AssayTitle>
@@ -329,7 +329,7 @@
               </div>
 
               <div v-if="hasPhenotype.orphanet">
-                <AssayTitle id="orphanet" title="Orphanet Database" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="orphanet" title="Orphanet Database" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table :data="orphanetData" narrowed>
@@ -356,7 +356,7 @@
               </div>
 
               <div v-if="hasPhenotype.others">
-                <AssayTitle id="other-phenotype" title="Other Sources" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="other-phenotype" title="Other Sources" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
                   <li>Dei et al. Phenotype:
                     <ol>
@@ -381,12 +381,12 @@ import CytoscapeView from "@/components/CytoscapeView.vue";
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
-  props: ["title", "icon"],
+  props: ["title", "icon", "anchor"],
   render() {
     return (
       <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
         <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
-        <span class="is-size-4">{this.title}</span>
+        <span id={this.anchor} class="is-size-4" style="padding-top: 60px; margin-top: -60px;">{this.title}</span>
       </div>
     );
   }

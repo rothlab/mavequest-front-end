@@ -54,9 +54,9 @@
           <template slot="empty" v-if="!isFetching">{{emptyMessage}}</template>
         </b-taginput>
       </div>
-      <div class="column is-narrow no-topbottom-padding" style="padding-left:0px" v-if="showButton">
+      <div class="column is-narrow" v-if="showButton">
         <button
-          class="button is-medium is-fullwidth is-info is-inverted is-outlined"
+          class="button is-medium is-fullwidth is-fullheight is-info is-inverted is-outlined"
           @click="searchGenes"
         >Search</button>
       </div>

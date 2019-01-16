@@ -83,4 +83,7 @@ $navbar-breakpoint: 0px;
 .content li + li {
   margin: 0 !important;
 }
+.is-fullheight {
+  height: 100%;
+}
 </style>

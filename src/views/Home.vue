@@ -80,9 +80,6 @@ export default {
   padding-top: 0% !important;
   padding-bottom: 0% !important;
 }
-.is-fullheight {
-  height: 100%;
-}
 .is-fullwidth {
   max-width: 100% !important;
   width: 100% !important;

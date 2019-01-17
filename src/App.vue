@@ -23,9 +23,8 @@
     <footer class="footer footer-padding">
       <div class="content has-text-centered">
         <p>
-          <strong>{{ appName }}</strong>
-          by {{ author }} from {{ organization }} with
-          <b-icon icon="heart" size="is-small" type="is-dark"></b-icon>. Version {{version}} © {{organization}}
+          © <b-tooltip :label="'Version ' + version" position="is-top" type="is-dark"><strong>{{ appName }} ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at {{ organization }} 
+          with <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
         </p>
       </div>
     </footer>

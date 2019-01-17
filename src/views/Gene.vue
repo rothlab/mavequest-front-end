@@ -69,9 +69,9 @@
 
                     <b-field grouped group-multiline>
                       <div class="control">
-                        <b-taglist attached>
-                          <b-tag type="is-dark" size="is-medium">Entrez</b-tag>
-                          <b-tag type="is-info" size="is-medium">
+                        <b-taglist attached v-if="entrezID">
+                          <b-tag type="is-dark">Entrez</b-tag>
+                          <b-tag type="is-info">
                             <a
                               v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
                               target="_blank"
@@ -86,32 +86,32 @@
                       </div>
 
                       <div class="control">
-                        <b-taglist attached>
-                          <b-tag type="is-dark" size="is-medium">Ensembl</b-tag>
-                          <b-tag type="is-primary" size="is-medium">
-                            <a
-                              v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
-                              target="_blank"
-                              class="has-text-white"
-                            >
-                              {{ensemblID}}
-                              &nbsp;
-                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                            </a>
-                          </b-tag>
-                        </b-taglist>
-                      </div>
-
-                      <div class="control">
-                        <b-taglist attached>
-                          <b-tag type="is-dark" size="is-medium">OMIM</b-tag>
-                          <b-tag type="is-link" size="is-medium">
+                        <b-taglist attached v-if="omimID">
+                          <b-tag type="is-dark">OMIM</b-tag>
+                          <b-tag type="is-link">
                             <a
                               v-bind:href="'https://omim.org/entry/' + omimID"
                               target="_blank"
                               class="has-text-white"
                             >
                               {{omimID}}
+                              &nbsp;
+                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            </a>
+                          </b-tag>
+                        </b-taglist>
+                      </div>
+                      
+                      <div class="control">
+                        <b-taglist attached v-if="ensemblID">
+                          <b-tag type="is-dark">Ensembl</b-tag>
+                          <b-tag type="is-primary">
+                            <a
+                              v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
+                              target="_blank"
+                              class="has-text-white"
+                            >
+                              {{ensemblID}}
                               &nbsp;
                               <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
                             </a>

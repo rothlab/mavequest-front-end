@@ -35,20 +35,22 @@
       <div class="is-scrollable">
         <a
           class="panel-block"
-          v-for="item in currentElements.filter(item => item.toLowerCase().includes(filter.concat(filter, 'recessive')))"
-          :key="item"
-        >
-          <b-tag class="is-warning">Recessive</b-tag>
-          &nbsp;{{item.replace("{", "").replace("}", "")}}
-        </a>
-        <a
-          class="panel-block"
           v-for="item in currentElements.filter(item => item.toLowerCase().includes(filter.concat(filter, 'dominant')))"
           :key="item"
         >
-          <b-tag class="is-danger">Dominant</b-tag>
+          <b-tag class="is-danger gene-dominance-tag">Dominant</b-tag>
           &nbsp;{{item.replace("{", "").replace("}", "")}}
         </a>
+
+        <a
+          class="panel-block"
+          v-for="item in currentElements.filter(item => item.toLowerCase().includes(filter.concat(filter, 'recessive')))"
+          :key="item"
+        >
+          <b-tag class="is-warning gene-dominance-tag">Recessive</b-tag>
+          &nbsp;{{item.replace("{", "").replace("}", "")}}
+        </a>
+
         <a
           class="panel-block"
           v-for="item in currentElements.filter(item => (!item.toLowerCase().includes(['recessive']) 
@@ -101,5 +103,8 @@ export default {
   overflow-y: scroll;
   width: auto;
   max-height: 12rem;
+}
+.gene-dominance-tag {
+  margin-right: 0.5rem;
 }
 </style>

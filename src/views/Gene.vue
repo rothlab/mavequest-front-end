@@ -299,7 +299,12 @@
                   icon="fas fa-bars"
                 ></AssayTitle>
                 <div class="content">
-                  <ExpandableList heading="OMIM Phenotype" :elements="omimPhenotype"></ExpandableList>
+                  <b-message type="is-info" has-icon>
+                    Due to restrictions in OMIM's <a href="https://www.omim.org/help/copyright" target="_blank">Copyright statement</a>, 
+                    MaveQuest is unable to display data obtained from OMIM database. 
+                    Please visit <a v-bind:href="'https://omim.org/entry/' + omimID" target="_blank">OMIM website (ID: {{omimID}})</a> for more details.
+                  </b-message>
+                  <!-- <ExpandableList heading="OMIM Phenotype" :elements="omimPhenotype"></ExpandableList> -->
                 </div>
               </div>
 
@@ -310,7 +315,12 @@
                   icon="fas fa-bars"
                 ></AssayTitle>
                 <div class="content">
-                  <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList>
+                  <b-message type="is-info" has-icon>
+                    Due to restrictions in HGMD's <a href="http://www.hgmd.cf.ac.uk/docs/copyright.html" target="_blank">Copyright statement</a>, 
+                    MaveQuest is unable to display data obtained from HGMD database. 
+                    Please visit <a v-bind:href="'http://www.hgmd.cf.ac.uk/ac/gene.php?gene=' + geneName" target="_blank">HGMD website ({{geneName}})</a> for more details.
+                  </b-message>
+                  <!-- <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList> -->
                 </div>
               </div>
 

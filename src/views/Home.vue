@@ -2,8 +2,8 @@
   <section class="hero is-info fill-screen">
     <div class="hero-body">
       <div class="container search-display">
-        <h1 class="title">Search Database</h1>
-        <h2 class="subtitle">Search with Gene Symbol or Entrez ID</h2>
+        <h1 class="title">Search MaveQuest</h1>
+        <h2 class="subtitle">Search with Gene Symbol</h2>
         <div class="container is-marginless is-fullwidth">
           <SearchBar showButton v-bind:hasAssay="filter.hasAssay" v-bind:hasDiseasePhenotype="filter.hasDiseasePhenotype"></SearchBar>
           <section class="section no-leftright-padding">

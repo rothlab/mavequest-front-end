@@ -13,6 +13,7 @@
           </h1>
           <h1 class="subtitle has-text-grey">Nothing Found</h1>
         </section>
+
         <div class="columns" v-if="!showErrorComponent">
           <!-- Table of Contents -->
           <div class="column is-3 is-hidden-mobile">
@@ -53,21 +54,21 @@
           <!-- Main Grid -->
           <div class="column">
             <section class="section is-paddingless in-paragraph">
+              <!-- Gene info card -->
               <div class="card gene-basic has-background-light">
                 <div class="columns">
-                  <div class="column is-3 is-flex is-vcentered">
-                    <h1 class="title is-fullwidth has-text-centered">{{geneName}}</h1>
+                  <div class="column is-narrow is-flex is-vcentered gene-card-adaptive">
+                    <h1 class="title is-fullwidth has-text-centered" style="margin-left:1rem; margin-right:1rem">{{geneName}}</h1>
                   </div>
 
-                  <div class="is-divider-vertical is-paddingless is-marginless is-hidden-mobile"></div>
+                  <div class="is-divider-vertical is-paddingless is-hidden-mobile"></div>
 
-                  <!-- Gene info card -->
                   <div class="column gene-summary">
                     <p
                       class="is-capitalized is-italic" style="margin-bottom:0.5rem"
                     >{{description}} <span v-if="alias.length > 1">(Alias: {{alias.join(", ")}})</span></p>
 
-                    <b-field grouped group-multiline>
+                    <b-field grouped group-multiline class="gene-summary">
                       <div class="control">
                         <b-taglist attached v-if="entrezID">
                           <b-tag type="is-dark">Entrez</b-tag>
@@ -101,7 +102,7 @@
                           </b-tag>
                         </b-taglist>
                       </div>
-                      
+
                       <div class="control">
                         <b-taglist attached v-if="ensemblID">
                           <b-tag type="is-dark">Ensembl</b-tag>
@@ -626,11 +627,16 @@ export default {
   border-radius: 8px;
   padding: 1rem;
 }
-.gene-summary {
-  margin-left: 2rem;
-  margin-right: 1rem;
-}
-.gene-description {
-  margin-bottom: 1rem;
+
+/* Adaptive styling */
+@media all and (max-width: 768px) {
+  .gene-card-adaptive {
+    padding-bottom: 0px;
+  }
+  .gene-summary {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
 }
 </style>

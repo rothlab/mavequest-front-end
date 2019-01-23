@@ -1,7 +1,7 @@
 <template>
-  <div class="about">
+  <div class="api">
     <!-- Header -->
-    <Header title="About MaveQuest"></Header>
+    <Header title="MaveQuest API"></Header>
 
     <!-- Main -->
     <UnderConstructionView />
@@ -13,7 +13,7 @@ import Header from "@/components/Header.vue";
 import UnderConstructionView from "@/components/UnderConstructionView.vue";
 
 export default {
-  name: "about",
+  name: "api",
   components: {
     Header,
     UnderConstructionView

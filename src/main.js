@@ -21,7 +21,7 @@ import App from './App.vue'
 if (process.env.NODE_ENV == 'development') {
   Vue.prototype.$apiEntryPoint = 'http://localhost:3001';
 } else {
-  Vue.prototype.$apiEntryPoint = 'http://api.mavequest.varianteffect.org';
+  Vue.prototype.$apiEntryPoint = 'https://api.mavequest.varianteffect.org';
 }
 
 Vue.config.productionTip = false;

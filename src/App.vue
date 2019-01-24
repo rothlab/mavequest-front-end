@@ -9,21 +9,22 @@
       <div class="navbar-menu">
         <div class="navbar-start"></div>
         <div class="navbar-end">
-          <router-link to="/" class="navbar-item is-active">Search</router-link>
-          <router-link to="/about" class="navbar-item">About</router-link>
-          <router-link to="/api" class="navbar-item">API</router-link>
+          <router-link to="/" class="navbar-item" v-bind:class="{ 'is-active': isActive == 'search' }">Search</router-link>
+          <router-link to="/about" class="navbar-item" v-bind:class="{ 'is-active': isActive == 'about' }">About</router-link>
+          <router-link to="/api" class="navbar-item" v-bind:class="{ 'is-active': isActive == 'api' }">API</router-link>
         </div>
       </div>
     </nav>
 
     <!-- Inject router view -->
-    <router-view/>
+    <router-view v-on:updateNav="updateActiveNavbarItem"/>
 
     <!-- Footer -->
     <footer class="footer footer-padding">
       <div class="content has-text-centered">
         <p>
-          © <b-tooltip :label="'Version ' + version" position="is-top" type="is-dark"><strong>{{ appName }} ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at {{ organization }} 
+          © <b-tooltip :label="'Version ' + version" position="is-top" type="is-dark"><strong>{{ appName }} 
+            ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at <a href="http://llama.mshri.on.ca/" target="_blank">{{ organization }}</a> 
           with <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
         </p>
       </div>
@@ -38,8 +39,14 @@ export default {
       appName: process.env.VUE_APP_NAME,
       author: process.env.VUE_APP_AUTHORS,
       organization: process.env.VUE_APP_ORGANIZATION,
-      version: process.env.GIT_VERSION
+      version: process.env.GIT_VERSION,
+      isActive: 'search'
     };
+  },
+  methods: {
+    updateActiveNavbarItem(value) {
+      this.isActive = value;
+    }
   }
 };
 </script>
@@ -84,5 +91,9 @@ $navbar-breakpoint: 0px;
 }
 .is-fullheight {
   height: 100%;
+}
+.is-anchor {
+  padding-top: 60px;
+  margin-top: -60px;
 }
 </style>

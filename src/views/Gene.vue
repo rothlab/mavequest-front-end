@@ -397,7 +397,7 @@ const AssayTitle = {
     return (
       <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
         <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
-        <span id={this.anchor} class="is-size-4" style="padding-top: 60px; margin-top: -60px;">{this.title}</span>
+        <span id={this.anchor} class="is-size-4 is-anchor">{this.title}</span>
       </div>
     );
   }
@@ -416,6 +416,9 @@ export default {
     this.geneName = this.$route.params.name.toUpperCase();
   },
   mounted() {
+    // Update highlighted navbar item
+    this.$emit('updateNav', 'search');
+
     // Display loading animation
     const loadingComponent = this.$loading.open();
 

@@ -51,6 +51,10 @@ export default {
       }
     }
   },
+  mounted () {
+    // Update highlighted navbar item
+    this.$emit('updateNav', 'search');
+  },
   methods: {
     setSearchFilter (update) {
       // Capture changes on search filters

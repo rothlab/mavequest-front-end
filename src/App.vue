@@ -23,7 +23,8 @@
     <footer class="footer footer-padding">
       <div class="content has-text-centered">
         <p>
-          © <b-tooltip :label="'Version ' + version" position="is-top" type="is-dark"><strong>{{ appName }} ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at {{ organization }} 
+          © <b-tooltip :label="'Version ' + version" position="is-top" type="is-dark"><strong>{{ appName }} 
+            ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at <a href="http://llama.mshri.on.ca/" target="_blank">{{ organization }}</a> 
           with <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
         </p>
       </div>
@@ -84,5 +85,9 @@ $navbar-breakpoint: 0px;
 }
 .is-fullheight {
   height: 100%;
+}
+.is-anchor {
+  padding-top: 60px;
+  margin-top: -60px;
 }
 </style>

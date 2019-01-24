@@ -17,6 +17,10 @@ export default {
   components: {
     Header,
     UnderConstructionView
+  },
+  mounted() {
+    // Update highlighted navbar item
+    this.$emit('updateNav', 'api');
   }
 };
 </script>

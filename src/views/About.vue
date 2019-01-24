@@ -213,6 +213,10 @@ export default {
       isFloat: false
     };
   },
+  mounted() {
+    // Update highlighted navbar item
+    this.$emit('updateNav', 'about');
+  },
   methods: {
     visibilityChanged(visible) {
       // Position the table of contents absolutely so that it will stay on the screen

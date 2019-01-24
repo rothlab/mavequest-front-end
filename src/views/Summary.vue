@@ -96,6 +96,9 @@ export default {
     this.setGenesFromQuery(this.$route.query);
   },
   mounted() {
+    // Update highlighted navbar item
+    this.$emit('updateNav', 'search');
+
     if (this.listAllGenes) {
       // List all genes from the API
       this.listGenes();

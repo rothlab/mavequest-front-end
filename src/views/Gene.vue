@@ -416,6 +416,9 @@ export default {
     this.geneName = this.$route.params.name.toUpperCase();
   },
   mounted() {
+    // Update highlighted navbar item
+    this.$emit('updateNav', 'search');
+
     // Display loading animation
     const loadingComponent = this.$loading.open();
 

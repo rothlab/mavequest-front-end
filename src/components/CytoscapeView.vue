@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card in-list">
     <div class="card-content is-paddingless">
       <div class="content cytoscape">
         <cytoscape :config="config" :preConfig="preConfig"/>

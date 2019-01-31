@@ -24,7 +24,7 @@
       <div class="content has-text-centered">
         <p>
           © <b-tooltip :label="'Version ' + version" position="is-top" type="is-dark"><strong>{{ appName }} 
-            ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at <a href="http://llama.mshri.on.ca/" target="_blank">{{ organization }}</a> 
+            ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at the <a href="http://llama.mshri.on.ca/" target="_blank">{{ organization }}</a> 
           with <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
         </p>
       </div>

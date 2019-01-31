@@ -220,7 +220,7 @@ export default {
     // eslint-disable-next-line
     console.log(elementID);
     if (this.$refs.hasOwnProperty(elementID)) {
-      this.$refs[elementID].className += " has-background-light";
+      this.$refs[elementID].className += " highlight";
     }
   },
   methods: {
@@ -236,6 +236,11 @@ export default {
 .float {
   position: fixed;
   top: 4rem;
+}
+.highlight {
+  margin: -0.75rem;
+  padding: 0.75rem;
+  background: #fff2a8;
 }
 </style>
 

@@ -162,12 +162,21 @@
                       hoverable
                       narrowed
                     >
+                      <template slot="bottom-left">
+                        <a href="/about#tko" target="_blank">
+                          <b-tag type="is-warning" class="cell-line">TKO</b-tag>Toronto Knockout Library &nbsp;
+                        </a>
+                      </template>
+
                       <template slot-scope="props">
                         <b-table-column field="pubmed" label="Pubmed Source" width="150">
                           <a
                             :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
                             target="_blank"
-                          >{{props.row.pubmed}}</a>
+                          >
+                            <span>{{props.row.pubmed}} &nbsp;</span>
+                            <b-tag type="is-warning" v-show="tkoPubmed.includes(props.row.pubmed)">TKO</b-tag>
+                          </a>
                         </b-table-column>
 
                         <b-table-column
@@ -211,12 +220,6 @@
                 </div>
 
                 <div class="content" v-if="hasAssay.genome_rnai">
-                  <ExpandableList
-                    class="in-paragraph in-list"
-                    heading="GenomeRNAi Phenotype"
-                    :elements="genomeRNAiPhenotype"
-                  ></ExpandableList>
-
                   <RecordTitle title="GenomeRNAi Records" reflink="/about#genome-rnai"></RecordTitle>
 
                   <div class="card has-table-padding in-paragraph in-list">
@@ -269,18 +272,12 @@
                       </template>
                     </b-table>
                   </div>
-                </div>
 
-                <div class="content" v-if="hasAssay.tko">
-                  <h4 class="title">TKO Cell Lines</h4>
-                    <b-taglist class="in-paragraph in-list">
-                      <b-tag
-                        size="is-medium"
-                        type="is-info"
-                        v-for="item in tkoCellLine"
-                        :key="item"
-                      >{{item.toUpperCase()}}</b-tag>
-                    </b-taglist>
+                  <ExpandableList
+                    class="in-paragraph in-list"
+                    heading="GenomeRNAi Phenotype"
+                    :elements="genomeRNAiPhenotype"
+                  ></ExpandableList>
                 </div>
               </div>
 
@@ -643,6 +640,7 @@ export default {
         }
       ],
       tkoCellLine: [],
+      tkoPubmed: ["26627737", "28655737"],
       y2hInteractors: [],
       genomeRNAiPhenotype: [],
       genomeRNAiData: [],

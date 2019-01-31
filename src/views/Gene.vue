@@ -217,7 +217,7 @@
                     :elements="genomeRNAiPhenotype"
                   ></ExpandableList>
 
-                  <RecordTitle title="GenomeCRISPR Records" reflink="/about#genome-rnai"></RecordTitle>
+                  <RecordTitle title="GenomeRNAi Records" reflink="/about#genome-rnai"></RecordTitle>
 
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table

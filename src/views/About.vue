@@ -25,8 +25,8 @@
 
               <ul class="data-source">
                 <!-- TKO -->
-                <li>
-                  <h4 id="tko">
+                <li ref="tko">
+                  <h4>
                     The Toronto KnockOut Library (TKO) &nbsp;
                     <a
                       href="http://tko.ccbr.utoronto.ca/"
@@ -53,8 +53,8 @@
                 </li>
 
                 <!-- Genome RNAi -->
-                <li>
-                  <h4 id="genome-rnai" class="in-list">
+                <li ref="genome-rnai">
+                  <h4 class="in-list">
                     GenomeRNAi &nbsp;
                     <a href="http://www.genomernai.org/" target="_blank">
                       <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -75,8 +75,8 @@
                 </li>
 
                 <!-- Genome CRISPR -->
-                <li>
-                  <h4 id="genome-crispr" class="in-list">
+                <li ref="genome-crispr">
+                  <h4 class="in-list">
                     GenomeCRISPR &nbsp;
                     <a href="http://genomecrispr.dkfz.de/" target="_blank">
                       <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -97,8 +97,8 @@
                 </li>
 
                 <!-- Y2H -->
-                <li>
-                  <h4 id="huri" class="in-list">
+                <li ref="huri">
+                  <h4 class="in-list">
                     The Human Reference Protein Interactome Mapping Project (HuRI) &nbsp;
                     <a
                       href="http://interactome.baderlab.org"
@@ -113,8 +113,8 @@
 
                 <!-- Yeast Complementation -->
                 <!-- OMIM -->
-                <li>
-                  <h4 id="omim" class="in-list">
+                <li ref="omim">
+                  <h4 class="in-list">
                     Online Mendelian Inheritance in Man (OMIM) &nbsp;
                     <a
                       href="https://www.omim.org/"
@@ -129,8 +129,8 @@
                 </li>
 
                 <!-- HGMD -->
-                <li>
-                  <h4 id="hgmd" class="in-list">
+                <li ref="hgmd">
+                  <h4 class="in-list">
                     The Human Gene Mutation Database (HGMD) &nbsp;
                     <a
                       href="http://www.hgmd.cf.ac.uk/"
@@ -154,8 +154,8 @@
                 </li>
 
                 <!-- Sanger -->
-                <li>
-                  <h4 id="sanger" class="in-list">
+                <li ref="cancer-census">
+                  <h4 class="in-list">
                     The Cancer Gene Census &nbsp;
                     <a
                       href="https://cancer.sanger.ac.uk/census"
@@ -179,8 +179,8 @@
                 </li>
 
                 <!-- Orphanet -->
-                <li>
-                  <h4 id="orphanet" class="in-list">
+                <li ref="orphanet">
+                  <h4 class="in-list">
                     Orphanet &nbsp;
                     <a href="https://www.orpha.net" target="_blank">
                       <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -216,6 +216,14 @@ export default {
   mounted() {
     // Update highlighted navbar item
     this.$emit('updateNav', 'about');
+
+    // Highlight data source if given as part of the url
+    const elementID = this.$route.hash.replace("#", "");
+    // eslint-disable-next-line
+    console.log(elementID);
+    if (this.$refs.hasOwnProperty(elementID)) {
+      this.$refs[elementID].className += " has-background-warning";
+    }
   },
   methods: {
     visibilityChanged(visible) {

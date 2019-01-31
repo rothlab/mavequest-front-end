@@ -146,67 +146,10 @@
 
               <div v-if="hasAssay.human_comp">
                 <AssayTitle anchor="human-comp" title="Human Complementation Assay" icon="fas fa-bars"></AssayTitle>
-                <div class="content" v-if="hasAssay.genome_rnai">
-                  <ExpandableList
-                    class="in-paragraph in-list"
-                    heading="GenomeRNAi Phenotype"
-                    :elements="genomeRNAiPhenotype"
-                  ></ExpandableList>
-                  <h4 class="title">GenomeRNAi Records</h4>
-                  <div class="card has-table-padding in-paragraph in-list">
-                    <b-table
-                      :data="genomeRNAiData"
-                      paginated
-                      per-page="10"
-                      pagination-simple
-                      hoverable
-                      narrowed
-                    >
-                      <template slot-scope="props">
-                        <b-table-column field="id" label="ID" width="150">
-                          <a
-                            :href="'http://www.genomernai.org/v17/singleExpPhenotypes/' + props.row.id"
-                            target="_blank"
-                          >{{props.row.id}}</a>
-                        </b-table-column>
-
-                        <b-table-column field="pubmed" label="Pubmed Source" width="150">
-                          <a
-                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
-                            target="_blank"
-                          >{{props.row.pubmed}}</a>
-                        </b-table-column>
-
-                        <b-table-column field="cell_line" label="Cell Lines">
-                          <!-- Less than five cell lines -->
-                          <div v-if="props.row.cell_line.length <= 5">
-                            <b-tag
-                              class="is-light cell-line"
-                              v-for="cell in props.row.cell_line"
-                              v-bind:key="cell"
-                            >{{cell}}</b-tag>
-                          </div>
-
-                          <!-- More than five cell lines -->
-                          <div v-if="props.row.cell_line.length > 5">
-                            <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
-                          </div>
-                        </b-table-column>
-                      </template>
-
-                      <template slot="detail" slot-scope="props">
-                        <b-tag
-                          class="is-light is-size-6 cell-line"
-                          v-for="cell in props.row.cell_line"
-                          v-bind:key="cell"
-                        >{{cell}}</b-tag>
-                      </template>
-                    </b-table>
-                  </div>
-                </div>
 
                 <div class="content" v-if="hasAssay.genome_crispr">
-                  <h4 class="title">GenomeCRISPR Records</h4>
+                  <RecordTitle title="GenomeCRISPR Records" reflink="/about#genome-crispr"></RecordTitle>
+
                   <div
                     class="card has-table-padding in-paragraph in-list"
                     v-if="hasAssay.genome_crispr"
@@ -267,6 +210,67 @@
                   </div>
                 </div>
 
+                <div class="content" v-if="hasAssay.genome_rnai">
+                  <ExpandableList
+                    class="in-paragraph in-list"
+                    heading="GenomeRNAi Phenotype"
+                    :elements="genomeRNAiPhenotype"
+                  ></ExpandableList>
+
+                  <RecordTitle title="GenomeCRISPR Records" reflink="/about#genome-rnai"></RecordTitle>
+
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table
+                      :data="genomeRNAiData"
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                      narrowed
+                    >
+                      <template slot-scope="props">
+                        <b-table-column field="id" label="ID" width="150">
+                          <a
+                            :href="'http://www.genomernai.org/v17/singleExpPhenotypes/' + props.row.id"
+                            target="_blank"
+                          >{{props.row.id}}</a>
+                        </b-table-column>
+
+                        <b-table-column field="pubmed" label="Pubmed Source" width="150">
+                          <a
+                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
+                            target="_blank"
+                          >{{props.row.pubmed}}</a>
+                        </b-table-column>
+
+                        <b-table-column field="cell_line" label="Cell Lines">
+                          <!-- Less than five cell lines -->
+                          <div v-if="props.row.cell_line.length <= 5">
+                            <b-tag
+                              class="is-light cell-line"
+                              v-for="cell in props.row.cell_line"
+                              v-bind:key="cell"
+                            >{{cell}}</b-tag>
+                          </div>
+
+                          <!-- More than five cell lines -->
+                          <div v-if="props.row.cell_line.length > 5">
+                            <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
+                          </div>
+                        </b-table-column>
+                      </template>
+
+                      <template slot="detail" slot-scope="props">
+                        <b-tag
+                          class="is-light is-size-6 cell-line"
+                          v-for="cell in props.row.cell_line"
+                          v-bind:key="cell"
+                        >{{cell}}</b-tag>
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
+
                 <div class="content" v-if="hasAssay.tko">
                   <h4 class="title">TKO Cell Lines</h4>
                     <b-taglist class="in-paragraph in-list">
@@ -282,7 +286,10 @@
 
               <div v-if="hasAssay.y2h">
                 <AssayTitle anchor="y2h" title="Yeast Two-Hybrid Assay" icon="fas fa-bars"></AssayTitle>
+
                 <div class="content">
+                  <RecordTitle title="HuRI Interactions" reflink="/about#huri"></RecordTitle>
+
                   <CytoscapeView :head="geneName" :elements="y2hInteractors"/>
                 </div>
               </div>
@@ -297,6 +304,7 @@
                   anchor="omim"
                   title="Online Mendelian Inheritance in Man (OMIM) Database"
                   icon="fas fa-bars"
+                  reflink="/about#omim"
                 ></AssayTitle>
                 <div class="content">
                   <b-message type="is-info" has-icon>
@@ -313,6 +321,7 @@
                   anchor="hgmd"
                   title="The Human Gene Mutation Database (HGMD)"
                   icon="fas fa-bars"
+                  reflink="/about#hgmd"
                 ></AssayTitle>
                 <div class="content">
                   <b-message type="is-info" has-icon>
@@ -329,6 +338,7 @@
                   anchor="cancer-census"
                   title="Cancer Gene Census Database"
                   icon="fas fa-bars"
+                  reflink="/about#cancer-census"
                 ></AssayTitle>
                 <div class="content">
                   <ExpandableList
@@ -340,7 +350,7 @@
               </div>
 
               <div v-if="hasPhenotype.orphanet">
-                <AssayTitle anchor="orphanet" title="Orphanet Database" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="orphanet" title="Orphanet Database" icon="fas fa-bars" reflink="/about#orphanet"></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table :data="orphanetData" narrowed>
@@ -368,12 +378,18 @@
 
               <div v-if="hasPhenotype.others">
                 <AssayTitle anchor="other-phenotype" title="Other Sources" icon="fas fa-bars"></AssayTitle>
+                
                 <div class="content">
-                  <li>Dei et al. Phenotype:
-                    <ol>
-                      <li v-for="item in deoEtalPhenotype" :key="item">{{item}}</li>
-                    </ol>
-                  </li>
+                  <RecordTitle title="Dei et al. Phenotype" reflink="/about#deo-etal"></RecordTitle>
+
+                  <b-taglist class="in-paragraph in-list">
+                      <b-tag
+                        size="is-medium"
+                        type="is-info"
+                        v-for="item in deoEtalPhenotype"
+                        :key="item"
+                      >{{item.toUpperCase()}}</b-tag>
+                    </b-taglist>
                 </div>
               </div>
             </section>
@@ -392,12 +408,36 @@ import CytoscapeView from "@/components/CytoscapeView.vue";
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
-  props: ["title", "icon", "anchor"],
+  props: ["title", "icon", "anchor", "reflink"],
   render() {
     return (
       <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
         <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
-        <span id={this.anchor} class="is-size-4 is-anchor">{this.title}</span>
+        <span id={this.anchor} class="is-size-4 is-anchor">{this.title} &nbsp;</span>
+        <a href={this.reflink} target="_blank" v-show={this.reflink}>
+          <b-tag>
+            <b-icon icon="far fa-file-alt"></b-icon>
+            <span>Source</span>
+          </b-tag>
+        </a>
+      </div>
+    );
+  }
+};
+
+// Delare Record title
+const RecordTitle = {
+  props: ["title", "reflink"],
+  render() {
+    return (
+      <div>
+        <h4 class="title is-inline">{this.title} &nbsp;</h4>
+        <a href={this.reflink} target="_blank">
+          <b-tag>
+            <b-icon icon="far fa-file-alt"></b-icon>
+            <span>Source</span>
+          </b-tag>
+        </a>
       </div>
     );
   }
@@ -410,6 +450,7 @@ export default {
     ExpandableRow,
     ExpandableList,
     AssayTitle,
+    RecordTitle,
     CytoscapeView
   },
   created() {

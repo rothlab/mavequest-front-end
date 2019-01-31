@@ -54,6 +54,9 @@ export default {
   mounted () {
     // Update highlighted navbar item
     this.$emit('updateNav', 'search');
+
+    // Ping the API service to activate it
+    this.$http.get(this.$apiEntryPoint);
   },
   methods: {
     setSearchFilter (update) {

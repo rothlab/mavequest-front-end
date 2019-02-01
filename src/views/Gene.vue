@@ -44,6 +44,9 @@
                 <li v-if="hasPhenotype.orphanet">
                   <a href="#orphanet">Orphanet</a>
                 </li>
+                <li v-if="hasPhenotype.invitae">
+                  <a href="#invitae">Invitae</a>
+                </li>
                 <li v-if="hasPhenotype.others">
                   <a href="#other-phenotype">Other Sources</a>
                 </li>
@@ -373,6 +376,36 @@
                 </div>
               </div>
 
+              <div v-if="hasPhenotype.invitae">
+                <AssayTitle anchor="invitae" title="Invitae Panel Database" icon="fas fa-bars" reflink="/about#invitae"></AssayTitle>
+                <div class="content">
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table :data="invitaeData" narrowed>
+                      <template slot-scope="props">
+                        <b-table-column field="id" label="Test ID">
+                          <a
+                            :href="'https://www.invitae.com/en/physician/tests/'+ props.row.id"
+                            target="_blank"
+                          >{{props.row.id}}</a>
+                        </b-table-column>
+
+                        <b-table-column field="name" label="Test Name">
+                          {{props.row.name}}
+                        </b-table-column>
+
+                        <b-table-column field="panel" label="Panel">
+                          <b-tag
+                            class="is-light cell-line"
+                            v-for="panel in props.row.panel"
+                            v-bind:key="panel"
+                          >{{panel}}</b-tag>
+                        </b-table-column>
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
+              </div>
+
               <div v-if="hasPhenotype.others">
                 <AssayTitle anchor="other-phenotype" title="Other Sources" icon="fas fa-bars"></AssayTitle>
                 
@@ -561,6 +594,12 @@ export default {
             this.orphanetData = json.orphanet.orphanet_data;
           }
 
+          if (json.hasOwnProperty("invitae")) {
+            // Invitiae Panel
+            this.hasPhenotype.invitae = true;
+            this.invitaeData = json.invitae.invitae_panel;
+          }
+
           if (json.hasOwnProperty("deo_etal")) {
             // Deo et. al Phenotype
             this.hasPhenotype.others = true;
@@ -652,6 +691,7 @@ export default {
         germline: []
       },
       orphanetData: [],
+      invitaeData: [],
       deoEtalPhenotype: []
     };
   },

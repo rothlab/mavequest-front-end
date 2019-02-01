@@ -13,6 +13,7 @@ import BackToTop from 'vue-backtotop'
 import VueResource from 'vue-resource'
 import VueCytoscape from 'vue-cytoscape'
 import VueResize from 'vue-resize'
+import VueScrollTo from 'vue-scrollto'
 
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
@@ -33,7 +34,8 @@ Vue.use(Buefy, {
 .use(BackToTop)
 .use(VueResource)
 .use(VueCytoscape)
-.use(VueResize);
+.use(VueResize)
+.use(VueScrollTo);
 
 new Vue({
   router,

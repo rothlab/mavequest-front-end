@@ -25,7 +25,7 @@
 
                 <!-- Genome CRISPR -->
                 <div ref="genome-crispr" class="in-paragraph">
-                  <h4 class="in-list">
+                  <h4 class="in-list" id="genome-crispr">
                     GenomeCRISPR &nbsp;
                     <a href="http://genomecrispr.dkfz.de/" target="_blank">
                       <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -47,7 +47,7 @@
 
                 <!-- TKO -->
                 <div ref="tko" class="in-paragraph">
-                  <h4>
+                  <h4 class="in-list" id="tko">
                     The Toronto KnockOut Library (TKO) &nbsp;
                     <a
                       href="http://tko.ccbr.utoronto.ca/"
@@ -75,7 +75,7 @@
 
                 <!-- Genome RNAi -->
                 <div ref="genome-rnai" class="in-paragraph">
-                  <h4 class="in-list">
+                  <h4 class="in-list" id="genome-rnai">
                     GenomeRNAi &nbsp;
                     <a href="http://www.genomernai.org/" target="_blank">
                       <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -97,7 +97,7 @@
 
                 <!-- Y2H -->
                 <div ref="huri" class="in-paragraph">
-                  <h4 class="in-list">
+                  <h4 class="in-list" id="huri">
                     The Human Reference Protein Interactome Mapping Project (HuRI) &nbsp;
                     <a
                       href="http://interactome.baderlab.org"
@@ -113,7 +113,7 @@
                 <!-- Yeast Complementation -->
                 <!-- OMIM -->
                 <div ref="omim" class="in-paragraph">
-                  <h4 class="in-list">
+                  <h4 class="in-list" id="omim">
                     Online Mendelian Inheritance in Man (OMIM) &nbsp;
                     <a
                       href="https://www.omim.org/"
@@ -129,7 +129,7 @@
 
                 <!-- HGMD -->
                 <div ref="hgmd" class="in-paragraph">
-                  <h4 class="in-list">
+                  <h4 class="in-list" id="hgmd">
                     The Human Gene Mutation Database (HGMD) &nbsp;
                     <a
                       href="http://www.hgmd.cf.ac.uk/"
@@ -154,7 +154,7 @@
 
                 <!-- Sanger -->
                 <div ref="cancer-census" class="in-paragraph">
-                  <h4 class="in-list">
+                  <h4 class="in-list" id="cancer-census">
                     The Cancer Gene Census &nbsp;
                     <a
                       href="https://cancer.sanger.ac.uk/census"
@@ -179,7 +179,7 @@
 
                 <!-- Orphanet -->
                 <div ref="orphanet" class="in-paragraph">
-                  <h4 class="in-list">
+                  <h4 class="in-list" id="orphanet">
                     Orphanet &nbsp;
                     <a href="https://www.orpha.net" target="_blank">
                       <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -193,7 +193,7 @@
 
                 <!-- Invitae Panel -->
                 <div ref="invitae" class="in-paragraph">
-                  <h4 id="invitae" class="in-list">
+                  <h4 class="in-list" id="invitae">
                     Invitae &nbsp;
                     <a href="https://www.invitae.com/en/physician/panelsgenes/" target="_blank">
                       <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -229,10 +229,11 @@ export default {
     // Update highlighted navbar item
     this.$emit("updateNav", "about");
 
+    // Scroll to the element
+    this.scrollToElement(this.$route.hash);
+
     // Highlight data source if given as part of the url
     const elementID = this.$route.hash.replace("#", "");
-    // eslint-disable-next-line
-    console.log(elementID);
     if (this.$refs.hasOwnProperty(elementID)) {
       this.$refs[elementID].className += " highlight";
     }
@@ -241,6 +242,17 @@ export default {
     visibilityChanged(visible) {
       // Position the table of contents absolutely so that it will stay on the screen
       this.isFloat = !visible;
+    },
+    scrollToElement(element) {
+      const option = {
+        easing: 'ease-in',
+        offset: -60,
+        force: true,
+        cancelable: true,
+        x: false,
+        y: true
+      }
+      this.$scrollTo(element, option);
     }
   }
 };
@@ -252,8 +264,8 @@ export default {
   top: 4rem;
 }
 .highlight {
-  margin: -0.75rem;
-  padding: 0.75rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
   background: #fff2a8;
 }
 </style>

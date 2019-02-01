@@ -190,6 +190,20 @@
                     Copyright, INSERM 1997.
                   </p>
                 </div>
+
+                <!-- Invitae Panel -->
+                <div ref="invitae" class="in-paragraph">
+                  <h4 id="invitae" class="in-list">
+                    Invitae &nbsp;
+                    <a href="https://www.invitae.com/en/physician/panelsgenes/" target="_blank">
+                      <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                    </a>
+                  </h4>
+                  <p>
+                    <strong>Invitae. </strong>
+                    Copyright, Invitae Corporation.
+                  </p>
+                </div>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-info fill-screen">
+  <section class="hero is-info is-primary fill-screen">
     <div class="hero-body">
       <div class="container search-display">
         <h1 class="title">Search MaveQuest</h1>
@@ -73,7 +73,7 @@ export default {
   height: 100%;
 }
 .fill-screen {
-  min-height: calc(100vh - 3.25rem - 7.5rem);
+  min-height: calc(100vh - 3.25rem - 4.5rem);
 }
 .fill-screen > .hero-body {
   display: flex;

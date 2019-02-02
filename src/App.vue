@@ -83,7 +83,7 @@ $navbar-breakpoint: 0px;
   margin-top: 1rem;
 }
 .footer-padding {
-  padding: 3rem 1.5rem 3rem !important;
+  padding: 1.5rem 1.5rem 1.5rem !important;
 }
 .b-table .level {
   padding-bottom: 0rem !important;

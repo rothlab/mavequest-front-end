@@ -1,9 +1,12 @@
 <template>
   <div id="app">
     <!-- Navbar -->
-    <nav class="navbar is-info is-fixed-top" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-white is-fixed-top has-shadow" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <a class="navbar-item" href="/">{{ appName }}</a>
+        <a class="navbar-item" href="/">
+          <img src="./assets/logo.png" alt="MaveQuest">
+          <span class="is-size-5">&nbsp; {{ appName }}</span>
+        </a>
       </div>
 
       <div class="navbar-menu">

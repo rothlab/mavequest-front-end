@@ -3,16 +3,17 @@
     <div class="columns">
       <div class="column">
         <b-taginput
+          ref="searchBar"
           v-model="genes"
           :data="autoCompleteRes"
           size="is-medium"
           :loading="isFetching"
           autocomplete
-          allow-new
           field="gene_symbol"
           @typing="getGeneNames"
           class="search"
         >
+
           <template slot-scope="props">
             <!-- Full-view autocomplete list -->
             <div>

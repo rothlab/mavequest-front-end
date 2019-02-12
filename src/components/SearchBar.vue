@@ -109,7 +109,7 @@ export default {
       // Give a warning if no gene was inputed
       if (this.geneNames.length == 0) {
         this.$snackbar.open({
-          message: "Please select a gene.",
+          message: "Please select a gene from the dropdown menu.",
           type: "is-warning",
           position: "is-top",
           actionText: "Retry"

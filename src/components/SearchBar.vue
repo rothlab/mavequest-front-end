@@ -12,6 +12,7 @@
           field="gene_symbol"
           @typing="getGeneNames"
           class="search"
+          placeholder="Search with Gene Symbol"
         >
 
           <template slot-scope="props">

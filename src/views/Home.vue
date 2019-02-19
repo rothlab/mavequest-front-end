@@ -54,9 +54,6 @@ export default {
   mounted () {
     // Update highlighted navbar item
     this.$emit('updateNav', 'search');
-
-    // Ping the API service to activate it
-    this.$http.get(this.$apiEntryPoint);
   },
   methods: {
     setSearchFilter (update) {
@@ -95,6 +92,6 @@ export default {
   min-width: 80vw;
 }
 .fill-screen-withheader {
-  min-height: calc(100vh - 3.25rem - 19rem);
+  min-height: calc(100vh - 3.25rem - 13.5rem);
 }
 </style>

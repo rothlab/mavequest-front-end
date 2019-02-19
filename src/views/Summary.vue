@@ -18,6 +18,8 @@
 
           <!-- Table -->
           <div class="column">
+            <ErrorView v-if="showErrorComponent" :response="errorResponse"></ErrorView>
+
             <b-table
               :data="geneInfo"
               :loading="isLoading"
@@ -28,6 +30,7 @@
               :pagination-simple="true"
               :total="totalGenes"
               :per-page="pagination.limit"
+              v-if="!showErrorComponent"
               @page-change="onPageChange"
             >
               <!-- Customized table columns -->
@@ -62,18 +65,6 @@
                   >{{ formatTag(phenotype) }}</b-tag>
                 </b-table-column>
               </template>
-
-              <!-- Table empty state -->
-              <template slot="empty">
-                <section class="section" v-if="!isLoading">
-                  <div class="content has-text-grey has-text-centered">
-                    <p>
-                      <b-icon icon="meh" size="is-large"></b-icon>
-                    </p>
-                    <p>Nothing found.</p>
-                  </div>
-                </section>
-              </template>
             </b-table>
           </div>
         </div>
@@ -85,12 +76,14 @@
 <script>
 import Header from "@/components/Header.vue";
 import SearchFilter from "@/components/SearchFilter.vue";
+import ErrorView from "@/components/ErrorView.vue";
 
 export default {
   name: "gene-summary",
   components: {
     Header,
-    SearchFilter
+    SearchFilter,
+    ErrorView
   },
   created() {
     this.setGenesFromQuery(this.$route.query);
@@ -116,6 +109,8 @@ export default {
   },
   data() {
     return {
+      errorResponse: undefined,
+      showErrorComponent: false,
       listAllGenes: false,
       title: "",
       showLeftPanel: true,
@@ -184,30 +179,17 @@ export default {
                 actionText: "Dismiss"
               });
             }
+
+            // If nothing found, show an error panel
+            if (this.completeGeneInfo.length < 1) {
+              this.errorResponse = {status: 404};
+              this.showErrorComponent = true;
+            }
           },
           response => {
-            // Error callback
-            const error = response.status;
-            let errorMsg = "Other Errors";
-
-            // Handle common error
-            switch (error) {
-              case 404:
-                errorMsg = "No record was found.";
-                break;
-              case 413:
-              case 400:
-                errorMsg = response.body;
-                break;
-              default:
-                break;
-            }
-            this.$snackbar.open({
-              message: `[ERROR ${response.status}] ${errorMsg}`,
-              type: "is-danger",
-              position: "is-top",
-              actionText: "Dismiss"
-            });
+            // Error handling
+            this.showErrorComponent = true;
+            this.errorResponse = response;
           }
         )
         .then(() => {
@@ -270,27 +252,9 @@ export default {
             }
           },
           response => {
-            // Error callback
-            const error = response.status;
-            let errorMsg = "Other Errors";
-
-            // Handle common error
-            switch (error) {
-              case 404:
-                errorMsg = "No record was found.";
-                break;
-              case 400:
-                errorMsg = response.body;
-                break;
-              default:
-                break;
-            }
-            this.$snackbar.open({
-              message: `[ERROR ${response.status}] ${errorMsg}`,
-              type: "is-danger",
-              position: "is-top",
-              actionText: "Dismiss"
-            });
+            // Error handling
+            this.showErrorComponent = true;
+            this.errorResponse = response;
           }
         )
         .then(() => {

@@ -7,12 +7,7 @@
     <section class="section fill-screen-withheader">
       <div class="container">
         <!-- Display an error component if received a bad response from the back-end -->
-        <section class="section is-medium has-text-centered" v-if="showErrorComponent">
-          <h1 class="title has-text-grey">
-            <b-icon icon="meh"></b-icon>
-          </h1>
-          <h1 class="subtitle has-text-grey">Nothing Found</h1>
-        </section>
+        <ErrorView v-if="showErrorComponent" :response="errorResponse"></ErrorView>
 
         <div class="columns" v-if="!showErrorComponent">
           <!-- Table of Contents -->
@@ -435,6 +430,7 @@ import Header from "@/components/Header.vue";
 import ExpandableRow from "@/components/ExpandableRow.vue";
 import ExpandableList from "@/components/ExpandableList.vue";
 import CytoscapeView from "@/components/CytoscapeView.vue";
+import ErrorView from "@/components/ErrorView.vue";
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
@@ -481,7 +477,8 @@ export default {
     ExpandableList,
     AssayTitle,
     RecordTitle,
-    CytoscapeView
+    CytoscapeView,
+    ErrorView
   },
   created() {
     this.geneName = this.$route.params.name.toUpperCase();
@@ -608,30 +605,8 @@ export default {
         },
         response => {
           // Error handling
-          const error = response.status;
-          let errorMsg = "Other Errors";
-
-          // Handle common error
-          switch (error) {
-            case 404:
-              errorMsg = "No record.";
-              break;
-            case 406:
-            case 400:
-              errorMsg = response.body;
-              break;
-            default:
-              break;
-          }
-          this.$snackbar.open({
-            message: `[ERROR ${response.status}] ${errorMsg}`,
-            type: "is-danger",
-            position: "is-top",
-            actionText: "Dismiss"
-          });
-
-          // Show error component
           this.showErrorComponent = true;
+          this.errorResponse = response;     
         }
       )
       .then(() => {
@@ -643,6 +618,7 @@ export default {
     return {
       isExpandDetail: false,
       showErrorComponent: false,
+      errorResponse: undefined,
       isFloat: false,
       description: "",
       entrezID: "",

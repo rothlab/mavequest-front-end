@@ -543,11 +543,6 @@ export default {
               this.hasAssay.genome_crispr = true;
               this.genomeCRISPRData = json.human_comp.genome_crispr_data;
             }
-
-            if (json.human_comp.hasOwnProperty("tko_cell_line")) {
-              this.hasAssay.tko = true;
-              this.tkoCellLine = json.human_comp.tko_cell_line;
-            }
           }
 
           if (json.hasOwnProperty("y2h")) {
@@ -631,7 +626,6 @@ export default {
         human_comp: false,
         genome_rnai: false,
         genome_crispr: false,
-        tko: false,
         y2h: false
       },
       hasPhenotype: {
@@ -654,7 +648,6 @@ export default {
           label: "Synthetic Lethal Partners"
         }
       ],
-      tkoCellLine: [],
       tkoPubmed: ["26627737", "28655737"],
       y2hInteractors: [],
       genomeRNAiPhenotype: [],

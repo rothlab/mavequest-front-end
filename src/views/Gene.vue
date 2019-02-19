@@ -117,6 +117,23 @@
                           </b-tag>
                         </b-taglist>
                       </div>
+
+                      <div class="control">
+                        <b-taglist attached v-if="ensemblID">
+                          <b-tag type="is-dark">Google Scholar</b-tag>
+                          <b-tag type="is-success">
+                            <a
+                              v-bind:href="'https://scholar.google.com/scholar?q=' + geneName"
+                              target="_blank"
+                              class="has-text-white"
+                            >
+                              {{geneName}}
+                              &nbsp;
+                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            </a>
+                          </b-tag>
+                        </b-taglist>
+                      </div>
                     </b-field>
                   </div>
                 </div>

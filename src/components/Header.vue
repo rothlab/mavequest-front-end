@@ -19,7 +19,9 @@
 
     <!-- Add a back-to-top float button -->
     <back-to-top visibleoffset="400">
-      <b-icon icon="fas fa-chevron-circle-up" size="is-large"></b-icon>
+      <figure class="image is-48x48">
+        <img src="../assets/back-to-top.png" alt="">
+      </figure>
     </back-to-top>
   </div>
 </template>
@@ -43,5 +45,12 @@ export default {
 <style scoped>
 .search {
   width: 60%
+}
+.icon-set {
+  position: relative;
+}
+.btt-icon-bg {
+  color: white;
+  font-size: 0.9rem;
 }
 </style>

@@ -15,11 +15,14 @@
             <aside class="menu" :class="{float: isFloat}">
               <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
               <ul class="menu-list" v-if="hasAssay.any">
-                <li v-if="hasAssay.yeast_comp">
-                  <a href="#yeast-comp">Yeast Complementation</a>
-                </li>
                 <li v-if="hasAssay.human_comp">
                   <a href="#human-comp">Human Complementation</a>
+                </li>
+                <li v-if="hasAssay.over_expression">
+                  <a href="#over-expression">Over Expression</a>
+                </li>
+                <li v-if="hasAssay.yeast_comp">
+                  <a href="#yeast-comp">Yeast Complementation</a>
                 </li>
                 <li v-if="hasAssay.y2h">
                   <a href="#y2h">Yeast Two-Hybrid</a>
@@ -56,21 +59,25 @@
               <div class="card gene-basic has-background-light">
                 <div class="columns">
                   <div class="column is-narrow is-flex is-vcentered gene-card-adaptive">
-                    <h1 class="title is-fullwidth has-text-centered" style="margin-left:1rem; margin-right:1rem">{{geneName}}</h1>
+                    <h1
+                      class="title is-fullwidth has-text-centered"
+                      style="margin-left:1rem; margin-right:1rem"
+                    >{{geneName}}</h1>
                   </div>
 
                   <div class="is-divider-vertical is-paddingless is-hidden-mobile"></div>
 
                   <div class="column gene-summary">
-                    <p
-                      class="is-capitalized is-italic" style="margin-bottom:0.5rem"
-                    >{{description}} <span v-if="alias.length > 1">(Alias: {{alias.join(", ")}})</span></p>
+                    <p class="is-capitalized is-italic" style="margin-bottom:0.5rem">
+                      {{description}}
+                      <span v-if="alias.length > 1">(Alias: {{alias.join(", ")}})</span>
+                    </p>
 
                     <b-field grouped group-multiline class="gene-summary">
                       <div class="control">
                         <b-taglist attached v-if="entrezID">
                           <b-tag type="is-dark">Entrez</b-tag>
-                          <b-tag type="is-info">
+                          <b-tag type="is-link">
                             <a
                               v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
                               target="_blank"
@@ -87,7 +94,7 @@
                       <div class="control">
                         <b-taglist attached v-if="omimID">
                           <b-tag type="is-dark">OMIM</b-tag>
-                          <b-tag type="is-link">
+                          <b-tag type="is-info">
                             <a
                               v-bind:href="'https://omim.org/entry/' + omimID"
                               target="_blank"
@@ -103,14 +110,14 @@
 
                       <div class="control">
                         <b-taglist attached v-if="ensemblID">
-                          <b-tag type="is-dark">Ensembl</b-tag>
+                          <b-tag type="is-dark">Google Scholar</b-tag>
                           <b-tag type="is-primary">
                             <a
-                              v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
+                              v-bind:href="'https://scholar.google.com/scholar?q=' + geneName"
                               target="_blank"
                               class="has-text-white"
                             >
-                              {{ensemblID}}
+                              {{geneName}}
                               &nbsp;
                               <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
                             </a>
@@ -120,14 +127,14 @@
 
                       <div class="control">
                         <b-taglist attached v-if="ensemblID">
-                          <b-tag type="is-dark">Google Scholar</b-tag>
+                          <b-tag type="is-dark">Ensembl</b-tag>
                           <b-tag type="is-success">
                             <a
-                              v-bind:href="'https://scholar.google.com/scholar?q=' + geneName"
+                              v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
                               target="_blank"
                               class="has-text-white"
                             >
-                              {{geneName}}
+                              {{ensemblID}}
                               &nbsp;
                               <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
                             </a>
@@ -142,25 +149,12 @@
 
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
-              <div v-if="hasAssay.yeast_comp">
-                <AssayTitle anchor="yeast-comp" title="Yeast Complementation Assay" icon="fas fa-bars"></AssayTitle>
-                <div class="content">
-                  <b-taglist attached>
-                    <b-tag size="is-medium" type="is-dark">Has Essential Yeast Paralogs</b-tag>
-                    <b-tag size="is-medium" type="is-info">
-                      <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
-                      <b-icon icon="fas fa-times" v-else></b-icon>
-                    </b-tag>
-                  </b-taglist>
-                  <li v-if="yeastHomologData">Yeast Synthetic Lethality:</li>
-                  <div class="card in-list has-table-padding" v-if="yeastHomologData">
-                    <b-table :data="yeastHomologData" :columns="yeastHomologColumns" narrowed></b-table>
-                  </div>
-                </div>
-              </div>
-
               <div v-if="hasAssay.human_comp">
-                <AssayTitle anchor="human-comp" title="Human Complementation Assay" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle
+                  anchor="human-comp"
+                  title="Human Complementation Assay"
+                  icon="fas fa-bars"
+                ></AssayTitle>
 
                 <div class="content" v-if="hasAssay.genome_crispr">
                   <RecordTitle title="GenomeCRISPR Records" reflink="/about#genome-crispr"></RecordTitle>
@@ -190,7 +184,10 @@
                             target="_blank"
                           >
                             <span>{{props.row.pubmed}} &nbsp;</span>
-                            <b-tag type="is-warning" v-show="tkoPubmed.includes(props.row.pubmed)">TKO</b-tag>
+                            <b-tag
+                              type="is-warning"
+                              v-show="tkoPubmed.includes(props.row.pubmed)"
+                            >TKO</b-tag>
                           </a>
                         </b-table-column>
 
@@ -296,6 +293,71 @@
                 </div>
               </div>
 
+              <div v-if="hasAssay.yeast_comp">
+                <AssayTitle
+                  anchor="yeast-comp"
+                  title="Yeast Complementation Assay"
+                  icon="fas fa-bars"
+                ></AssayTitle>
+                <div class="content">
+                  <b-taglist attached>
+                    <b-tag size="is-medium" type="is-dark">Has Essential Yeast Paralogs</b-tag>
+                    <b-tag size="is-medium" type="is-info">
+                      <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
+                      <b-icon icon="fas fa-times" v-else></b-icon>
+                    </b-tag>
+                  </b-taglist>
+                  <li v-if="yeastHomologData">Yeast Synthetic Lethality:</li>
+                  <div class="card in-list has-table-padding" v-if="yeastHomologData">
+                    <b-table :data="yeastHomologData" :columns="yeastHomologColumns" narrowed></b-table>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="hasAssay.over_expression">
+                <AssayTitle anchor="over-expression" title="Over Expression" icon="fas fa-bars"></AssayTitle>
+                <div class="content">
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table
+                      :data="overexprData"
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                      narrowed
+                    >
+                      <template slot-scope="props">
+                        <b-table-column field="taxonomy" label="Taxonomy">
+                          <b-tooltip
+                            type="is-info"
+                            animated
+                            dashed
+                            :active="getSpeciesName(props.row.taxonomy) != 'NA'"
+                            :label="getSpeciesName(props.row.taxonomy)"
+                          >
+                            <a
+                              :href="'https://www.ncbi.nlm.nih.gov/taxonomy/' + props.row.taxonomy"
+                              target="_blank"
+                            >{{props.row.taxonomy}}</a>
+                          </b-tooltip>
+                        </b-table-column>
+
+                        <b-table-column field="pubmed" label="Pubmed Source">
+                          <a
+                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
+                            target="_blank"
+                          >{{props.row.pubmed}}</a>
+                        </b-table-column>
+
+                        <b-table-column field="method" label="Assay">{{props.row.method}}</b-table-column>
+
+                        <b-table-column field="phenotype" label="Phenotype">{{props.row.phenotype}}</b-table-column>
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
+              </div>
+
               <div v-if="hasAssay.y2h">
                 <AssayTitle anchor="y2h" title="Yeast Two-Hybrid Assay" icon="fas fa-bars"></AssayTitle>
 
@@ -320,9 +382,17 @@
                 ></AssayTitle>
                 <div class="content">
                   <b-message type="is-info" has-icon>
-                    Due to restrictions in OMIM's <a href="https://www.omim.org/help/copyright" target="_blank">Copyright statement</a>, 
-                    MaveQuest is unable to display data obtained from OMIM database. 
-                    Please visit <a v-bind:href="'https://omim.org/entry/' + omimID" target="_blank">OMIM website (ID: {{omimID}})</a> for more details.
+                    Due to restrictions in OMIM's
+                    <a
+                      href="https://www.omim.org/help/copyright"
+                      target="_blank"
+                    >Copyright statement</a>,
+                    MaveQuest is unable to display data obtained from OMIM database.
+                    Please visit
+                    <a
+                      v-bind:href="'https://omim.org/entry/' + omimID"
+                      target="_blank"
+                    >OMIM website (ID: {{omimID}})</a> for more details.
                   </b-message>
                   <!-- <ExpandableList heading="OMIM Phenotype" :elements="omimPhenotype"></ExpandableList> -->
                 </div>
@@ -337,9 +407,17 @@
                 ></AssayTitle>
                 <div class="content">
                   <b-message type="is-info" has-icon>
-                    Due to restrictions in HGMD's <a href="http://www.hgmd.cf.ac.uk/docs/copyright.html" target="_blank">Copyright statement</a>, 
-                    MaveQuest is unable to display data obtained from HGMD database. 
-                    Please visit <a v-bind:href="'http://www.hgmd.cf.ac.uk/ac/gene.php?gene=' + geneName" target="_blank">HGMD website ({{geneName}})</a> for more details.
+                    Due to restrictions in HGMD's
+                    <a
+                      href="http://www.hgmd.cf.ac.uk/docs/copyright.html"
+                      target="_blank"
+                    >Copyright statement</a>,
+                    MaveQuest is unable to display data obtained from HGMD database.
+                    Please visit
+                    <a
+                      v-bind:href="'http://www.hgmd.cf.ac.uk/ac/gene.php?gene=' + geneName"
+                      target="_blank"
+                    >HGMD website ({{geneName}})</a> for more details.
                   </b-message>
                   <!-- <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList> -->
                 </div>
@@ -362,7 +440,12 @@
               </div>
 
               <div v-if="hasPhenotype.orphanet">
-                <AssayTitle anchor="orphanet" title="Orphanet Database" icon="fas fa-bars" reflink="/about#orphanet"></AssayTitle>
+                <AssayTitle
+                  anchor="orphanet"
+                  title="Orphanet Database"
+                  icon="fas fa-bars"
+                  reflink="/about#orphanet"
+                ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table :data="orphanetData" narrowed>
@@ -375,13 +458,16 @@
                           >{{props.row.id}}</a>
                         </b-table-column>
 
-                        <b-table-column field="disorder" label="Disorder" width="300">
-                          {{props.row.disorder}}
-                        </b-table-column>
+                        <b-table-column
+                          field="disorder"
+                          label="Disorder"
+                          width="300"
+                        >{{props.row.disorder}}</b-table-column>
 
-                        <b-table-column field="prevalence" label="Prevalence">
-                          {{props.row.prevalence}}
-                        </b-table-column>
+                        <b-table-column
+                          field="prevalence"
+                          label="Prevalence"
+                        >{{props.row.prevalence}}</b-table-column>
                       </template>
                     </b-table>
                   </div>
@@ -389,7 +475,12 @@
               </div>
 
               <div v-if="hasPhenotype.invitae">
-                <AssayTitle anchor="invitae" title="Invitae Panel Database" icon="fas fa-bars" reflink="/about#invitae"></AssayTitle>
+                <AssayTitle
+                  anchor="invitae"
+                  title="Invitae Panel Database"
+                  icon="fas fa-bars"
+                  reflink="/about#invitae"
+                ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table :data="invitaeData" narrowed>
@@ -401,9 +492,7 @@
                           >{{props.row.id}}</a>
                         </b-table-column>
 
-                        <b-table-column field="name" label="Test Name">
-                          {{props.row.name}}
-                        </b-table-column>
+                        <b-table-column field="name" label="Test Name">{{props.row.name}}</b-table-column>
 
                         <b-table-column field="panel" label="Panel">
                           <b-tag
@@ -420,18 +509,18 @@
 
               <div v-if="hasPhenotype.others">
                 <AssayTitle anchor="other-phenotype" title="Other Sources" icon="fas fa-bars"></AssayTitle>
-                
+
                 <div class="content">
                   <RecordTitle title="Dei et al. Phenotype" reflink="/about#deo-etal"></RecordTitle>
 
                   <b-taglist class="in-paragraph in-list">
-                      <b-tag
-                        size="is-medium"
-                        type="is-info"
-                        v-for="item in deoEtalPhenotype"
-                        :key="item"
-                      >{{item.toUpperCase()}}</b-tag>
-                    </b-taglist>
+                    <b-tag
+                      size="is-medium"
+                      type="is-info"
+                      v-for="item in deoEtalPhenotype"
+                      :key="item"
+                    >{{item.toUpperCase()}}</b-tag>
+                  </b-taglist>
                 </div>
               </div>
             </section>
@@ -456,10 +545,12 @@ const AssayTitle = {
     return (
       <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
         <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
-        <span id={this.anchor} class="is-size-4 is-anchor">{this.title} &nbsp;</span>
+        <span id={this.anchor} class="is-size-4 is-anchor">
+          {this.title} &nbsp;
+        </span>
         <a href={this.reflink} target="_blank" v-show={this.reflink}>
           <b-tag>
-            <b-icon icon="far fa-file-alt"></b-icon>
+            <b-icon icon="far fa-file-alt" />
             <span>Source</span>
           </b-tag>
         </a>
@@ -477,7 +568,7 @@ const RecordTitle = {
         <h4 class="title is-inline">{this.title} &nbsp;</h4>
         <a href={this.reflink} target="_blank">
           <b-tag>
-            <b-icon icon="far fa-file-alt"></b-icon>
+            <b-icon icon="far fa-file-alt" />
             <span>Source</span>
           </b-tag>
         </a>
@@ -502,7 +593,7 @@ export default {
   },
   mounted() {
     // Update highlighted navbar item
-    this.$emit('updateNav', 'search');
+    this.$emit("updateNav", "search");
 
     // Display loading animation
     const loadingComponent = this.$loading.open();
@@ -534,14 +625,8 @@ export default {
           this.hasAssay.any =
             json.hasOwnProperty("yeast_comp") ||
             json.hasOwnProperty("human_comp") ||
+            json.hasOwnProperty("over_expression") ||
             json.hasOwnProperty("y2h");
-
-          if (json.hasOwnProperty("yeast_comp")) {
-            // Yeast Complementation
-            this.hasAssay.yeast_comp = true;
-            this.yeastEssentiality = json.yeast_comp.yeast_essentiality;
-            this.yeastHomologData = json.yeast_comp.yeast_homolog_data;
-          }
 
           if (json.hasOwnProperty("human_comp")) {
             // Human Complementation
@@ -560,6 +645,19 @@ export default {
               this.hasAssay.genome_crispr = true;
               this.genomeCRISPRData = json.human_comp.genome_crispr_data;
             }
+          }
+
+          if (json.hasOwnProperty("over_expression")) {
+            // Over Expression
+            this.hasAssay.over_expression = true;
+            this.overexprData = json.over_expression;
+          }
+
+          if (json.hasOwnProperty("yeast_comp")) {
+            // Yeast Complementation
+            this.hasAssay.yeast_comp = true;
+            this.yeastEssentiality = json.yeast_comp.yeast_essentiality;
+            this.yeastHomologData = json.yeast_comp.yeast_homolog_data;
           }
 
           if (json.hasOwnProperty("y2h")) {
@@ -618,7 +716,7 @@ export default {
         response => {
           // Error handling
           this.showErrorComponent = true;
-          this.errorResponse = response;     
+          this.errorResponse = response;
         }
       )
       .then(() => {
@@ -641,6 +739,7 @@ export default {
         any: false,
         yeast_comp: false,
         human_comp: false,
+        over_expression: false,
         genome_rnai: false,
         genome_crispr: false,
         y2h: false
@@ -670,6 +769,7 @@ export default {
       genomeRNAiPhenotype: [],
       genomeRNAiData: [],
       genomeCRISPRData: [],
+      overexprData: [],
       omimPhenotype: [],
       hgmdPhenotype: [],
       cancerGeneCensusPhenotype: {
@@ -685,6 +785,22 @@ export default {
     visibilityChanged(visible) {
       // Position the table of contents absolutely so that it will stay on the screen
       this.isFloat = !visible;
+    },
+    getSpeciesName(taxonomy) {
+      let name = String;
+      switch (taxonomy) {
+        case "9606":
+          name = "Homo Sapiens";
+          break;
+        case "4932":
+          name = "Saccharomyces cerevisiae";
+          break;
+        default:
+          name = "NA";
+          break;
+      }
+
+      return name;
     }
   }
 };

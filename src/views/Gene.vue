@@ -172,7 +172,7 @@
                       narrowed
                     >
                       <template slot="bottom-left">
-                        <a href="/about#tko" target="_blank">
+                        <a href="/about#tko" target="_blank" v-if="genomeCRISPRData.filter(e => tkoPubmed.includes(e.pubmed)).length > 0">
                           <b-tag type="is-warning" class="cell-line">TKO</b-tag>Toronto Knockout Library &nbsp;
                         </a>
                       </template>

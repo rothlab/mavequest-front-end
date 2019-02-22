@@ -22,6 +22,7 @@
 
             <b-table
               :data="geneInfo"
+              :columns="columns"
               :loading="isLoading"
               :striped="true"
               :hoverable="true"
@@ -120,6 +121,12 @@ export default {
         limit: 20
       },
       geneInfo: [],
+      columns: [
+        { label: "Gene Name" },
+        { label: "Entrez ID" },
+        { label: "Potential Assay" },
+        { label: "Disease Phenotype" }
+      ],
       completeGeneInfo: [],
       isLoading: false,
       filter: {
@@ -166,6 +173,8 @@ export default {
                   this.geneWOPhenotype.push(element.gene_name);
                 }
               });
+
+              this.setSearchFilter();
             }
 
             // Give a warning if some genes are missing
@@ -269,10 +278,12 @@ export default {
         this.listGenes();
       }
     },
-    setSearchFilter(update) {
+    setSearchFilter(update = undefined) {
       // Capture changes on search filters
-      this.filter.hasAssay = update.hasAssay;
-      this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
+      if (update) {
+        this.filter.hasAssay = update.hasAssay;
+        this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
+      }
 
       // Call the API directly if we are listing all genes
       if (this.listAllGenes) {

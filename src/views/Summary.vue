@@ -353,6 +353,8 @@ export default {
           return "Yeast Complementation"
         case "human_comp":
           return "Human Complementation"
+        case "overexpression":
+          return "Over Expression"
         default:
           return tag.toUpperCase();
       }

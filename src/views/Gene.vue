@@ -15,14 +15,11 @@
             <aside class="menu" :class="{float: isFloat}">
               <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
               <ul class="menu-list" v-if="hasAssay.any">
-                <li v-if="hasAssay.human_comp">
-                  <a href="#human-comp">Human Complementation</a>
+                <li v-if="hasAssay.human_comp || hasAssay.yeast_comp">
+                  <a href="#comp">Complementation</a>
                 </li>
                 <li v-if="hasAssay.over_expression">
                   <a href="#over-expression">Over Expression</a>
-                </li>
-                <li v-if="hasAssay.yeast_comp">
-                  <a href="#yeast-comp">Yeast Complementation</a>
                 </li>
                 <li v-if="hasAssay.y2h">
                   <a href="#y2h">Yeast Two-Hybrid</a>
@@ -149,12 +146,8 @@
 
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
-              <div v-if="hasAssay.human_comp">
-                <AssayTitle
-                  anchor="human-comp"
-                  title="Human Complementation Assay"
-                  icon="fas fa-bars"
-                ></AssayTitle>
+              <div v-if="hasAssay.human_comp || hasAssay.yeast_comp">
+                <AssayTitle anchor="comp" title="Complementation Assay" icon="fas fa-bars"></AssayTitle>
 
                 <div class="content" v-if="hasAssay.genome_crispr">
                   <RecordTitle title="GenomeCRISPR Records" reflink="/about#genome-crispr"></RecordTitle>
@@ -172,7 +165,11 @@
                       narrowed
                     >
                       <template slot="bottom-left">
-                        <a href="/about#tko" target="_blank" v-if="genomeCRISPRData.filter(e => tkoPubmed.includes(e.pubmed)).length > 0">
+                        <a
+                          href="/about#tko"
+                          target="_blank"
+                          v-if="genomeCRISPRData.filter(e => tkoPubmed.includes(e.pubmed)).length > 0"
+                        >
                           <b-tag type="is-warning" class="cell-line">TKO</b-tag>Toronto Knockout Library &nbsp;
                         </a>
                       </template>
@@ -291,25 +288,49 @@
                     :elements="genomeRNAiPhenotype"
                   ></ExpandableList>
                 </div>
-              </div>
 
-              <div v-if="hasAssay.yeast_comp">
-                <AssayTitle
-                  anchor="yeast-comp"
-                  title="Yeast Complementation Assay"
-                  icon="fas fa-bars"
-                ></AssayTitle>
-                <div class="content">
+                <div class="content" v-if="hasAssay.yeast_comp">
                   <b-taglist attached>
-                    <b-tag size="is-medium" type="is-dark">Has Essential Yeast Paralogs</b-tag>
-                    <b-tag size="is-medium" type="is-info">
+                    <b-tag size="is-medium" type="is-info">Has Essential Yeast Paralogs</b-tag>
+                    <b-tag size="is-medium" type="is-grey">
                       <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
                       <b-icon icon="fas fa-times" v-else></b-icon>
                     </b-tag>
                   </b-taglist>
-                  <li v-if="yeastHomologData">Yeast Synthetic Lethality:</li>
+                </div>
+
+                <div class="content" v-if="yeastHomologData">
+                  <RecordTitle title="Yeast Synthetic Lethality"></RecordTitle>
+
                   <div class="card in-list has-table-padding" v-if="yeastHomologData">
-                    <b-table :data="yeastHomologData" :columns="yeastHomologColumns" narrowed></b-table>
+                    <b-table
+                      :data="yeastHomologData"
+                      narrowed
+                      paginated
+                      pagination-simple
+                    >
+                      <template slot-scope="props">
+                        <b-table-column field="yeast_homolog" label="Yeast Homolog">
+                          <b-tag 
+                            class="is-light is-size-6 cell-line"
+                            v-for="homolog in props.row.yeast_homolog.split(',')"
+                            v-bind:key="homolog"
+                          >{{homolog}}</b-tag>
+                        </b-table-column>
+                        <b-table-column field="synthetic_lethal_partners" label="Synthetic Lethal Partners">
+                          <div
+                            v-for="partners in props.row.synthetic_lethal_partners"
+                            v-bind:key="partners"
+                          >
+                            <b-tag
+                              class="is-light is-size-6 cell-line"
+                              v-for="partner in partners.split(',')"
+                              v-bind:key="partner"
+                              >{{partner}}</b-tag>
+                          </div>
+                        </b-table-column>
+                      </template>
+                    </b-table>
                   </div>
                 </div>
               </div>
@@ -562,18 +583,25 @@ const AssayTitle = {
 // Delare Record title
 const RecordTitle = {
   props: ["title", "reflink"],
-  render() {
+  render: function (createElement) {
+    let subElements= [
+      createElement("h4", { class: "title is-inline", style: "margin-right: 0.75rem"}, this.title)
+    ];
+
+    if (this.reflink) {
+      subElements.push(
+        createElement("a", { attrs: {href: this.reflink, target: "_blank" }}, [
+          createElement("b-tag", [
+            createElement("b-icon", { props: {icon: "far fa-file-alt" }}),
+            createElement("span", "Source")
+          ])
+        ])
+      )
+    }
+    
     return (
-      <div>
-        <h4 class="title is-inline">{this.title} &nbsp;</h4>
-        <a href={this.reflink} target="_blank">
-          <b-tag>
-            <b-icon icon="far fa-file-alt" />
-            <span>Source</span>
-          </b-tag>
-        </a>
-      </div>
-    );
+      createElement("div", subElements)
+    )
   }
 };
 
@@ -754,16 +782,6 @@ export default {
       },
       yeastEssentiality: false,
       yeastHomologData: [],
-      yeastHomologColumns: [
-        {
-          field: "yeast_homolog",
-          label: "Yeast Homolog"
-        },
-        {
-          field: "synthetic_lethal_partners",
-          label: "Synthetic Lethal Partners"
-        }
-      ],
       tkoPubmed: ["26627737", "28655737"],
       y2hInteractors: [],
       genomeRNAiPhenotype: [],
@@ -821,7 +839,6 @@ export default {
   border-radius: 8px;
   padding: 1rem;
 }
-
 /* Adaptive styling */
 @media all and (max-width: 768px) {
   .gene-card-adaptive {

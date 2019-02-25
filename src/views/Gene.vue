@@ -114,7 +114,7 @@
 
                       <div class="control">
                         <b-tag type="is-success">
-                          <b-tooltip :label="ensemblID">
+                          <b-tooltip :label="ensemblID" type="is-dark">
                             <a
                               v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
                               target="_blank"

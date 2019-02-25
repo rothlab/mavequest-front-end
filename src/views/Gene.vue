@@ -299,10 +299,10 @@
                   </b-taglist>
                 </div>
 
-                <div class="content" v-if="yeastHomologData">
+                <div class="content" v-if="yeastHomologData.length > 0">
                   <RecordTitle title="Yeast Synthetic Lethality"></RecordTitle>
 
-                  <div class="card in-list has-table-padding" v-if="yeastHomologData">
+                  <div class="card in-list has-table-padding">
                     <b-table
                       :data="yeastHomologData"
                       narrowed
@@ -336,7 +336,7 @@
               </div>
 
               <div v-if="hasAssay.over_expression">
-                <AssayTitle anchor="over-expression" title="Over Expression" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="over-expression" title="Over Expression Assay" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table

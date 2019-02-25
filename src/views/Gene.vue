@@ -72,71 +72,59 @@
 
                     <b-field grouped group-multiline class="gene-summary">
                       <div class="control">
-                        <b-taglist attached v-if="entrezID">
-                          <b-tag type="is-dark">Entrez</b-tag>
-                          <b-tag type="is-link">
+                        <b-tag type="is-link" v-if="entrezID">
                             <a
                               v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
                               target="_blank"
                               class="has-text-white"
                             >
-                              {{entrezID}}
+                              Entrez: {{entrezID}}
                               &nbsp;
                               <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
                             </a>
-                          </b-tag>
-                        </b-taglist>
+                        </b-tag>
                       </div>
 
                       <div class="control">
-                        <b-taglist attached v-if="omimID">
-                          <b-tag type="is-dark">OMIM</b-tag>
-                          <b-tag type="is-info">
+                        <b-tag type="is-info">
                             <a
                               v-bind:href="'https://omim.org/entry/' + omimID"
                               target="_blank"
                               class="has-text-white"
                             >
-                              {{omimID}}
+                              OMIM: {{omimID}}
                               &nbsp;
                               <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
                             </a>
                           </b-tag>
-                        </b-taglist>
                       </div>
 
                       <div class="control">
-                        <b-taglist attached v-if="ensemblID">
-                          <b-tag type="is-dark">Google Scholar</b-tag>
-                          <b-tag type="is-primary">
+                        <b-tag type="is-primary">
                             <a
                               v-bind:href="'https://scholar.google.com/scholar?q=' + geneName"
                               target="_blank"
                               class="has-text-white"
                             >
-                              {{geneName}}
-                              &nbsp;
+                              Google Scholar &nbsp;
                               <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
                             </a>
-                          </b-tag>
-                        </b-taglist>
+                        </b-tag>
                       </div>
 
                       <div class="control">
-                        <b-taglist attached v-if="ensemblID">
-                          <b-tag type="is-dark">Ensembl</b-tag>
-                          <b-tag type="is-success">
+                        <b-tag type="is-success">
+                          <b-tooltip :label="ensemblID">
                             <a
                               v-bind:href="'https://www.ensembl.org/Homo_sapiens/geneview?gene=' + ensemblID"
                               target="_blank"
                               class="has-text-white"
                             >
-                              {{ensemblID}}
+                              Ensembl
                               &nbsp;
                               <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                            </a>
+                            </a></b-tooltip>
                           </b-tag>
-                        </b-taglist>
                       </div>
                     </b-field>
                   </div>

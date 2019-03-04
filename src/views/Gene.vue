@@ -706,9 +706,9 @@ export default {
             // Cancer Census Phenotype
             this.hasPhenotype.cancer_census = true;
             this.cancerGeneCensusPhenotype.somatic =
-              json.cancer_census.cancer_census_somatic;
+              json.cancer_census.cancer_census_somatic ? json.cancer_census.cancer_census_somatic : this.cancerGeneCensusPhenotype.somatic;
             this.cancerGeneCensusPhenotype.germline =
-              json.cancer_census.cancer_census_germline;
+              json.cancer_census.cancer_census_germline ? json.cancer_census.cancer_census_germline : this.cancerGeneCensusPhenotype.germline;
           }
 
           if (json.hasOwnProperty("orphanet")) {

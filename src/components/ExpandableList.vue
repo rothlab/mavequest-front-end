@@ -39,7 +39,7 @@
           :key="item"
         >
           <b-tag class="is-danger gene-dominance-tag">Dominant</b-tag>
-          &nbsp;{{item.replace("{", "").replace("}", "")}}
+          <span class="is-capitalized">&nbsp;{{item.replace("{", "").replace("}", "")}}</span>
         </a>
 
         <a
@@ -48,7 +48,7 @@
           :key="item"
         >
           <b-tag class="is-warning gene-dominance-tag">Recessive</b-tag>
-          &nbsp;{{item.replace("{", "").replace("}", "")}}
+          <span class="is-capitalized">&nbsp;{{item.replace("{", "").replace("}", "")}}</span>
         </a>
 
         <a
@@ -56,7 +56,9 @@
           v-for="item in currentElements.filter(item => (!item.toLowerCase().includes(['recessive']) 
           && !item.toLowerCase().includes(['dominant'])) && item.toLowerCase().includes(filter))"
           :key="item"
-        >{{item.replace("{", "").replace("}", "")}}</a>
+        >
+          <span class="is-capitalized">&nbsp;{{item.replace("{", "").replace("}", "")}}</span>
+        </a>
       </div>
       <a class="panel-block is-paddingless"></a>
     </nav>
@@ -87,10 +89,11 @@ export default {
   mounted() {
     if (this.names) {
       // Filter out undefined tabs
-      this.tabNames = [this.names[this.elements.map(Boolean).indexOf(true)]];
+      const tabIndicesWithContent = this.elements.map(e => e.length > 0).indexOf(true);
+      this.tabNames = [this.names[tabIndicesWithContent]];
 
       this.isMultiPages = true;
-      this.changeActive(0);
+      this.changeActive(Math.min(tabIndicesWithContent));
     } else {
       this.currentElements = this.elements;
     }

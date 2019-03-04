@@ -24,6 +24,9 @@
                 <li>
                   <a href="#primary-data">Primary Data Source</a>
                 </li>
+                <li>
+                  <a href="#open-source">Open Source Products</a>
+                </li>
               </ul>
             </aside>
           </div>
@@ -98,7 +101,7 @@
               </span>
             </div>
 
-            <div class="content">
+            <div class="content para-spacing">
               <h2 id="primary-data" class="subtitle is-anchor">Primary Data Source</h2>
 
               <!-- Genome CRISPR -->
@@ -285,6 +288,31 @@
                   Copyright, Invitae Corporation.
                 </p>
               </div>
+            </div>
+
+            <div class="content">
+              <h2 id="open-source" class="subtitle is-anchor">Open Source Projects & Licenses</h2>
+
+              <span>
+                <p>
+                  MaveQuest is built with an array of Open Source projects. 
+                  Without technologies and supports from the Open Source community, it will be extremely difficult, if possible at all, to build MaveQuest.
+                </p>
+
+                <p>
+                  Specifically, MaveQuest benefits from the following major Open Source projects:
+                  <ul>
+                    <li><a href="https://vuejs.org/" target="_blank">Vue.js</a></li>
+                    <li><a href="https://buefy.org/" target="_blank">Buefy</a> and <a href="https://bulma.io/" target="_blank">Bulma</a></li>
+                    <li><a href="https://nodejs.org/" target="_blank">Node.js</a> and <a href="https://expressjs.com/" target="_blank">Express</a></li>
+                  </ul>
+                </p>
+
+                <p>
+                  A complete list of Open Source projects used and their licenses can be found 
+                  <a href="/third-party-licenses.html" target="_blank" rel="noopener noreferrer">here</a>.
+                </p>
+              </span>
             </div>
           </div>
         </div>

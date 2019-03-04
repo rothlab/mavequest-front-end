@@ -52,6 +52,9 @@ export default {
     }
   },
   mounted () {
+    // Update page title
+    document.title = `${process.env.VUE_APP_NAME} - ${process.env.VUE_APP_SUBTITLE}`;
+
     // Update highlighted navbar item
     this.$emit('updateNav', 'search');
   },

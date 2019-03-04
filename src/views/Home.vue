@@ -1,5 +1,5 @@
 <template>
-  <section class="hero is-info is-primary fill-screen">
+  <section class="hero is-info is-primary fill-screen is-bold">
     <div class="hero-body">
       <div class="container search-display">
         <h1 class="title">MaveQuest</h1>

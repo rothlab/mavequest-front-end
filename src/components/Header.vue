@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="hero is-info is-hidden-mobile">
+    <section class="hero is-info is-hidden-mobile is-bold">
       <div class="hero-body">
         <div class="container">
           <div class="level">

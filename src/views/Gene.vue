@@ -385,7 +385,7 @@
               <div v-if="hasPhenotype.omim">
                 <AssayTitle
                   anchor="omim"
-                  title="Online Mendelian Inheritance in Man (OMIM) Database"
+                  title="OMIM Database"
                   icon="fas fa-bars"
                   reflink="/about#omim"
                 ></AssayTitle>
@@ -410,7 +410,7 @@
               <div v-if="hasPhenotype.hgmd">
                 <AssayTitle
                   anchor="hgmd"
-                  title="The Human Gene Mutation Database (HGMD)"
+                  title="HGMD Database"
                   icon="fas fa-bars"
                   reflink="/about#hgmd"
                 ></AssayTitle>
@@ -457,7 +457,12 @@
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
-                    <b-table :data="orphanetData" narrowed>
+                    <b-table :data="orphanetData" 
+                      narrowed
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable>
                       <template slot-scope="props">
                         <b-table-column field="id" label="ORPHA ID" width="150">
                           <a
@@ -492,7 +497,13 @@
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
-                    <b-table :data="invitaeData" narrowed>
+                    <b-table
+                      :data="invitaeData"
+                      narrowed 
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable>
                       <template slot-scope="props">
                         <b-table-column field="id" label="Test ID">
                           <a

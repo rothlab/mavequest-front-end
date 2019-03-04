@@ -10,7 +10,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
     "ajv": "^6.8.1",
-    "buefy": "^0.7.2",
+    "buefy": "^0.7.3",
     "bulma-divider": "^2.0.1",
     "cytoscape-panzoom": "^2.5.3",
     "jquery": "^3.3.1",

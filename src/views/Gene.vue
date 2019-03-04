@@ -158,7 +158,9 @@
                           target="_blank"
                           v-if="genomeCRISPRData.filter(e => tkoPubmed.includes(e.pubmed)).length > 0"
                         >
-                          <b-tag type="is-warning" class="cell-line">TKO</b-tag>Toronto Knockout Library &nbsp;
+                          <b-tag type="is-warning" class="cell-line">TKO</b-tag>
+                          <span>Toronto Knockout Library &nbsp;</span>
+                          <RefBadge reflink="/about#tko"></RefBadge>
                         </a>
                       </template>
 
@@ -579,7 +581,22 @@ const AssayTitle = {
   }
 };
 
-// Delare Record title
+// Declare reference badge
+const RefBadge = {
+  props: ["reflink"],
+  render: function (createElement) {
+    return (
+      createElement("a", { attrs: {href: this.reflink, target: "_blank" }}, [
+          createElement("b-tag", [
+            createElement("b-icon", { props: {icon: "far fa-file-alt" }}),
+            createElement("span", "Source")
+          ])
+        ])
+    )
+  }
+}
+
+// Declare Record title
 const RecordTitle = {
   props: ["title", "reflink"],
   render: function (createElement) {
@@ -588,14 +605,7 @@ const RecordTitle = {
     ];
 
     if (this.reflink) {
-      subElements.push(
-        createElement("a", { attrs: {href: this.reflink, target: "_blank" }}, [
-          createElement("b-tag", [
-            createElement("b-icon", { props: {icon: "far fa-file-alt" }}),
-            createElement("span", "Source")
-          ])
-        ])
-      )
+      subElements.push(RefBadge.render(createElement))
     }
     
     return (
@@ -612,6 +622,7 @@ export default {
     ExpandableList,
     AssayTitle,
     RecordTitle,
+    RefBadge,
     CytoscapeView,
     ErrorView
   },

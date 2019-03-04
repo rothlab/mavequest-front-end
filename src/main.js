@@ -42,7 +42,7 @@ Vue.use(Buefy, {
   router,
   autoTracking: {
     exception: true,
-    exceptionLogs: false
+    exceptionLogs: true
   },
   debug: {
     sendHitTask: process.env.NODE_ENV === 'production'

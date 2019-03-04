@@ -673,7 +673,7 @@ export default {
             // Yeast Complementation
             this.hasAssay.yeast_comp = true;
             this.yeastEssentiality = json.yeast_comp.yeast_essentiality;
-            this.yeastHomologData = json.yeast_comp.yeast_homolog_data;
+            this.yeastHomologData = json.yeast_comp.yeast_homolog_data ? json.yeast_comp.yeast_homolog_data : this.yeastHomologData;
           }
 
           if (json.hasOwnProperty("y2h")) {

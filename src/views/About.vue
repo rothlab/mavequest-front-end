@@ -364,7 +364,7 @@ export default {
     },
     scrollToElement(element) {
       const option = {
-        easing: "ease-in",
+        easing: "ease-in-out",
         offset: -60,
         force: true,
         cancelable: true,

@@ -56,14 +56,22 @@
                     class="assay-phenotype"
                     v-for="assay in props.row.potential_assay"
                     :key="assay.id"
-                  >{{ formatTag(assay) }}</b-tag>
+                  >
+                    <a v-bind:href="'gene/' + props.row.gene_name + '#' + assay" target="_blank">
+                      {{ formatTag(assay) }}
+                    </a>
+                  </b-tag>
                 </b-table-column>
                 <b-table-column field="disease_phenotype" label="Disease Phenotype">
                   <b-tag
                     class="assay-phenotype"
                     v-for="phenotype in props.row.disease_phenotype"
                     :key="phenotype.id"
-                  >{{ formatTag(phenotype) }}</b-tag>
+                  >
+                    <a v-bind:href="'gene/' + props.row.gene_name + '#' + phenotype" target="_blank">
+                      {{ formatTag(phenotype) }}
+                    </a>
+                  </b-tag>
                 </b-table-column>
               </template>
             </b-table>

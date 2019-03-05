@@ -34,10 +34,10 @@
                   <a href="#hgmd">HGMD</a>
                 </li>
                 <li v-if="hasPhenotype.cancer_census">
-                  <a href="#cancer-census">Cancer Gene Census</a>
+                  <a href="#sanger">Cancer Gene Census</a>
                 </li>
                 <li v-if="hasPhenotype.orphanet">
-                  <a href="#orphanet">Orphanet</a>
+                  <a href="#orpha">Orphanet</a>
                 </li>
                 <li v-if="hasPhenotype.invitae">
                   <a href="#invitae">Invitae</a>
@@ -137,13 +137,10 @@
               <div v-if="hasAssay.human_comp || hasAssay.yeast_comp">
                 <AssayTitle anchor="comp" title="Complementation Assay" icon="fas fa-bars"></AssayTitle>
 
-                <div class="content" v-if="hasAssay.genome_crispr">
+                <div id="genome_crispr" class="content" v-if="hasAssay.genome_crispr">
                   <RecordTitle title="GenomeCRISPR Records" reflink="/about#genome-crispr"></RecordTitle>
 
-                  <div
-                    class="card has-table-padding in-paragraph in-list"
-                    v-if="hasAssay.genome_crispr"
-                  >
+                  <div class="card has-table-padding in-paragraph in-list">
                     <b-table
                       :data="genomeCRISPRData"
                       paginated
@@ -218,7 +215,7 @@
                   </div>
                 </div>
 
-                <div class="content" v-if="hasAssay.genome_rnai">
+                <div id="genome_rnai" class="content" v-if="hasAssay.genome_rnai">
                   <RecordTitle title="GenomeRNAi Records" reflink="/about#genome-rnai"></RecordTitle>
 
                   <div class="card has-table-padding in-paragraph in-list">
@@ -279,7 +276,7 @@
                   ></ExpandableList>
                 </div>
 
-                <div class="content" v-if="hasAssay.yeast_comp">
+                <div id="yeast_comp" class="content" v-if="hasAssay.yeast_comp">
                   <b-taglist attached>
                     <b-tag size="is-medium" type="is-info">Has Essential Yeast Paralogs</b-tag>
                     <b-tag size="is-medium" type="is-grey">
@@ -325,7 +322,7 @@
                 </div>
               </div>
 
-              <div v-if="hasAssay.over_expression">
+              <div id="overexpression" v-if="hasAssay.over_expression">
                 <AssayTitle anchor="over-expression" title="Over Expression Assay" icon="fas fa-bars"></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -436,7 +433,7 @@
 
               <div v-if="hasPhenotype.cancer_census">
                 <AssayTitle
-                  anchor="cancer-census"
+                  anchor="sanger"
                   title="Cancer Gene Census Database"
                   icon="fas fa-bars"
                   reflink="/about#cancer-census"
@@ -452,7 +449,7 @@
 
               <div v-if="hasPhenotype.orphanet">
                 <AssayTitle
-                  anchor="orphanet"
+                  anchor="orpha"
                   title="Orphanet Database"
                   icon="fas fa-bars"
                   reflink="/about#orphanet"
@@ -532,8 +529,8 @@
               <div v-if="hasPhenotype.others">
                 <AssayTitle anchor="other-phenotype" title="Other Sources" icon="fas fa-bars"></AssayTitle>
 
-                <div class="content">
-                  <RecordTitle title="Dei et al. Phenotype" reflink="/about#deo-etal"></RecordTitle>
+                <div id="deo_etal" class="content">
+                  <RecordTitle title="Deo et al. Phenotype" reflink="/about#deo-etal"></RecordTitle>
 
                   <b-taglist class="in-paragraph in-list">
                     <b-tag
@@ -586,13 +583,20 @@ const RefBadge = {
   props: ["reflink"],
   render: function (createElement) {
     return (
-      createElement("a", { attrs: {href: this.reflink, target: "_blank" }}, [
+      this.constructElement(this.reflink, createElement)
+    )
+  },
+  methods: {
+    constructElement: function(reflink, createElement) {
+      return (
+        createElement("a", { attrs: {href: reflink, target: "_blank" }}, [
           createElement("b-tag", [
             createElement("b-icon", { props: {icon: "far fa-file-alt" }}),
             createElement("span", "Source")
           ])
         ])
-    )
+      )
+    }
   }
 }
 
@@ -605,7 +609,7 @@ const RecordTitle = {
     ];
 
     if (this.reflink) {
-      subElements.push(RefBadge.render(createElement))
+      subElements.push(RefBadge.methods.constructElement(this.reflink, createElement))
     }
     
     return (
@@ -760,6 +764,11 @@ export default {
       .then(() => {
         // Close loading animation
         loadingComponent.close();
+
+        // Scroll to the element if route has is set
+        if (this.$route.hash) {
+          this.scrollToElement(this.$route.hash);
+        }
       });
   },
   data() {
@@ -829,7 +838,18 @@ export default {
       }
 
       return name;
-    }
+    },
+    scrollToElement(element) {
+      const option = {
+        easing: "ease-in",
+        offset: -60,
+        force: true,
+        cancelable: true,
+        x: false,
+        y: true
+      };
+      this.$scrollTo(element, option);
+    },
   }
 };
 </script>

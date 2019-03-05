@@ -310,7 +310,7 @@
 
                 <p>
                   A complete list of Open Source projects used and their licenses can be found 
-                  <a href="/third-party-licenses.html" target="_blank" rel="noopener noreferrer">here</a>.
+                  <a href="/THIRD-PARTY-LICENSES.html" target="_blank" rel="noopener noreferrer">here</a>.
                 </p>
               </span>
             </div>

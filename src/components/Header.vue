@@ -38,6 +38,19 @@ export default {
     title: String,
     subtitle: String,
     genes: Array
+  },
+  methods: {
+    updatePageTitle() {
+      document.title = `${this.title} | ${process.env.VUE_APP_NAME} - ${process.env.VUE_APP_SUBTITLE}`;
+    }
+  },
+  mounted() {
+    // Update page title
+    this.updatePageTitle();
+  },
+  beforeUpdate() {
+    // Update page title
+    this.updatePageTitle();
   }
 };
 </script>

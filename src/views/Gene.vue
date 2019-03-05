@@ -71,7 +71,7 @@
                     </p>
 
                     <b-field grouped group-multiline class="gene-summary">
-                      <div class="control">
+                      <div class="control" v-if="entrezID">
                         <b-tag type="is-link" v-if="entrezID">
                             <a
                               v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
@@ -85,7 +85,7 @@
                         </b-tag>
                       </div>
 
-                      <div class="control">
+                      <div class="control" v-if="omimID">
                         <b-tag type="is-info">
                             <a
                               v-bind:href="'https://omim.org/entry/' + omimID"
@@ -99,10 +99,10 @@
                           </b-tag>
                       </div>
 
-                      <div class="control">
+                      <div class="control" v-if="geneName">
                         <b-tag type="is-primary">
                             <a
-                              v-bind:href="'https://scholar.google.com/scholar?q=' + geneName"
+                              v-bind:href="'https://scholar.google.com/scholar?q=' + geneName + ' gene'"
                               target="_blank"
                               class="has-text-white"
                             >
@@ -112,7 +112,7 @@
                         </b-tag>
                       </div>
 
-                      <div class="control">
+                      <div class="control" v-if="ensemblID">
                         <b-tag type="is-success">
                           <b-tooltip :label="ensemblID" type="is-dark">
                             <a
@@ -380,7 +380,7 @@
               </div>
             </section>
 
-            <div class="is-divider" v-if="hasAssay.any"></div>
+            <div class="is-divider" v-if="hasPhenotype.any"></div>
 
             <section class="section is-paddingless" v-if="hasPhenotype.any">
               <h1 class="title">Disease Phenotype</h1>

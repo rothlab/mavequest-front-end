@@ -1,6 +1,6 @@
 {
   "name": "mavequest",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
-    "ajv": "^6.8.1",
     "buefy": "^0.7.3",
     "bulma-divider": "^2.0.1",
     "cytoscape-panzoom": "^2.5.3",
@@ -20,7 +19,6 @@
     "vue-backtotop": "^1.6.1",
     "vue-cytoscape": "^0.1.2",
     "vue-observe-visibility": "^0.4.3",
-    "vue-resize": "^0.4.5",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.2",
     "vue-scrollto": "^2.13.0"

@@ -12,7 +12,6 @@ import VueObserveVisibility from 'vue-observe-visibility'
 import BackToTop from 'vue-backtotop'
 import VueResource from 'vue-resource'
 import VueCytoscape from 'vue-cytoscape'
-import VueResize from 'vue-resize'
 import VueScrollTo from 'vue-scrollto'
 import VueAnalytics from 'vue-analytics'
 
@@ -35,7 +34,6 @@ Vue.use(Buefy, {
 .use(BackToTop)
 .use(VueResource)
 .use(VueCytoscape)
-.use(VueResize)
 .use(VueScrollTo)
 .use(VueAnalytics, {
   id: 'UA-133761986-1',

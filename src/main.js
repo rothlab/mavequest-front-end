@@ -1,6 +1,17 @@
 // Import Vue basics
 import Vue from 'vue'
 import router from './router'
+import * as Sentry from '@sentry/browser'
+
+// Register error handler
+Sentry.init({
+  dsn: 'https://2fca57c8cda5499086923120812e3b9f@sentry.io/1410585',
+  release: process.env.GIT_COMMITHASH,
+  integrations: [new Sentry.Integrations.Vue({ 
+    Vue,
+    attachProps: true
+  })]
+})
 
 // Import UI framework related libraries
 import Buefy from 'buefy'
@@ -13,7 +24,7 @@ import BackToTop from 'vue-backtotop'
 import VueResource from 'vue-resource'
 import VueCytoscape from 'vue-cytoscape'
 import VueScrollTo from 'vue-scrollto'
-import VueAnalytics from 'vue-analytics'
+// import VueAnalytics from 'vue-analytics'
 
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
@@ -35,17 +46,17 @@ Vue.use(Buefy, {
 .use(VueResource)
 .use(VueCytoscape)
 .use(VueScrollTo)
-.use(VueAnalytics, {
-  id: 'UA-133761986-1',
-  router,
-  autoTracking: {
-    exception: true,
-    exceptionLogs: true
-  },
-  debug: {
-    sendHitTask: process.env.NODE_ENV === 'production'
-  }
-});
+// .use(VueAnalytics, {
+//   id: 'UA-133761986-1',
+//   router,
+//   autoTracking: {
+//     exception: true
+//   },
+//   debug: {
+//     enabled: true
+//     // sendHitTask: process.env.NODE_ENV === 'production'
+//   }
+// });
 
 new Vue({
   router,

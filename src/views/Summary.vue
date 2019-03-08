@@ -106,7 +106,6 @@ export default {
       this.listGenes();
     } else {
       // Query gene info from the API
-      this.title = "Search Result";
       this.setGeneInfo();
     }
   },
@@ -114,6 +113,11 @@ export default {
     // Set gene names and query again when the page is about to be updated (when user tries to search again in the summary page)
     this.setGenesFromQuery(to.query);
     this.setGeneInfo();
+
+    // Reset display parameters
+    this.showErrorComponent = false;
+    this.errorResponse = undefined;
+
     next();
   },
   data() {
@@ -147,6 +151,8 @@ export default {
   },
   methods: {
     setGeneInfo() {
+      this.title = "Search Results";
+
       // Set the table to loading status
       this.isLoading = true;
 
@@ -199,7 +205,7 @@ export default {
 
             // If nothing found, show an error panel
             if (this.completeGeneInfo.length < 1) {
-              this.errorResponse = {status: 404};
+              this.errorResponse = { status: 404 };
               this.showErrorComponent = true;
             }
           },
@@ -220,12 +226,9 @@ export default {
 
       // Check for a valid filter
       if (!(this.filter.hasAssay || this.filter.hasDiseasePhenotype)) {
-        this.$snackbar.open({
-          message: "No filters were specified.",
-          type: "is-error",
-          position: "is-top",
-          actionText: "Dismiss"
-        });
+        this.title = "Gene Summary"
+        this.showErrorComponent = true;
+        this.errorResponse = "No filters were specified.";
         return;
       }
 
@@ -271,7 +274,7 @@ export default {
           response => {
             // Error handling
             this.showErrorComponent = true;
-            this.errorResponse = response;
+            this.errorResponse = { response: response };
           }
         )
         .then(() => {

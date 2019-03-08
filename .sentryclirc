@@ -1,6 +1,6 @@
-[auth]                        
-token = f26ce287dabe44b0ba997b2a6934adf0db70b518e47a483eb2442727e037c3b6
-
 [defaults]
-org=roth-lab
 project=mavequest
+org=roth-lab
+
+[auth]
+token=f03c80eaad83455997a50624dd4e04a851307de49848476ebed685c01669453c

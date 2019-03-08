@@ -5,12 +5,14 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "deploy": "@powershell -ExecutionPolicy Unrestricted -Command ./sentry-sync.ps1 && gcloud app deploy",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
     "@sentry/browser": "^4.6.4",
-    "@sentry/webpack-plugin": "^1.6.2",
+    "@sentry/cli": "^1.40.0",
+    "ajv": "^6.10.0",
     "buefy": "^0.7.3",
     "bulma-divider": "^2.0.1",
     "cytoscape-panzoom": "^2.5.3",

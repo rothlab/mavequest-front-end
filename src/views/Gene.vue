@@ -132,6 +132,11 @@
               </div>
             </section>
 
+            <!-- No-info banner -->
+            <section v-if="!hasAssay.any && !isLoading">
+              <ErrorView icon="fas fa-file" response="No Potential Assays or Phenotypes Found"></ErrorView>
+            </section>
+
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
               <div v-if="hasAssay.human_comp || hasAssay.yeast_comp">
@@ -764,6 +769,7 @@ export default {
       .then(() => {
         // Close loading animation
         loadingComponent.close();
+        this.isLoading = false;
 
         // Scroll to the element if route has is set
         if (this.$route.hash) {
@@ -774,6 +780,7 @@ export default {
   data() {
     return {
       isExpandDetail: false,
+      isLoading: true,
       showErrorComponent: false,
       errorResponse: undefined,
       isFloat: false,

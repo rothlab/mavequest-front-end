@@ -7,4 +7,4 @@ $VERSION = .\node_modules\.bin\sentry-cli releases propose-version
 .\node_modules\.bin\sentry-cli releases set-commits --auto $VERSION
 
 # Upload source maps
-.\node_modules\.bin\sentry-cli releases files $VERSION upload-sourcemaps /dist/js
+.\node_modules\.bin\sentry-cli releases files $VERSION upload-sourcemaps dist/js --rewrite

@@ -133,7 +133,7 @@
             </section>
 
             <!-- No-info banner -->
-            <section v-if="!hasAssay.any && !isLoading">
+            <section v-if="(!hasAssay.any && !hasPhenotype.any) && !isLoading">
               <ErrorView icon="fas fa-file" response="No Potential Assays or Phenotypes Found"></ErrorView>
             </section>
 
@@ -719,6 +719,7 @@ export default {
             json.hasOwnProperty("hgmd") ||
             json.hasOwnProperty("cancer_census") ||
             json.hasOwnProperty("orphanet") ||
+            json.hasOwnProperty("invitae") ||
             json.hasOwnProperty("deo_etal");
 
           if (json.hasOwnProperty("omim")) {

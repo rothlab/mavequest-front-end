@@ -283,10 +283,11 @@
 
                 <div id="yeast_comp" class="content" v-if="hasAssay.yeast_comp">
                   <b-taglist attached>
-                    <b-tag size="is-medium" type="is-info">Has Essential Yeast Paralogs</b-tag>
+                    <b-tag size="is-medium" type="is-info">Has Essential Yeast Orthologs</b-tag>
                     <b-tag size="is-medium" type="is-grey">
                       <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
                       <b-icon icon="fas fa-times" v-else></b-icon>
+                      <span>{{yeastEssentiality == ture ? "Yes" : "No"}}</span>
                     </b-tag>
                   </b-taglist>
                 </div>

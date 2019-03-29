@@ -133,7 +133,7 @@
             </section>
 
             <!-- No-info banner -->
-            <section v-if="!hasAssay.any && !isLoading">
+            <section v-if="(!hasAssay.any && !hasPhenotype.any) && !isLoading">
               <ErrorView icon="fas fa-file" response="No Potential Assays or Phenotypes Found"></ErrorView>
             </section>
 
@@ -283,10 +283,11 @@
 
                 <div id="yeast_comp" class="content" v-if="hasAssay.yeast_comp">
                   <b-taglist attached>
-                    <b-tag size="is-medium" type="is-info">Has Essential Yeast Paralogs</b-tag>
+                    <b-tag size="is-medium" type="is-info">Has Essential Yeast Orthologs</b-tag>
                     <b-tag size="is-medium" type="is-grey">
                       <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
                       <b-icon icon="fas fa-times" v-else></b-icon>
+                      <span>{{yeastEssentiality == ture ? "Yes" : "No"}}</span>
                     </b-tag>
                   </b-taglist>
                 </div>
@@ -719,6 +720,7 @@ export default {
             json.hasOwnProperty("hgmd") ||
             json.hasOwnProperty("cancer_census") ||
             json.hasOwnProperty("orphanet") ||
+            json.hasOwnProperty("invitae") ||
             json.hasOwnProperty("deo_etal");
 
           if (json.hasOwnProperty("omim")) {

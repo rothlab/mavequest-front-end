@@ -194,23 +194,15 @@
 
                         <b-table-column field="cellline" label="Cell Lines">
                           <ExpandableRow :elements="props.row.cellline" 
-                           preview_items="5">
-                            </ExpandableRow>
+                           preview_items="5"></ExpandableRow>
                         </b-table-column>
-                      </template>
-
-                      <template slot="detail" slot-scope="props">
-                        <b-tag
-                          class="is-light is-size-6 cell-line"
-                          v-for="cell in props.row.cellline"
-                          v-bind:key="cell"
-                        >{{cell}}</b-tag>
                       </template>
                     </b-table>
                   </div>
 
-                <div id="genome_rnai" class="content" v-if="hasAssay.genome_rnai">
-                  <RecordTitle title="GenomeRNAi Records" reflink="/about#genome-rnai"></RecordTitle>
+                <div v-if="hasAssay.genome_rnai">
+                  <AssayTitle anchor="genome_rnai" title="GenomeRNAi" 
+                  icon="fas fa-bars" reflink="/about#genome-rnai"></AssayTitle>
 
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table
@@ -221,6 +213,11 @@
                       hoverable
                       narrowed
                     >
+
+                      <template slot="bottom-left">
+                        Hits: {{genomeRNAiData.length}}; Total RNAi experiments: {{genomeRNAiTotalEntries}}
+                      </template>
+
                       <template slot-scope="props">
                         <b-table-column field="id" label="ID" width="150">
                           <a
@@ -229,45 +226,29 @@
                           >{{props.row.id}}</a>
                         </b-table-column>
 
-                        <b-table-column field="pubmed" label="Pubmed Source" width="150">
+                        <b-table-column field="source" label="Pubmed Source" width="150">
                           <a
-                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
+                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
                             target="_blank"
-                          >{{props.row.pubmed}}</a>
+                          >{{props.row.source}}</a>
                         </b-table-column>
 
-                        <b-table-column field="cellline" label="Cell Lines">
-                          <!-- Less than five cell lines -->
-                          <div v-if="props.row.cellline.length <= 5">
-                            <b-tag
-                              class="is-light cell-line"
-                              v-for="cell in props.row.cellline"
-                              v-bind:key="cell"
-                            >{{cell}}</b-tag>
-                          </div>
-
-                          <!-- More than five cell lines -->
-                          <div v-if="props.row.cellline.length > 5">
-                            <ExpandableRow :elements="props.row.cellline"></ExpandableRow>
+                        <b-table-column field="cellline" label="Cell Line" width="120">
+                          <b-tooltip v-if="props.row.cellline.length > 20" 
+                            :label="props.row.cellline" type="is-dark">
+                            {{props.row.cellline.substring(0,20) + '...'}}
+                          </b-tooltip>
+                          <div v-else>
+                            {{props.row.cellline}}
                           </div>
                         </b-table-column>
-                      </template>
 
-                      <template slot="detail" slot-scope="props">
-                        <b-tag
-                          class="is-light is-size-6 cell-line"
-                          v-for="cell in props.row.cellline"
-                          v-bind:key="cell"
-                        >{{cell}}</b-tag>
+                        <b-table-column field="phenotype" label="Phenotype">
+                          {{props.row.phenotype.join(', ')}}
+                        </b-table-column>
                       </template>
                     </b-table>
                   </div>
-
-                  <ExpandableList
-                    class="in-paragraph in-list"
-                    heading="GenomeRNAi Phenotype"
-                    :elements="genomeRNAiPhenotype"
-                  ></ExpandableList>
                 </div>
 
                 <div id="yeast_comp" class="content" v-if="hasAssay.yeast_comp">
@@ -657,7 +638,8 @@ export default {
           if (json.hasOwnProperty('genome_rnai')) {
             this.hasAssay.any = true;
             this.hasAssay.genome_rnai = true;
-            this.genomeRNAiData = json.genome_rnai;
+            this.genomeRNAiData = json.genome_rnai.hits;
+            this.genomeRNAiTotalEntries = json.genome_rnai.total_entries;
           }
 
           if (json.hasOwnProperty('genome_crispr')) {
@@ -768,7 +750,7 @@ export default {
       yeastHomologData: [],
       tkoPubmed: ["26627737", "28655737"],
       y2hInteractors: [],
-      genomeRNAiPhenotype: [],
+      genomeRNAiTotalEntries: 0,
       genomeRNAiData: [],
       genomeCRISPRData: [],
       overexprData: [],

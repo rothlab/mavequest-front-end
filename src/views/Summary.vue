@@ -53,7 +53,7 @@
                 </b-table-column>
                 <b-table-column field="potential_assay" label="Potential Assay">
                   <b-tag
-                    class="assay-phenotype"
+                    class="assay-phenotype is-capitalized"
                     v-for="assay in props.row.potential_assay"
                     :key="assay.id"
                   >
@@ -64,7 +64,7 @@
                 </b-table-column>
                 <b-table-column field="disease_phenotype" label="Disease Phenotype">
                   <b-tag
-                    class="assay-phenotype"
+                    class="assay-phenotype is-capitalized"
                     v-for="phenotype in props.row.disease_phenotype"
                     :key="phenotype.id"
                   >
@@ -357,17 +357,19 @@ export default {
     formatTag(tag) {
       switch (tag) {
         case "genome_rnai":
-          return "RNAi";
+          return "RNAi"
         case "genome_crispr":
-          return "CRISPR KO";
-        case "yeast_comp":
-          return "Yeast Complementation"
-        case "human_comp":
-          return "Human Complementation"
+          return "CRISPR KO"
+        case "huri":
+          return "Interactome"
         case "overexpression":
           return "Over Expression"
+        case "omim":
+          return "OMIM"
+        case "cancer_census":
+          return "Cancer Census"
         default:
-          return tag.toUpperCase();
+          return tag;
       }
     }
   }

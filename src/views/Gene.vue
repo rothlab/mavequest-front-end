@@ -139,13 +139,11 @@
 
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
-              <div v-if="hasAssay.human_comp || hasAssay.yeast_comp">
-                <AssayTitle anchor="comp" title="Complementation Assay" icon="fas fa-bars"></AssayTitle>
+              <div v-if="hasAssay.genome_crispr">
+                <AssayTitle anchor="comp" title="GenomeCRISPR" 
+                  icon="fas fa-bars" reflink="/about#genome-crispr"></AssayTitle>
 
-                <div id="genome_crispr" class="content" v-if="hasAssay.genome_crispr">
-                  <RecordTitle title="GenomeCRISPR Records" reflink="/about#genome-crispr"></RecordTitle>
-
-                  <div class="card has-table-padding in-paragraph in-list">
+                <div class="card has-table-padding in-paragraph in-list">
                     <b-table
                       :data="genomeCRISPRData"
                       paginated
@@ -158,7 +156,8 @@
                         <a
                           href="/about#tko"
                           target="_blank"
-                          v-if="genomeCRISPRData.filter(e => tkoPubmed.includes(e.pubmed)).length > 0"
+                          v-if="genomeCRISPRData.filter(e => 
+                            tkoPubmed.includes(e.source)).length > 0"
                         >
                           <b-tag type="is-warning" class="cell-line">TKO</b-tag>
                           <span>Toronto Knockout Library &nbsp;</span>
@@ -167,15 +166,16 @@
                       </template>
 
                       <template slot-scope="props">
-                        <b-table-column field="pubmed" label="Pubmed Source" width="150">
+                        <b-table-column field="source" 
+                          label="Pubmed Source" width="150">
                           <a
-                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.pubmed"
-                            target="_blank"
+                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + 
+                              props.row.source" target="_blank"
                           >
-                            <span>{{props.row.pubmed}} &nbsp;</span>
+                            <span>{{props.row.source}} &nbsp;</span>
                             <b-tag
                               type="is-warning"
-                              v-show="tkoPubmed.includes(props.row.pubmed)"
+                              v-show="tkoPubmed.includes(props.row.source)"
                             >TKO</b-tag>
                           </a>
                         </b-table-column>
@@ -183,7 +183,7 @@
                         <b-table-column
                           field="condition"
                           label="Condition"
-                          width="200"
+                          width="300"
                         >{{props.row.condition}}</b-table-column>
 
                         <b-table-column
@@ -192,33 +192,22 @@
                           width="150"
                         >{{props.row.screen}}</b-table-column>
 
-                        <b-table-column field="cell_line" label="Cell Lines">
-                          <!-- Less than five cell lines -->
-                          <div v-if="props.row.cell_line.length <= 5">
-                            <b-tag
-                              class="is-light cell-line"
-                              v-for="cell in props.row.cell_line"
-                              v-bind:key="cell"
-                            >{{cell}}</b-tag>
-                          </div>
-
-                          <!-- More than five cell lines -->
-                          <div v-if="props.row.cell_line.length > 5">
-                            <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
-                          </div>
+                        <b-table-column field="cellline" label="Cell Lines">
+                          <ExpandableRow :elements="props.row.cellline" 
+                           preview_items="5">
+                            </ExpandableRow>
                         </b-table-column>
                       </template>
 
                       <template slot="detail" slot-scope="props">
                         <b-tag
                           class="is-light is-size-6 cell-line"
-                          v-for="cell in props.row.cell_line"
+                          v-for="cell in props.row.cellline"
                           v-bind:key="cell"
                         >{{cell}}</b-tag>
                       </template>
                     </b-table>
                   </div>
-                </div>
 
                 <div id="genome_rnai" class="content" v-if="hasAssay.genome_rnai">
                   <RecordTitle title="GenomeRNAi Records" reflink="/about#genome-rnai"></RecordTitle>
@@ -247,19 +236,19 @@
                           >{{props.row.pubmed}}</a>
                         </b-table-column>
 
-                        <b-table-column field="cell_line" label="Cell Lines">
+                        <b-table-column field="cellline" label="Cell Lines">
                           <!-- Less than five cell lines -->
-                          <div v-if="props.row.cell_line.length <= 5">
+                          <div v-if="props.row.cellline.length <= 5">
                             <b-tag
                               class="is-light cell-line"
-                              v-for="cell in props.row.cell_line"
+                              v-for="cell in props.row.cellline"
                               v-bind:key="cell"
                             >{{cell}}</b-tag>
                           </div>
 
                           <!-- More than five cell lines -->
-                          <div v-if="props.row.cell_line.length > 5">
-                            <ExpandableRow :elements="props.row.cell_line"></ExpandableRow>
+                          <div v-if="props.row.cellline.length > 5">
+                            <ExpandableRow :elements="props.row.cellline"></ExpandableRow>
                           </div>
                         </b-table-column>
                       </template>
@@ -267,7 +256,7 @@
                       <template slot="detail" slot-scope="props">
                         <b-tag
                           class="is-light is-size-6 cell-line"
-                          v-for="cell in props.row.cell_line"
+                          v-for="cell in props.row.cellline"
                           v-bind:key="cell"
                         >{{cell}}</b-tag>
                       </template>
@@ -652,115 +641,97 @@ export default {
       .then(
         response => {
           // Make sure the response has a non-empty body
-          if (
-            !response.hasOwnProperty("body") ||
-            typeof response.body == "string"
-          ) {
-            return;
-          }
-
+          if (!response.hasOwnProperty("body") || 
+            typeof response.body == "string") return;
           const json = response.body;
 
-          // TODO: validate response fingerprint
           // Populate basic information
           this.description = json.description;
           this.entrezID = json.entrez_id;
           this.ensemblID = json.ensembl_id;
           this.omimID = json.omim_id;
           this.alias = json.alias;
+          this.alias_description = json.alias_description;
 
           // Populate Assay information
-          this.hasAssay.any =
-            json.hasOwnProperty("yeast_comp") ||
-            json.hasOwnProperty("human_comp") ||
-            json.hasOwnProperty("over_expression") ||
-            json.hasOwnProperty("y2h");
-
-          if (json.hasOwnProperty("human_comp")) {
-            // Human Complementation
-            this.hasAssay.human_comp = true;
-
-            if (
-              json.human_comp.hasOwnProperty("genome_rnai_phenotype") &&
-              json.human_comp.hasOwnProperty("genome_rnai_data")
-            ) {
-              this.hasAssay.genome_rnai = true;
-              this.genomeRNAiPhenotype = json.human_comp.genome_rnai_phenotype;
-              this.genomeRNAiData = json.human_comp.genome_rnai_data;
-            }
-
-            if (json.human_comp.hasOwnProperty("genome_crispr_data")) {
-              this.hasAssay.genome_crispr = true;
-              this.genomeCRISPRData = json.human_comp.genome_crispr_data;
-            }
+          if (json.hasOwnProperty('genome_rnai')) {
+            this.hasAssay.any = true;
+            this.hasAssay.genome_rnai = true;
+            this.genomeRNAiData = json.genome_rnai;
           }
 
-          if (json.hasOwnProperty("over_expression")) {
-            // Over Expression
-            this.hasAssay.over_expression = true;
-            this.overexprData = json.over_expression;
+          if (json.hasOwnProperty('genome_crispr')) {
+            this.hasAssay.any = true;
+            this.hasAssay.genome_crispr = true;
+            this.genomeCRISPRData = json.genome_crispr;
           }
 
-          if (json.hasOwnProperty("yeast_comp")) {
-            // Yeast Complementation
-            this.hasAssay.yeast_comp = true;
-            this.yeastEssentiality = json.yeast_comp.yeast_essentiality;
-            this.yeastHomologData = json.yeast_comp.yeast_homolog_data ? json.yeast_comp.yeast_homolog_data : this.yeastHomologData;
-          }
+          // if (json.hasOwnProperty("over_expression")) {
+          //   // Over Expression
+          //   this.hasAssay.over_expression = true;
+          //   this.overexprData = json.over_expression;
+          // }
 
-          if (json.hasOwnProperty("y2h")) {
-            // Yeast Two-Hybrid
-            this.hasAssay.y2h = true;
-            this.y2hInteractors = json.y2h.y2h_interactors;
-          }
+          // if (json.hasOwnProperty("yeast_comp")) {
+          //   // Yeast Complementation
+          //   this.hasAssay.yeast_comp = true;
+          //   this.yeastEssentiality = json.yeast_comp.yeast_essentiality;
+          //   this.yeastHomologData = json.yeast_comp.yeast_homolog_data ? json.yeast_comp.yeast_homolog_data : this.yeastHomologData;
+          // }
 
-          // Populate Disease Phenotype information
-          this.hasPhenotype.any =
-            json.hasOwnProperty("omim") ||
-            json.hasOwnProperty("hgmd") ||
-            json.hasOwnProperty("cancer_census") ||
-            json.hasOwnProperty("orphanet") ||
-            json.hasOwnProperty("invitae") ||
-            json.hasOwnProperty("deo_etal");
+          // if (json.hasOwnProperty("y2h")) {
+          //   // Yeast Two-Hybrid
+          //   this.hasAssay.y2h = true;
+          //   this.y2hInteractors = json.y2h.y2h_interactors;
+          // }
 
-          if (json.hasOwnProperty("omim")) {
-            // OMIM Phenotype
-            this.hasPhenotype.omim = true;
-            this.omimPhenotype = json.omim.omim_phenotype;
-          }
+          // // Populate Disease Phenotype information
+          // this.hasPhenotype.any =
+          //   json.hasOwnProperty("omim") ||
+          //   json.hasOwnProperty("hgmd") ||
+          //   json.hasOwnProperty("cancer_census") ||
+          //   json.hasOwnProperty("orphanet") ||
+          //   json.hasOwnProperty("invitae") ||
+          //   json.hasOwnProperty("deo_etal");
 
-          if (json.hasOwnProperty("hgmd")) {
-            // HGMD Phenotype
-            this.hasPhenotype.hgmd = true;
-            this.hgmdPhenotype = json.hgmd.hgmd_phenotype;
-          }
+          // if (json.hasOwnProperty("omim")) {
+          //   // OMIM Phenotype
+          //   this.hasPhenotype.omim = true;
+          //   this.omimPhenotype = json.omim.omim_phenotype;
+          // }
 
-          if (json.hasOwnProperty("cancer_census")) {
-            // Cancer Census Phenotype
-            this.hasPhenotype.cancer_census = true;
-            this.cancerGeneCensusPhenotype.somatic =
-              json.cancer_census.cancer_census_somatic ? json.cancer_census.cancer_census_somatic : this.cancerGeneCensusPhenotype.somatic;
-            this.cancerGeneCensusPhenotype.germline =
-              json.cancer_census.cancer_census_germline ? json.cancer_census.cancer_census_germline : this.cancerGeneCensusPhenotype.germline;
-          }
+          // if (json.hasOwnProperty("hgmd")) {
+          //   // HGMD Phenotype
+          //   this.hasPhenotype.hgmd = true;
+          //   this.hgmdPhenotype = json.hgmd.hgmd_phenotype;
+          // }
 
-          if (json.hasOwnProperty("orphanet")) {
-            // Orphanet Phenotype
-            this.hasPhenotype.orphanet = true;
-            this.orphanetData = json.orphanet.orphanet_data;
-          }
+          // if (json.hasOwnProperty("cancer_census")) {
+          //   // Cancer Census Phenotype
+          //   this.hasPhenotype.cancer_census = true;
+          //   this.cancerGeneCensusPhenotype.somatic =
+          //     json.cancer_census.cancer_census_somatic ? json.cancer_census.cancer_census_somatic : this.cancerGeneCensusPhenotype.somatic;
+          //   this.cancerGeneCensusPhenotype.germline =
+          //     json.cancer_census.cancer_census_germline ? json.cancer_census.cancer_census_germline : this.cancerGeneCensusPhenotype.germline;
+          // }
 
-          if (json.hasOwnProperty("invitae")) {
-            // Invitiae Panel
-            this.hasPhenotype.invitae = true;
-            this.invitaeData = json.invitae.invitae_panel;
-          }
+          // if (json.hasOwnProperty("orphanet")) {
+          //   // Orphanet Phenotype
+          //   this.hasPhenotype.orphanet = true;
+          //   this.orphanetData = json.orphanet.orphanet_data;
+          // }
 
-          if (json.hasOwnProperty("deo_etal")) {
-            // Deo et. al Phenotype
-            this.hasPhenotype.others = true;
-            this.deoEtalPhenotype = json.deo_etal.deo_etal_phenotype;
-          }
+          // if (json.hasOwnProperty("invitae")) {
+          //   // Invitiae Panel
+          //   this.hasPhenotype.invitae = true;
+          //   this.invitaeData = json.invitae.invitae_panel;
+          // }
+
+          // if (json.hasOwnProperty("deo_etal")) {
+          //   // Deo et. al Phenotype
+          //   this.hasPhenotype.others = true;
+          //   this.deoEtalPhenotype = json.deo_etal.deo_etal_phenotype;
+          // }
         },
         response => {
           // Error handling
@@ -791,23 +762,8 @@ export default {
       ensemblID: "",
       omimID: "",
       alias: [],
-      hasAssay: {
-        any: false,
-        yeast_comp: false,
-        human_comp: false,
-        over_expression: false,
-        genome_rnai: false,
-        genome_crispr: false,
-        y2h: false
-      },
-      hasPhenotype: {
-        any: false,
-        omim: false,
-        hgmd: false,
-        cancer_census: false,
-        orphanet: false,
-        others: false
-      },
+      hasAssay: {},
+      hasPhenotype: {},
       yeastEssentiality: false,
       yeastHomologData: [],
       tkoPubmed: ["26627737", "28655737"],

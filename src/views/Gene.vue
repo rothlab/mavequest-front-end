@@ -215,7 +215,26 @@
                     >
 
                       <template slot="bottom-left">
-                        Hits: {{genomeRNAiData.length}}; Total RNAi experiments: {{genomeRNAiTotalEntries}}
+                        <b-taglist attached>
+                          <b-tag size="is-medium" 
+                            type="has-background-grey-lighter">
+                            Hits / Total &nbsp;
+                            <b-tooltip type="is-light" multilined
+                              label="Hits vs. Total entries in genome RNAi 
+                              database. Click to read the full explanation.">
+                              <a href="http://www.genomernai.org/v17/geneFrequentHitters" 
+                              target="_blank" rel="noopener noreferrer">
+                                <b-icon pack="fas" size="is-small"
+                                  icon="question-circle"></b-icon>
+                              </a>
+                            </b-tooltip>
+                          </b-tag>
+                          <b-tag size="is-medium" 
+                            type="has-background-white-bis">
+                            {{genomeRNAiData.length}} 
+                            / {{genomeRNAiTotalEntries}}
+                          </b-tag>
+                        </b-taglist>
                       </template>
 
                       <template slot-scope="props">

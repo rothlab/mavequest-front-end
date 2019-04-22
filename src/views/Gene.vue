@@ -18,7 +18,7 @@
                 <li v-if="hasAssay.human_comp || hasAssay.yeast_comp">
                   <a href="#comp">Complementation</a>
                 </li>
-                <li v-if="hasAssay.over_expression">
+                <li v-if="hasAssay.overexpression">
                   <a href="#over-expression">Over Expression</a>
                 </li>
                 <li v-if="hasAssay.y2h">
@@ -341,7 +341,7 @@
                 </div>
               </div>
 
-              <div id="overexpression" v-if="hasAssay.over_expression">
+              <div id="overexpression" v-if="hasAssay.overexpression">
                 <AssayTitle
                   anchor="over-expression"
                   title="Over Expression Assay"
@@ -360,7 +360,7 @@
                       <template slot-scope="props">
                         <b-table-column field="taxonomy" label="Taxonomy">
                           <b-tooltip
-                            type="is-info"
+                            type="is-dark"
                             animated
                             dashed
                             :active="getSpeciesName(props.row.taxonomy) != 'NA'"
@@ -711,11 +711,12 @@ export default {
             this.orthologyData = json.orthology;
           }
 
-          // if (json.hasOwnProperty("over_expression")) {
-          //   // Over Expression
-          //   this.hasAssay.over_expression = true;
-          //   this.overexprData = json.over_expression;
-          // }
+          if (json.hasOwnProperty("overexpression")) {
+            // Over Expression
+            this.hasAssay.any = true;
+            this.hasAssay.overexpression = true;
+            this.overexprData = json.overexpression;
+          }
 
           // if (json.hasOwnProperty("yeast_comp")) {
           //   // Yeast Complementation

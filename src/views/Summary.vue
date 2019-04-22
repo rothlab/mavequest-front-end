@@ -179,11 +179,13 @@ export default {
 
               // Find genes that don't have potential assay or disease phenotype
               this.geneInfo.forEach(element => {
-                if (element.potential_assay.length < 1) {
+                if (!element.potential_assay || 
+                  element.potential_assay.length < 1) {
                   this.geneWOAssay.push(element.gene_name);
                 }
 
-                if (element.disease_phenotype.length < 1) {
+                if (!element.disease_phenotype || 
+                  element.disease_phenotype.length < 1) {
                   this.geneWOPhenotype.push(element.gene_name);
                 }
               });

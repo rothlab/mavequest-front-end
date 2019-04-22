@@ -15,8 +15,14 @@
             <aside class="menu" :class="{float: isFloat}">
               <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
               <ul class="menu-list" v-if="hasAssay.any">
-                <li v-if="hasAssay.human_comp || hasAssay.yeast_comp">
-                  <a href="#comp">Complementation</a>
+                <li v-if="hasAssay.genome_crispr">
+                  <a href="#genome-crispr">GenomeCRISPR</a>
+                </li>
+                <li v-if="hasAssay.genome_rnai">
+                  <a href="#genome-rnai">GenomeRNAi</a>
+                </li>
+                <li v-if="hasAssay.orthology">
+                  <a href="#comp">Orthology</a>
                 </li>
                 <li v-if="hasAssay.overexpression">
                   <a href="#over-expression">Over Expression</a>
@@ -143,7 +149,7 @@
 
               <div v-if="hasAssay.genome_crispr">
                 <AssayTitle
-                  anchor="comp"
+                  anchor="genome-crispr"
                   title="GenomeCRISPR"
                   icon="fas fa-bars"
                   reflink="/about#genome-crispr"
@@ -201,7 +207,7 @@
 
               <div v-if="hasAssay.genome_rnai">
                 <AssayTitle
-                  anchor="genome_rnai"
+                  anchor="genome-rnai"
                   title="GenomeRNAi"
                   icon="fas fa-bars"
                   reflink="/about#genome-rnai"

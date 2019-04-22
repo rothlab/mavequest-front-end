@@ -257,19 +257,15 @@
                         >{{props.row.source}}</a>
                       </b-table-column>
 
-                      <b-table-column field="cellline" label="Cell Line" width="120">
-                        <b-tooltip
-                          v-if="props.row.cellline.length > 20"
-                          :label="props.row.cellline"
-                          type="is-dark"
-                        >{{props.row.cellline.substring(0,20) + '...'}}</b-tooltip>
-                        <div v-else>{{props.row.cellline}}</div>
-                      </b-table-column>
-
                       <b-table-column
                         field="phenotype"
-                        label="Phenotype"
+                        label="Phenotype" width="350"
                       >{{props.row.phenotype.join(', ')}}</b-table-column>
+
+                      <b-table-column field="cellline" label="Cell Line">
+                        <ExpandableRow :elements="props.row.cellline.split(',')" 
+                            preview_items="5" bold></ExpandableRow>
+                      </b-table-column>
                     </template>
                   </b-table>
                 </div>

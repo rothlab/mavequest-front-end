@@ -73,42 +73,42 @@
                     <b-field grouped group-multiline class="gene-summary">
                       <div class="control" v-if="entrezID">
                         <b-tag type="is-link" v-if="entrezID">
-                            <a
-                              v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
-                              target="_blank"
-                              class="has-text-white"
-                            >
-                              Entrez: {{entrezID}}
-                              &nbsp;
-                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                            </a>
+                          <a
+                            v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
+                            target="_blank"
+                            class="has-text-white"
+                          >
+                            Entrez: {{entrezID}}
+                            &nbsp;
+                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                          </a>
                         </b-tag>
                       </div>
 
                       <div class="control" v-if="omimID">
                         <b-tag type="is-info">
-                            <a
-                              v-bind:href="'https://omim.org/entry/' + omimID"
-                              target="_blank"
-                              class="has-text-white"
-                            >
-                              OMIM: {{omimID}}
-                              &nbsp;
-                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                            </a>
-                          </b-tag>
+                          <a
+                            v-bind:href="'https://omim.org/entry/' + omimID"
+                            target="_blank"
+                            class="has-text-white"
+                          >
+                            OMIM: {{omimID}}
+                            &nbsp;
+                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                          </a>
+                        </b-tag>
                       </div>
 
                       <div class="control" v-if="geneName">
                         <b-tag type="is-primary">
-                            <a
-                              v-bind:href="'https://scholar.google.com/scholar?q=' + geneName + ' gene'"
-                              target="_blank"
-                              class="has-text-white"
-                            >
-                              Google Scholar &nbsp;
-                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                            </a>
+                          <a
+                            v-bind:href="'https://scholar.google.com/scholar?q=' + geneName + ' gene'"
+                            target="_blank"
+                            class="has-text-white"
+                          >
+                            Google Scholar &nbsp;
+                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                          </a>
                         </b-tag>
                       </div>
 
@@ -123,8 +123,9 @@
                               Ensembl
                               &nbsp;
                               <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
-                            </a></b-tooltip>
-                          </b-tag>
+                            </a>
+                          </b-tooltip>
+                        </b-tag>
                       </div>
                     </b-field>
                   </div>
@@ -139,186 +140,217 @@
 
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
+
               <div v-if="hasAssay.genome_crispr">
-                <AssayTitle anchor="comp" title="GenomeCRISPR" 
-                  icon="fas fa-bars" reflink="/about#genome-crispr"></AssayTitle>
+                <AssayTitle
+                  anchor="comp"
+                  title="GenomeCRISPR"
+                  icon="fas fa-bars"
+                  reflink="/about#genome-crispr"
+                ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
-                    <b-table
-                      :data="genomeCRISPRData"
-                      paginated
-                      per-page="10"
-                      pagination-simple
-                      hoverable
-                      narrowed
-                    >
-                      <template slot="bottom-left">
-                        <a
-                          href="/about#tko"
-                          target="_blank"
-                          v-if="genomeCRISPRData.filter(e => 
+                  <b-table
+                    :data="genomeCRISPRData"
+                    paginated
+                    per-page="10"
+                    pagination-simple
+                    hoverable
+                    narrowed
+                  >
+                    <template slot="bottom-left">
+                      <a
+                        href="/about#tko"
+                        target="_blank"
+                        v-if="genomeCRISPRData.filter(e => 
                             tkoPubmed.includes(e.source)).length > 0"
+                      >
+                        <b-tag type="is-warning" class="cell-line">TKO</b-tag>
+                        <span>Toronto Knockout Library &nbsp;</span>
+                        <RefBadge reflink="/about#tko"></RefBadge>
+                      </a>
+                    </template>
+
+                    <template slot-scope="props">
+                      <b-table-column field="source" label="Pubmed Source" width="150">
+                        <a
+                          :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + 
+                              props.row.source"
+                          target="_blank"
                         >
-                          <b-tag type="is-warning" class="cell-line">TKO</b-tag>
-                          <span>Toronto Knockout Library &nbsp;</span>
-                          <RefBadge reflink="/about#tko"></RefBadge>
+                          <span>{{props.row.source}} &nbsp;</span>
+                          <b-tag type="is-warning" v-show="tkoPubmed.includes(props.row.source)">TKO</b-tag>
                         </a>
-                      </template>
+                      </b-table-column>
 
-                      <template slot-scope="props">
-                        <b-table-column field="source" 
-                          label="Pubmed Source" width="150">
-                          <a
-                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + 
-                              props.row.source" target="_blank"
+                      <b-table-column
+                        field="condition"
+                        label="Condition"
+                        width="300"
+                      >{{props.row.condition}}</b-table-column>
+
+                      <b-table-column field="screen" label="Screen" width="150">{{props.row.screen}}</b-table-column>
+
+                      <b-table-column field="cellline" label="Cell Lines">
+                        <ExpandableRow :elements="props.row.cellline" preview_items="5"></ExpandableRow>
+                      </b-table-column>
+                    </template>
+                  </b-table>
+                </div>
+              </div>
+
+              <div v-if="hasAssay.genome_rnai">
+                <AssayTitle
+                  anchor="genome_rnai"
+                  title="GenomeRNAi"
+                  icon="fas fa-bars"
+                  reflink="/about#genome-rnai"
+                ></AssayTitle>
+
+                <div class="card has-table-padding in-paragraph in-list">
+                  <b-table
+                    :data="genomeRNAiData"
+                    paginated
+                    per-page="10"
+                    pagination-simple
+                    hoverable
+                    narrowed
+                  >
+                    <template slot="bottom-left">
+                      <b-taglist attached>
+                        <b-tag size="is-medium" type="has-background-grey-lighter">
+                          Hits / Total &nbsp;
+                          <b-tooltip
+                            type="is-dark"
+                            multilined
+                            label="Hits vs. Total entries in genome RNAi 
+                              database. Click to read the full explanation."
                           >
-                            <span>{{props.row.source}} &nbsp;</span>
-                            <b-tag
-                              type="is-warning"
-                              v-show="tkoPubmed.includes(props.row.source)"
-                            >TKO</b-tag>
-                          </a>
-                        </b-table-column>
-
-                        <b-table-column
-                          field="condition"
-                          label="Condition"
-                          width="300"
-                        >{{props.row.condition}}</b-table-column>
-
-                        <b-table-column
-                          field="screen"
-                          label="Screen"
-                          width="150"
-                        >{{props.row.screen}}</b-table-column>
-
-                        <b-table-column field="cellline" label="Cell Lines">
-                          <ExpandableRow :elements="props.row.cellline" 
-                           preview_items="5"></ExpandableRow>
-                        </b-table-column>
-                      </template>
-                    </b-table>
-                  </div>
-
-                <div v-if="hasAssay.genome_rnai">
-                  <AssayTitle anchor="genome_rnai" title="GenomeRNAi" 
-                  icon="fas fa-bars" reflink="/about#genome-rnai"></AssayTitle>
-
-                  <div class="card has-table-padding in-paragraph in-list">
-                    <b-table
-                      :data="genomeRNAiData"
-                      paginated
-                      per-page="10"
-                      pagination-simple
-                      hoverable
-                      narrowed
-                    >
-
-                      <template slot="bottom-left">
-                        <b-taglist attached>
-                          <b-tag size="is-medium" 
-                            type="has-background-grey-lighter">
-                            Hits / Total &nbsp;
-                            <b-tooltip type="is-light" multilined
-                              label="Hits vs. Total entries in genome RNAi 
-                              database. Click to read the full explanation.">
-                              <a href="http://www.genomernai.org/v17/geneFrequentHitters" 
-                              target="_blank" rel="noopener noreferrer">
-                                <b-icon pack="fas" size="is-small"
-                                  icon="question-circle"></b-icon>
-                              </a>
-                            </b-tooltip>
-                          </b-tag>
-                          <b-tag size="is-medium" 
-                            type="has-background-white-bis">
-                            {{genomeRNAiData.length}} 
-                            / {{genomeRNAiTotalEntries}}
-                          </b-tag>
-                        </b-taglist>
-                      </template>
-
-                      <template slot-scope="props">
-                        <b-table-column field="id" label="ID" width="150">
-                          <a
-                            :href="'http://www.genomernai.org/v17/singleExpPhenotypes/' + props.row.id"
-                            target="_blank"
-                          >{{props.row.id}}</a>
-                        </b-table-column>
-
-                        <b-table-column field="source" label="Pubmed Source" width="150">
-                          <a
-                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
-                            target="_blank"
-                          >{{props.row.source}}</a>
-                        </b-table-column>
-
-                        <b-table-column field="cellline" label="Cell Line" width="120">
-                          <b-tooltip v-if="props.row.cellline.length > 20" 
-                            :label="props.row.cellline" type="is-dark">
-                            {{props.row.cellline.substring(0,20) + '...'}}
+                            <a
+                              href="http://www.genomernai.org/v17/geneFrequentHitters"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <b-icon pack="fas" size="is-small" icon="question-circle"></b-icon>
+                            </a>
                           </b-tooltip>
-                          <div v-else>
-                            {{props.row.cellline}}
-                          </div>
-                        </b-table-column>
+                        </b-tag>
+                        <b-tag size="is-medium" type="has-background-white-bis">
+                          {{genomeRNAiData.length}}
+                          / {{genomeRNAiTotalEntries}}
+                        </b-tag>
+                      </b-taglist>
+                    </template>
 
-                        <b-table-column field="phenotype" label="Phenotype">
-                          {{props.row.phenotype.join(', ')}}
-                        </b-table-column>
-                      </template>
-                    </b-table>
-                  </div>
+                    <template slot-scope="props">
+                      <b-table-column field="id" label="ID" width="150">
+                        <a
+                          :href="'http://www.genomernai.org/v17/singleExpPhenotypes/' + props.row.id"
+                          target="_blank"
+                        >{{props.row.id}}</a>
+                      </b-table-column>
+
+                      <b-table-column field="source" label="Pubmed Source" width="150">
+                        <a
+                          :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
+                          target="_blank"
+                        >{{props.row.source}}</a>
+                      </b-table-column>
+
+                      <b-table-column field="cellline" label="Cell Line" width="120">
+                        <b-tooltip
+                          v-if="props.row.cellline.length > 20"
+                          :label="props.row.cellline"
+                          type="is-dark"
+                        >{{props.row.cellline.substring(0,20) + '...'}}</b-tooltip>
+                        <div v-else>{{props.row.cellline}}</div>
+                      </b-table-column>
+
+                      <b-table-column
+                        field="phenotype"
+                        label="Phenotype"
+                      >{{props.row.phenotype.join(', ')}}</b-table-column>
+                    </template>
+                  </b-table>
                 </div>
+              </div>
 
-                <div id="yeast_comp" class="content" v-if="hasAssay.yeast_comp">
-                  <b-taglist attached>
-                    <b-tag size="is-medium" type="is-info">Has Essential Yeast Orthologs</b-tag>
-                    <b-tag size="is-medium" type="is-grey">
-                      <b-icon icon="fas fa-check" v-if="yeastEssentiality"></b-icon>
-                      <b-icon icon="fas fa-times" v-else></b-icon>
-                      <span>{{yeastEssentiality == ture ? "Yes" : "No"}}</span>
-                    </b-tag>
-                  </b-taglist>
-                </div>
+              <div v-if="hasAssay.orthology">
+                <AssayTitle
+                  anchor="orthology"
+                  title="Orthology"
+                  icon="fas fa-bars"
+                  reflink="/about#orthology"
+                ></AssayTitle>
 
-                <div class="content" v-if="yeastHomologData.length > 0">
-                  <RecordTitle title="Yeast Synthetic Lethality"></RecordTitle>
+                <div class="card has-table-padding in-paragraph in-list">
+                  <b-table
+                    :data="orthologyData"
+                    paginated
+                    per-page="10"
+                    pagination-simple
+                    hoverable
+                    narrowed
+                  >
+                    <template slot-scope="props" slot="header">
+                      {{props.column.label}}
+                      <b-tooltip v-if="!!props.column.meta" 
+                        :label="props.column.meta" type="is-dark"
+                        multilined>
+                        <b-icon pack="fas" size="is-small" 
+                          icon="question-circle"></b-icon>
+                      </b-tooltip>
+                    </template>
 
-                  <div class="card in-list has-table-padding">
-                    <b-table
-                      :data="yeastHomologData"
-                      narrowed
-                      paginated
-                      pagination-simple
-                    >
-                      <template slot-scope="props">
-                        <b-table-column field="yeast_homolog" label="Yeast Homolog">
-                          <b-tag 
-                            class="is-light is-size-6 cell-line"
-                            v-for="homolog in props.row.yeast_homolog.split(',')"
-                            v-bind:key="homolog"
-                          >{{homolog}}</b-tag>
-                        </b-table-column>
-                        <b-table-column field="synthetic_lethal_partners" label="Synthetic Lethal Partners">
-                          <div
-                            v-for="partners in props.row.synthetic_lethal_partners"
-                            v-bind:key="partners"
-                          >
-                            <b-tag
-                              class="is-light is-size-6 cell-line"
-                              v-for="partner in partners.split(',')"
-                              v-bind:key="partner"
-                              >{{partner}}</b-tag>
-                          </div>
-                        </b-table-column>
-                      </template>
-                    </b-table>
-                  </div>
+                    <template slot-scope="props">
+                      <b-table-column field="source" label="Pubmed Source" width="150">
+                        <a
+                          :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
+                          target="_blank"
+                        >{{props.row.source}}</a>
+                      </b-table-column>
+
+                      <b-table-column field="species" label="Species" width="150">
+                        <span class="is-italic">{{props.row.species}}</span>
+                      </b-table-column>
+
+                      <b-table-column field="complementation" label="Complementation"
+                        meta="Trans-species complementation. 
+                        NA stands for data not available." width="200">
+                        {{props.row.complementation}}
+                      </b-table-column>
+
+                      <b-table-column
+                        field="gene"
+                        label="Gene"
+                      >
+                        <!-- Use different source for S. cerevisiae and S. pombe -->
+                        <div v-if="props.row.species == 'S. cerevisiae'">
+                          <ExpandableRow :elements="props.row.gene" 
+                            link_prefix="https://www.yeastgenome.org/locus/"
+                            preview_items="5" bold></ExpandableRow>
+                        </div>
+                        <div v-else-if="props.row.species == 'S. pombe'">
+                          <ExpandableRow :elements="props.row.gene" 
+                            link_prefix="../redirect/spombe/"
+                            preview_items="5" bold></ExpandableRow>
+                        </div>
+                        <div v-else>
+                          <ExpandableRow :elements="props.row.gene" 
+                            preview_items="5" bold></ExpandableRow>
+                        </div>
+                      </b-table-column>
+                    </template>
+                  </b-table>
                 </div>
               </div>
 
               <div id="overexpression" v-if="hasAssay.over_expression">
-                <AssayTitle anchor="over-expression" title="Over Expression Assay" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle
+                  anchor="over-expression"
+                  title="Over Expression Assay"
+                  icon="fas fa-bars"
+                ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table
@@ -451,12 +483,14 @@
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
-                    <b-table :data="orphanetData" 
+                    <b-table
+                      :data="orphanetData"
                       narrowed
                       paginated
                       per-page="10"
                       pagination-simple
-                      hoverable>
+                      hoverable
+                    >
                       <template slot-scope="props">
                         <b-table-column field="id" label="ORPHA ID" width="150">
                           <a
@@ -493,11 +527,12 @@
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table
                       :data="invitaeData"
-                      narrowed 
+                      narrowed
                       paginated
                       per-page="10"
                       pagination-simple
-                      hoverable>
+                      hoverable
+                    >
                       <template slot-scope="props">
                         <b-table-column field="id" label="Test ID">
                           <a
@@ -576,40 +611,44 @@ const AssayTitle = {
 // Declare reference badge
 const RefBadge = {
   props: ["reflink"],
-  render: function (createElement) {
-    return (
-      this.constructElement(this.reflink, createElement)
-    )
+  render: function(createElement) {
+    return this.constructElement(this.reflink, createElement);
   },
   methods: {
     constructElement: function(reflink, createElement) {
-      return (
-        createElement("a", { attrs: {href: reflink, target: "_blank" }}, [
+      return createElement(
+        "a",
+        { attrs: { href: reflink, target: "_blank" } },
+        [
           createElement("b-tag", [
-            createElement("b-icon", { props: {icon: "far fa-file-alt" }}),
+            createElement("b-icon", { props: { icon: "far fa-file-alt" } }),
             createElement("span", "Source")
           ])
-        ])
-      )
+        ]
+      );
     }
   }
-}
+};
 
 // Declare Record title
 const RecordTitle = {
   props: ["title", "reflink"],
-  render: function (createElement) {
-    let subElements= [
-      createElement("h4", { class: "title is-inline", style: "margin-right: 0.75rem"}, this.title)
+  render: function(createElement) {
+    let subElements = [
+      createElement(
+        "h4",
+        { class: "title is-inline", style: "margin-right: 0.75rem" },
+        this.title
+      )
     ];
 
     if (this.reflink) {
-      subElements.push(RefBadge.methods.constructElement(this.reflink, createElement))
+      subElements.push(
+        RefBadge.methods.constructElement(this.reflink, createElement)
+      );
     }
-    
-    return (
-      createElement("div", subElements)
-    )
+
+    return createElement("div", subElements);
   }
 };
 
@@ -641,8 +680,11 @@ export default {
       .then(
         response => {
           // Make sure the response has a non-empty body
-          if (!response.hasOwnProperty("body") || 
-            typeof response.body == "string") return;
+          if (
+            !response.hasOwnProperty("body") ||
+            typeof response.body == "string"
+          )
+            return;
           const json = response.body;
 
           // Populate basic information
@@ -654,17 +696,23 @@ export default {
           this.alias_description = json.alias_description;
 
           // Populate Assay information
-          if (json.hasOwnProperty('genome_rnai')) {
+          if (json.hasOwnProperty("genome_rnai")) {
             this.hasAssay.any = true;
             this.hasAssay.genome_rnai = true;
             this.genomeRNAiData = json.genome_rnai.hits;
             this.genomeRNAiTotalEntries = json.genome_rnai.total_entries;
           }
 
-          if (json.hasOwnProperty('genome_crispr')) {
+          if (json.hasOwnProperty("genome_crispr")) {
             this.hasAssay.any = true;
             this.hasAssay.genome_crispr = true;
             this.genomeCRISPRData = json.genome_crispr;
+          }
+
+          if (json.hasOwnProperty("orthology")) {
+            this.hasAssay.any = true;
+            this.hasAssay.orthology = true;
+            this.orthologyData = json.orthology;
           }
 
           // if (json.hasOwnProperty("over_expression")) {
@@ -765,8 +813,7 @@ export default {
       alias: [],
       hasAssay: {},
       hasPhenotype: {},
-      yeastEssentiality: false,
-      yeastHomologData: [],
+      orthologyData: [],
       tkoPubmed: ["26627737", "28655737"],
       y2hInteractors: [],
       genomeRNAiTotalEntries: 0,
@@ -815,7 +862,7 @@ export default {
         y: true
       };
       this.$scrollTo(element, option);
-    },
+    }
   }
 };
 </script>

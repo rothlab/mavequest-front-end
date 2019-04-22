@@ -57,6 +57,8 @@ export default {
       },
       isLoading: false,
       cy: Object,
+      nodes: [],
+      edges: []
     };
   },
   mounted() {
@@ -64,26 +66,32 @@ export default {
   },
   methods: {
     parseElement() {
-      let nodes = [];
-      let edges = [];
+      // Extract interactions given interaction ids
+      return this.$http
+        .get(this.$apiEntryPoint + "/interactome/" + this.elements)
+        .then(res => {
+          const json = res.body;
 
-      // Add head node
-      nodes.push({
-        data: { id: this.head },
-        classes: "head"
-      });
+          // Add head node
+          this.nodes.push({
+            data: { id: this.head },
+            classes: "head"
+          });
 
-      // Add other nodes and edges
-      this.elements.forEach(node => {
-        nodes.push({
-          data: { id: node }
+          // Add other nodes and edges
+          this.elements.forEach(node => {
+            // Find corresponding interaction
+            const interaction = json.found.find(e => e.name == node);
+            const subId = interaction.entrez_id_a == this.head ? 
+              interaction.entrez_id_b : interaction.entrez_id_a;
+            this.nodes.push({
+              data: { id: subId }
+            });
+            this.edges.push({
+              data: { id: this.head + subId, source: this.head, target: subId }
+            });
+          });
         });
-        edges.push({
-          data: { id: this.head + node, source: this.head, target: node }
-        });
-      });
-
-      return nodes.concat(edges);
     },
     preConfig(cytoscape) {
       // Register zoom panel
@@ -96,7 +104,7 @@ export default {
 
       // Update the cytoscape instance
       this.$cytoscape.instance
-        .then(cy => {
+        .then(async cy => {
           // Remove all elements
           cy.remove(cy.elements());
 
@@ -109,7 +117,8 @@ export default {
           });
 
           // Add nodes and edges
-          cy.add(this.parseElement());
+          await this.parseElement();
+          cy.add(this.nodes.concat(this.edges));
 
           // Draw the graph and fit to the page
           cy.layout({

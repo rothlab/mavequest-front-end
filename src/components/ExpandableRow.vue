@@ -15,7 +15,7 @@
     </b-tag>
 
     <b-tooltip
-      v-if="elements.length > preview_items"
+      v-if="elements.length > parseInt(preview_items)"
       type="is-info"
       :label="isExpandDetail ? 'Collapse' : 'Expand'"
       animated
@@ -38,7 +38,7 @@ export default {
   name: "ExpandableRow",
   props: {
     elements: Array,
-    preview_items: Number,
+    preview_items: String,
     bold: Boolean,
     link_prefix: String
   },
@@ -50,12 +50,12 @@ export default {
   },
   mounted() {
     // Init a preview list of elements
-    this.total_elements = this.elements.slice(0, this.preview_items);
+    this.total_elements = this.elements.slice(0, parseInt(this.preview_items));
   },
   methods: {
     expandShrinkElements() {
       if (this.isExpandDetail) {
-        this.total_elements = this.elements.slice(0, this.preview_items);
+        this.total_elements = this.elements.slice(0, parseInt(this.preview_items));
       } else {
         this.total_elements = this.elements;
       }

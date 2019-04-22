@@ -27,8 +27,8 @@
                 <li v-if="hasAssay.overexpression">
                   <a href="#over-expression">Over Expression</a>
                 </li>
-                <li v-if="hasAssay.y2h">
-                  <a href="#y2h">Yeast Two-Hybrid</a>
+                <li v-if="hasAssay.huri">
+                  <a href="#huri">Human Interactome</a>
                 </li>
               </ul>
               <p class="menu-label" v-if="hasPhenotype.any">Disease Phenotype</p>
@@ -265,12 +265,16 @@
 
                       <b-table-column
                         field="phenotype"
-                        label="Phenotype" width="350"
+                        label="Phenotype"
+                        width="350"
                       >{{props.row.phenotype.join(', ')}}</b-table-column>
 
                       <b-table-column field="cellline" label="Cell Line">
-                        <ExpandableRow :elements="props.row.cellline.split(',')" 
-                            preview_items="5" bold></ExpandableRow>
+                        <ExpandableRow
+                          :elements="props.row.cellline.split(',')"
+                          preview_items="5"
+                          bold
+                        ></ExpandableRow>
                       </b-table-column>
                     </template>
                   </b-table>
@@ -296,11 +300,13 @@
                   >
                     <template slot-scope="props" slot="header">
                       {{props.column.label}}
-                      <b-tooltip v-if="!!props.column.meta" 
-                        :label="props.column.meta" type="is-dark"
-                        multilined>
-                        <b-icon pack="fas" size="is-small" 
-                          icon="question-circle"></b-icon>
+                      <b-tooltip
+                        v-if="!!props.column.meta"
+                        :label="props.column.meta"
+                        type="is-dark"
+                        multilined
+                      >
+                        <b-icon pack="fas" size="is-small" icon="question-circle"></b-icon>
                       </b-tooltip>
                     </template>
 
@@ -316,30 +322,34 @@
                         <span class="is-italic">{{props.row.species}}</span>
                       </b-table-column>
 
-                      <b-table-column field="complementation" label="Complementation"
-                        meta="Trans-species complementation. 
-                        NA stands for data not available." width="200">
-                        {{props.row.complementation}}
-                      </b-table-column>
-
                       <b-table-column
-                        field="gene"
-                        label="Gene"
-                      >
+                        field="complementation"
+                        label="Complementation"
+                        meta="Trans-species complementation. 
+                        NA stands for data not available."
+                        width="200"
+                      >{{props.row.complementation}}</b-table-column>
+
+                      <b-table-column field="gene" label="Gene">
                         <!-- Use different source for S. cerevisiae and S. pombe -->
                         <div v-if="props.row.species == 'S. cerevisiae'">
-                          <ExpandableRow :elements="props.row.gene" 
+                          <ExpandableRow
+                            :elements="props.row.gene"
                             link_prefix="https://www.yeastgenome.org/locus/"
-                            preview_items="5" bold></ExpandableRow>
+                            preview_items="5"
+                            bold
+                          ></ExpandableRow>
                         </div>
                         <div v-else-if="props.row.species == 'S. pombe'">
-                          <ExpandableRow :elements="props.row.gene" 
+                          <ExpandableRow
+                            :elements="props.row.gene"
                             link_prefix="../redirect/spombe+"
-                            preview_items="5" bold></ExpandableRow>
+                            preview_items="5"
+                            bold
+                          ></ExpandableRow>
                         </div>
                         <div v-else>
-                          <ExpandableRow :elements="props.row.gene" 
-                            preview_items="5" bold></ExpandableRow>
+                          <ExpandableRow :elements="props.row.gene" preview_items="5" bold></ExpandableRow>
                         </div>
                       </b-table-column>
                     </template>
@@ -395,13 +405,22 @@
                 </div>
               </div>
 
-              <div v-if="hasAssay.y2h">
-                <AssayTitle anchor="y2h" title="Yeast Two-Hybrid Assay" icon="fas fa-bars"></AssayTitle>
+              <div v-if="hasAssay.huri">
+                <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars"></AssayTitle>
 
-                <div class="content">
-                  <RecordTitle title="HuRI Interactions" reflink="/about#huri"></RecordTitle>
+                <div class="content is-flex is-vcentered">
+                  <button class="button is-outlined" @click="showCytoscapeView = !showCytoscapeView">
+                    <b-icon pack="fas" icon="expand-arrows-alt"></b-icon>
+                    <span>Visualize</span>
+                  </button>
 
-                  <CytoscapeView :head="geneName" :elements="y2hInteractors"/>
+                  &nbsp;&nbsp; {{geneName}} has {{huriData.length}} 
+                  interaction pair{{huriData.length > 1 ? "s" : ""}} 
+                  in the HuRI database.
+
+                  <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
+                    <CytoscapeView :head="geneName" :elements="huriData"/>
+                  </b-modal>
                 </div>
               </div>
             </section>
@@ -724,18 +743,12 @@ export default {
             this.overexprData = json.overexpression;
           }
 
-          // if (json.hasOwnProperty("yeast_comp")) {
-          //   // Yeast Complementation
-          //   this.hasAssay.yeast_comp = true;
-          //   this.yeastEssentiality = json.yeast_comp.yeast_essentiality;
-          //   this.yeastHomologData = json.yeast_comp.yeast_homolog_data ? json.yeast_comp.yeast_homolog_data : this.yeastHomologData;
-          // }
-
-          // if (json.hasOwnProperty("y2h")) {
-          //   // Yeast Two-Hybrid
-          //   this.hasAssay.y2h = true;
-          //   this.y2hInteractors = json.y2h.y2h_interactors;
-          // }
+          if (json.hasOwnProperty("huri")) {
+            // Human Interactome
+            this.hasAssay.any = true;
+            this.hasAssay.huri = true;
+            this.huriData = json.huri;
+          }
 
           // // Populate Disease Phenotype information
           // this.hasPhenotype.any =
@@ -818,7 +831,8 @@ export default {
       hasPhenotype: {},
       orthologyData: [],
       tkoPubmed: ["26627737", "28655737"],
-      y2hInteractors: [],
+      huri: [],
+      showCytoscapeView: false,
       genomeRNAiTotalEntries: 0,
       genomeRNAiData: [],
       genomeCRISPRData: [],

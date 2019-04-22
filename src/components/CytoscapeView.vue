@@ -1,6 +1,6 @@
 <template>
-  <div class="card in-list">
-    <div class="card-content is-paddingless">
+  <div class="card">
+    <div class="card-content">
       <div class="content cytoscape">
         <cytoscape :config="config" :preConfig="preConfig"/>
         <b-loading :active.sync="isLoading" :is-full-page="false" :can-cancel="true"></b-loading>
@@ -56,7 +56,7 @@ export default {
         ]
       },
       isLoading: false,
-      cy: Object
+      cy: Object,
     };
   },
   mounted() {
@@ -138,7 +138,7 @@ export default {
 
 <style>
 .cytoscape {
-  max-width: 500px;
+  width: 600px;
   height: 500px;
 }
 .cy-panzoom-zoom-button > .icon {

@@ -332,7 +332,7 @@
                         </div>
                         <div v-else-if="props.row.species == 'S. pombe'">
                           <ExpandableRow :elements="props.row.gene" 
-                            link_prefix="../redirect/spombe/"
+                            link_prefix="../redirect/spombe+"
                             preview_items="5" bold></ExpandableRow>
                         </div>
                         <div v-else>

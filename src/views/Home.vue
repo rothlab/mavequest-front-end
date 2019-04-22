@@ -97,4 +97,7 @@ export default {
 .fill-screen-withheader {
   min-height: calc(100vh - 3.25rem - 13.5rem);
 }
+.fill-screen-withoutheader {
+  min-height: calc(100vh - 7.75rem);
+}
 </style>

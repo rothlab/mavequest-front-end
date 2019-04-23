@@ -5,6 +5,7 @@
       <div class="content cytoscape">
         <cytoscape :config="config" :preConfig="preConfig"/>
         <b-loading :active.sync="isLoading" :is-full-page="false" :can-cancel="true"></b-loading>
+        <div class="cy-navigator"></div>
       </div>
     </div>
     <div class="card-content" v-if="showMessage">
@@ -28,7 +29,6 @@
                 v-bind:key="JSON.stringify(entry)"
               >
                 <div class="level-left">
-                  Method: &nbsp;
                   <a
                     class="is-capitalized"
                     :href="'http://purl.obolibrary.org/obo/MI_' 
@@ -37,7 +37,8 @@
                 </div>
                 <div class="level-right">
                   <span>{{entry.ref}} &nbsp;</span>
-                  <a :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + entry.pubmed_id">PMID</a>
+                  <a :href="'https://www.ncbi.nlm.nih.gov/pubmed/' 
+                  + entry.pubmed_id">PMID</a>
                 </div>
               </div>
             </div>
@@ -50,6 +51,8 @@
 <script>
 import Panzoom from "cytoscape-panzoom";
 import "cytoscape-panzoom/cytoscape.js-panzoom.css";
+import Navitagor from "cytoscape-navigator"
+import "cytoscape-navigator/cytoscape.js-navigator.css";
 
 export default {
   name: "CytoscapeView",
@@ -164,6 +167,11 @@ export default {
       if (typeof cytoscape("core", "panzoom") !== "function") {
         Panzoom(cytoscape);
       }
+
+      // Register navigator panel
+      if (typeof cytoscape("core", "navigator") !== "function") {
+        Navitagor(cytoscape);
+      }
     },
     cyUpdate() {
       this.isLoading = true;
@@ -180,6 +188,17 @@ export default {
             zoomInIcon: "fas fa-plus",
             zoomOutIcon: "fas fa-minus",
             resetIcon: "fas fa-expand"
+          });
+
+          // Add navigator
+          cy.navigator({
+            container: ".cy-navigator",
+            viewLiveFramerate: 0,
+            thumbnailEventFramerate: 30,
+            thumbnailLiveFramerate: false,
+            dblClickDelay: 200,
+            removeCustomContainer: true,
+            rerenderDelay: 100
           });
 
           // Add nodes and edges
@@ -258,5 +277,22 @@ export default {
 .interaction-detail {
   max-height: 20vh;
   overflow-y: scroll;
+}
+.cy-navigator {
+  position: relative;
+  float: right;
+  right: 1em;
+  top: -12.5vh;
+  /* push it up into the element before it. This is a trick for bottom-right */
+  right: 2.5vh;
+  z-index: 200;
+  opacity: 1;
+  font-weight:bolder;
+  height: 10vh;
+  width: 10vh;
+  overflow: hidden;
+  border-style: solid;
+  border-width: 2px;
+  background-color: white;
 }
 </style>

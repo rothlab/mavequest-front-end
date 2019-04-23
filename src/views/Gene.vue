@@ -36,9 +36,6 @@
                 <li v-if="hasPhenotype.omim">
                   <a href="#omim">OMIM</a>
                 </li>
-                <li v-if="hasPhenotype.hgmd">
-                  <a href="#hgmd">HGMD</a>
-                </li>
                 <li v-if="hasPhenotype.cancer_census">
                   <a href="#sanger">Cancer Gene Census</a>
                 </li>
@@ -437,45 +434,49 @@
                   reflink="/about#omim"
                 ></AssayTitle>
                 <div class="content">
-                  <b-message type="is-info" has-icon>
-                    Due to restrictions in OMIM's
-                    <a
-                      href="https://www.omim.org/help/copyright"
-                      target="_blank"
-                    >Copyright statement</a>,
-                    MaveQuest is unable to display data obtained from OMIM database.
-                    Please visit
-                    <a
-                      v-bind:href="'https://omim.org/entry/' + omimID"
-                      target="_blank"
-                    >OMIM website (ID: {{omimID}})</a> for more details.
-                  </b-message>
-                  <!-- <ExpandableList heading="OMIM Phenotype" :elements="omimPhenotype"></ExpandableList> -->
-                </div>
-              </div>
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table
+                      :data="omimPhenotype"
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                      narrowed
+                    >
+                      <template slot-scope="props" slot="header">
+                        {{props.column.label}}
+                        <b-tooltip
+                          v-if="props.column.meta"
+                          label="More details can be found on OMIM website."
+                          type="is-dark"
+                          multilined
+                        >
+                          <a href="https://www.omim.org/help/faq#1_6" 
+                            target="_blank" rel="noopener noreferrer">
+                            <b-icon pack="fas" size="is-small" 
+                              icon="question-circle"></b-icon>
+                          </a>
+                        </b-tooltip>
+                      </template>
 
-              <div v-if="hasPhenotype.hgmd">
-                <AssayTitle
-                  anchor="hgmd"
-                  title="HGMD Database"
-                  icon="fas fa-bars"
-                  reflink="/about#hgmd"
-                ></AssayTitle>
-                <div class="content">
-                  <b-message type="is-info" has-icon>
-                    Due to restrictions in HGMD's
-                    <a
-                      href="http://www.hgmd.cf.ac.uk/docs/copyright.html"
-                      target="_blank"
-                    >Copyright statement</a>,
-                    MaveQuest is unable to display data obtained from HGMD database.
-                    Please visit
-                    <a
-                      v-bind:href="'http://www.hgmd.cf.ac.uk/ac/gene.php?gene=' + geneName"
-                      target="_blank"
-                    >HGMD website ({{geneName}})</a> for more details.
-                  </b-message>
-                  <!-- <ExpandableList heading="HGMD Phenotype" :elements="hgmdPhenotype"></ExpandableList> -->
+                      <template slot-scope="props">
+                        <b-table-column field="phenotype" label="Phenotype">
+                          {{props.row.phenotype}}
+                        </b-table-column>
+
+                        <b-table-column field="badge" label="Annotation"
+                          :meta="true">
+                          <ExpandableRow 
+                            class="is-inline cell-line is-capitalized"
+                            :elements="flatten([
+                              props.row.inheritance.split('|'), 
+                              props.row.phenotype_type,
+                              parseOmimType(props.row.mapping_annot)
+                            ])" preview_items="5"></ExpandableRow>
+                        </b-table-column>
+                      </template>
+                    </b-table>
+                  </div>
                 </div>
               </div>
 
@@ -607,6 +608,7 @@ import ExpandableRow from "@/components/ExpandableRow.vue";
 import ExpandableList from "@/components/ExpandableList.vue";
 import CytoscapeView from "@/components/CytoscapeView.vue";
 import ErrorView from "@/components/ErrorView.vue";
+import Lodash from "lodash";
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
@@ -750,20 +752,12 @@ export default {
             this.huriData = json.huri;
           }
 
-          // // Populate Disease Phenotype information
-          // this.hasPhenotype.any =
-          //   json.hasOwnProperty("omim") ||
-          //   json.hasOwnProperty("hgmd") ||
-          //   json.hasOwnProperty("cancer_census") ||
-          //   json.hasOwnProperty("orphanet") ||
-          //   json.hasOwnProperty("invitae") ||
-          //   json.hasOwnProperty("deo_etal");
-
-          // if (json.hasOwnProperty("omim")) {
-          //   // OMIM Phenotype
-          //   this.hasPhenotype.omim = true;
-          //   this.omimPhenotype = json.omim.omim_phenotype;
-          // }
+          if (json.hasOwnProperty("omim")) {
+            // OMIM Phenotype
+            this.hasPhenotype.any = true;
+            this.hasPhenotype.omim = true;
+            this.omimPhenotype = json.omim;
+          }
 
           // if (json.hasOwnProperty("hgmd")) {
           //   // HGMD Phenotype
@@ -879,6 +873,23 @@ export default {
         y: true
       };
       this.$scrollTo(element, option);
+    },
+    flatten(list) {
+      return Lodash.flattenDeep(list.filter(e => e != "NA"));
+    },
+    parseOmimType(type) {
+      switch (type) {
+        case 1:
+          return "Mapping Wildtype";
+        case 2:
+          return "Mapping Phenotype";
+        case 3:
+          return "Known Molecular Basis";
+        case 4:
+          return "Chromosome Deletion/Duplication";
+        default:
+          return "Unknown Type";
+      }
     }
   }
 };
@@ -909,5 +920,9 @@ export default {
     align-items: center;
     justify-content: center;
   }
+}
+.omim-phenotype {
+  margin-left: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 </style>

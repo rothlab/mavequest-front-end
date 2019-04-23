@@ -49,6 +49,8 @@
                   <a href="#other-phenotype">Other Sources</a>
                 </li>
               </ul>
+              <p class="menu-label">Last Update: {{lastUpdate}}</p>
+
             </aside>
           </div>
 
@@ -762,6 +764,11 @@ export default {
           this.alias = json.alias;
           this.alias_description = json.alias_description;
 
+          // Handle date
+          const date = new Date(json.last_update);
+          this.lastUpdate = date.getFullYear() + '-' + (date.getMonth() + 1)
+            + '-' + date.getDate();
+
           // Populate Assay information
           if (json.hasOwnProperty("genome_rnai")) {
             this.hasAssay.any = true;
@@ -856,6 +863,7 @@ export default {
       entrezID: "",
       ensemblID: "",
       omimID: "",
+      lastUpdate: Date(),
       alias: [],
       hasAssay: {},
       hasPhenotype: {},

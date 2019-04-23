@@ -28,6 +28,7 @@ import VueResource from 'vue-resource'
 import VueCytoscape from 'vue-cytoscape'
 import VueScrollTo from 'vue-scrollto'
 import VueAnalytics from 'vue-analytics'
+import VueResize from 'vue-resize'
 
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
@@ -55,7 +56,8 @@ Vue.use(Buefy, {
   debug: {
     sendHitTask: process.env.NODE_ENV === 'production'
   }
-});
+})
+.use(VueResize);
 
 new Vue({
   router,

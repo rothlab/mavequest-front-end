@@ -1,5 +1,6 @@
 <template>
   <div class="card">
+    <resize-observer @notify="handleResize" />
     <div class="card-image">
       <div class="content cytoscape">
         <cytoscape :config="config" :preConfig="preConfig"/>
@@ -20,7 +21,6 @@
                 </span>
               </p>
             </div>
-            <div class="is-divider-vertical"></div>
             <div class="column interaction-detail">
               <div
                 class="level is-marginless"
@@ -71,8 +71,14 @@ export default {
           {
             selector: "node",
             style: {
-              "background-color": "#3273DC",
+              "background-color": "#71C0F4",
               label: "data(id)"
+            }
+          },
+          {
+            selector: "node.highlighted",
+            style: {
+              "background-color": "#3273DC"
             }
           },
           {
@@ -179,18 +185,10 @@ export default {
 
           // Draw the graph and fit to the page
           cy.layout({
-            name: "concentric",
-            padding: 80,
-            spacingFactor: 1.25,
+            name: "cose",
             animate: true,
-            animationEasing: "ease-in-out-expo",
-            concentric: node => {
-              return node.degree();
-            },
-            levelWidth: nodes => {
-              // the letiation of concentric values in each level
-              return nodes.maxDegree() / 4;
-            }
+            padding: 50,
+            nodeOverlap: 60,
           }).run();
           cy.reset();
           cy.center();
@@ -198,14 +196,29 @@ export default {
 
           // Register click event
           cy.unbind('tap');
-          cy.on("tap", "edge", evt => {
-            // Highlight the tapped edge
+          cy.on("tap", evt => {
+            const evtTarget = evt.target;
+            if (evtTarget === cy) return;
+
+            // Extract tapped edge and node
+            let node, edge;
+            if (evtTarget.group() === "nodes") {
+              node = evtTarget;
+              edge = cy.edges("[target='" + evtTarget.id() + "']");
+            } else {
+              node = cy.nodes("[id='" + evtTarget.id() + "']");
+              edge = evtTarget;
+            }
+
+            // Highlight the tapped edge and node
+            cy.nodes().removeClass('highlighted');
             cy.edges().removeClass('highlighted');
-            evt.target.addClass('highlighted');
+            node.addClass('highlighted');
+            edge.addClass('highlighted');
 
             // Store tapped edge
             this.showMessage = true;
-            this.selectedEdge = evt.target.data();
+            this.selectedEdge = edge.data();
           });
         })
         .then(() => {
@@ -214,6 +227,9 @@ export default {
     },
     uniq(value, index, self) {
       return self.indexOf(value) === index;
+    },
+    handleResize() {
+      this.$cytoscape.instance.then(cy => cy.resize());
     }
   }
 };

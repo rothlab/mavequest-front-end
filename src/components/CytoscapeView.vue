@@ -6,6 +6,12 @@
         <cytoscape :config="config" :preConfig="preConfig"/>
         <b-loading :active.sync="isLoading" :is-full-page="false" :can-cancel="true"></b-loading>
         <div class="cy-navigator"></div>
+        <div class="cy-copyright has-text-grey-light">Powered by 
+          <a class="has-text-grey"
+            href="https://js.cytoscape.org/" 
+            target="_blank" rel="noopener noreferrer">
+            Cytoscape.js</a>
+        </div>
       </div>
     </div>
     <div class="card-content" v-if="showMessage">
@@ -275,8 +281,11 @@ export default {
   z-index: 9 !important;
 }
 .interaction-detail {
+  flex: none;
+  width: 80%;
   max-height: 20vh;
   overflow-y: scroll;
+  overflow-x: hidden; 
 }
 .cy-navigator {
   position: relative;
@@ -294,5 +303,12 @@ export default {
   border-style: solid;
   border-width: 2px;
   background-color: white;
+}
+.cy-copyright {
+  position: relative;
+  float: left;
+  left: 1.25em;
+  top: -5vh;
+  z-index: 200;
 }
 </style>

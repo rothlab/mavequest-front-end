@@ -412,7 +412,10 @@
                     class="button is-outlined"
                     @click="showCytoscapeView = !showCytoscapeView"
                   >
-                    <b-icon pack="fas" icon="expand-arrows-alt"></b-icon>&nbsp;&nbsp; Visualize
+                    <figure class="image is-24x24 is-marginless">
+                      <img src="../assets/cytoscape-logo.png" alt="cytoscape-logo">
+                    </figure>
+                    <span>&nbsp;&nbsp; Visualize with CytoScape.js</span>
                   </button>
                   &nbsp;&nbsp; {{geneName}} has {{huriData.length}}
                   interaction pair{{huriData.length > 1 ? "s" : ""}}

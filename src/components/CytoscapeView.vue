@@ -9,13 +9,13 @@
     <div class="card-content" v-if="showMessage">
       <b-message type="is-info">
           <div class="columns">
-            <div class="column is-2">
-              <p class="title is-4">{{selectedEdge.id}}</p>
+            <div class="column is-3">
+              <p class="title is-4">{{selectedEdge.name}}</p>
               <p class="subtitle is-6">
-                <span>Interations: {{selectedEdge.entries.length}}</span>
+                <span>Total Interations: {{selectedEdge.entries.length}}</span>
                 <br>
                 <span>
-                  Methods:
+                  Total Methods:
                   {{selectedEdge.entries.map(e => e.method_id).filter(uniq).length}}
                 </span>
               </p>
@@ -132,15 +132,16 @@ export default {
             // Find corresponding interaction
             const interaction = json.found.find(e => e.name == node);
             const subId =
-              interaction.entrez_id_a == this.head
-                ? interaction.entrez_id_b
-                : interaction.entrez_id_a;
+              interaction.symbol_a == this.head
+                ? interaction.symbol_b
+                : interaction.symbol_a;
             this.nodes.push({
               data: { id: subId }
             });
             this.edges.push({
               data: {
                 id: interaction.name,
+                name: this.head + '-' + subId,
                 source: this.head,
                 target: subId,
                 entries: interaction.entries
@@ -188,7 +189,7 @@ export default {
             },
             levelWidth: nodes => {
               // the letiation of concentric values in each level
-              return nodes.maxDegree();
+              return nodes.maxDegree() / 4;
             }
           }).run();
           cy.reset();

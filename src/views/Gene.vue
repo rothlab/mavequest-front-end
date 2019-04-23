@@ -37,7 +37,7 @@
                   <a href="#omim">OMIM</a>
                 </li>
                 <li v-if="hasPhenotype.cancer_census">
-                  <a href="#sanger">Cancer Gene Census</a>
+                  <a href="#cancer_census">Cancer Gene Census</a>
                 </li>
                 <li v-if="hasPhenotype.orphanet">
                   <a href="#orpha">Orphanet</a>
@@ -406,15 +406,15 @@
                 <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars"></AssayTitle>
 
                 <div class="content is-flex is-vcentered">
-                  <button class="button is-outlined" @click="showCytoscapeView = !showCytoscapeView">
-                    <b-icon pack="fas" icon="expand-arrows-alt"></b-icon>
-                    &nbsp;&nbsp; Visualize
+                  <button
+                    class="button is-outlined"
+                    @click="showCytoscapeView = !showCytoscapeView"
+                  >
+                    <b-icon pack="fas" icon="expand-arrows-alt"></b-icon>&nbsp;&nbsp; Visualize
                   </button>
-
-                  &nbsp;&nbsp; {{geneName}} has {{huriData.length}} 
-                  interaction pair{{huriData.length > 1 ? "s" : ""}} 
+                  &nbsp;&nbsp; {{geneName}} has {{huriData.length}}
+                  interaction pair{{huriData.length > 1 ? "s" : ""}}
                   in the HuRI database.
-
                   <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
                     <CytoscapeView :head="geneName" :elements="huriData"/>
                   </b-modal>
@@ -451,28 +451,29 @@
                           type="is-dark"
                           multilined
                         >
-                          <a href="https://www.omim.org/help/faq#1_6" 
-                            target="_blank" rel="noopener noreferrer">
-                            <b-icon pack="fas" size="is-small" 
-                              icon="question-circle"></b-icon>
+                          <a
+                            href="https://www.omim.org/help/faq#1_6"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <b-icon pack="fas" size="is-small" icon="question-circle"></b-icon>
                           </a>
                         </b-tooltip>
                       </template>
 
                       <template slot-scope="props">
-                        <b-table-column field="phenotype" label="Phenotype">
-                          {{props.row.phenotype}}
-                        </b-table-column>
+                        <b-table-column field="phenotype" label="Phenotype">{{props.row.phenotype}}</b-table-column>
 
-                        <b-table-column field="badge" label="Annotation"
-                          :meta="true">
-                          <ExpandableRow 
+                        <b-table-column field="badge" label="Annotation" :meta="true">
+                          <ExpandableRow
                             class="is-inline cell-line is-capitalized"
                             :elements="flatten([
                               props.row.inheritance.split('|'), 
                               props.row.phenotype_type,
                               parseOmimType(props.row.mapping_annot)
-                            ])" preview_items="5"></ExpandableRow>
+                            ])"
+                            preview_items="5"
+                          ></ExpandableRow>
                         </b-table-column>
                       </template>
                     </b-table>
@@ -482,17 +483,56 @@
 
               <div v-if="hasPhenotype.cancer_census">
                 <AssayTitle
-                  anchor="sanger"
-                  title="Cancer Gene Census Database"
+                  anchor="cancer_census"
+                  title="Cancer Gene Census"
                   icon="fas fa-bars"
                   reflink="/about#cancer-census"
                 ></AssayTitle>
                 <div class="content">
-                  <ExpandableList
-                    heading="Cancer Gene Census Phenotype"
-                    :names="['Somatic', 'Germline']"
-                    :elements="[cancerGeneCensusPhenotype.somatic, cancerGeneCensusPhenotype.germline]"
-                  ></ExpandableList>
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table
+                      :data="cancerGeneCensusPhenotype"
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                      narrowed
+                    >
+                      <template slot-scope="props">
+                        <b-table-column field="tier" label="Tier" width="50">{{props.row.tier}}</b-table-column>
+
+                        <b-table-column
+                          field="inheritance"
+                          label="Inheritance"
+                          width="50"
+                        >{{props.row.inheritance}}</b-table-column>
+
+                        <b-table-column field="hallmark" label="Hallmark" width="50">
+                          <b-icon
+                            pack="fas"
+                            type="is-grey"
+                            :icon="props.row.hallmark ? 'check-circle' : 'times-circle'"
+                          ></b-icon>
+                        </b-table-column>
+
+                        <b-table-column field="germline" label="Germline" width="400">
+                          <ExpandableRow
+                            class="is-capitalized"
+                            :elements="props.row.tumour_germline.map(e => e.trim())"
+                            preview_items="3"
+                          ></ExpandableRow>
+                        </b-table-column>
+
+                        <b-table-column field="somatic" label="Somatic">
+                          <ExpandableRow
+                            class="is-capitalized"
+                            :elements="props.row.tumour_somatic.map(e => e.trim())"
+                            preview_items="3"
+                          ></ExpandableRow>
+                        </b-table-column>
+                      </template>
+                    </b-table>
+                  </div>
                 </div>
               </div>
 
@@ -514,7 +554,7 @@
                       hoverable
                     >
                       <template slot-scope="props">
-                        <b-table-column field="id" label="ORPHA ID" width="150">
+                        <b-table-column field="id" label="ORPHA ID" width="100">
                           <a
                             :href="'https://www.orpha.net/consor/cgi-bin/Disease_Search_Simple.php?lng=EN&Disease_Disease_Search_diseaseGroup='
                              + props.row.id + '&Disease_Disease_Search_diseaseType=ORPHA'"
@@ -522,16 +562,22 @@
                           >{{props.row.id}}</a>
                         </b-table-column>
 
+                        <b-table-column field="source" label="Source" width="75">
+                          <ExpandableRow :elements="props.row.source" preview_items="3"></ExpandableRow>
+                        </b-table-column>
+
+                        <b-table-column field="prevalence" label="Prevalence" width="100">
+                          <ExpandableRow :elements="props.row.prevalence" preview_items="3"></ExpandableRow>
+                        </b-table-column>
+
+                        <b-table-column field="type" label="Type" width="300">
+                          <ExpandableRow :elements="props.row.prev_type.split('|')" preview_items="3"></ExpandableRow>
+                        </b-table-column>
+
                         <b-table-column
                           field="disorder"
                           label="Disorder"
-                          width="300"
                         >{{props.row.disorder}}</b-table-column>
-
-                        <b-table-column
-                          field="prevalence"
-                          label="Prevalence"
-                        >{{props.row.prevalence}}</b-table-column>
                       </template>
                     </b-table>
                   </div>
@@ -605,7 +651,6 @@
 <script>
 import Header from "@/components/Header.vue";
 import ExpandableRow from "@/components/ExpandableRow.vue";
-import ExpandableList from "@/components/ExpandableList.vue";
 import CytoscapeView from "@/components/CytoscapeView.vue";
 import ErrorView from "@/components/ErrorView.vue";
 import Lodash from "lodash";
@@ -680,7 +725,6 @@ export default {
   components: {
     Header,
     ExpandableRow,
-    ExpandableList,
     AssayTitle,
     RecordTitle,
     RefBadge,
@@ -758,27 +802,19 @@ export default {
             this.hasPhenotype.omim = true;
             this.omimPhenotype = json.omim;
           }
+          if (json.hasOwnProperty("cancer_census")) {
+            // Cancer Census Phenotype
+            this.hasPhenotype.any = true;
+            this.hasPhenotype.cancer_census = true;
+            this.cancerGeneCensusPhenotype = json.cancer_census;
+          }
 
-          // if (json.hasOwnProperty("hgmd")) {
-          //   // HGMD Phenotype
-          //   this.hasPhenotype.hgmd = true;
-          //   this.hgmdPhenotype = json.hgmd.hgmd_phenotype;
-          // }
-
-          // if (json.hasOwnProperty("cancer_census")) {
-          //   // Cancer Census Phenotype
-          //   this.hasPhenotype.cancer_census = true;
-          //   this.cancerGeneCensusPhenotype.somatic =
-          //     json.cancer_census.cancer_census_somatic ? json.cancer_census.cancer_census_somatic : this.cancerGeneCensusPhenotype.somatic;
-          //   this.cancerGeneCensusPhenotype.germline =
-          //     json.cancer_census.cancer_census_germline ? json.cancer_census.cancer_census_germline : this.cancerGeneCensusPhenotype.germline;
-          // }
-
-          // if (json.hasOwnProperty("orphanet")) {
-          //   // Orphanet Phenotype
-          //   this.hasPhenotype.orphanet = true;
-          //   this.orphanetData = json.orphanet.orphanet_data;
-          // }
+          if (json.hasOwnProperty("orphanet")) {
+            // Orphanet Phenotype
+            this.hasPhenotype.any = true;
+            this.hasPhenotype.orphanet = true;
+            this.orphanetData = json.orphanet;
+          }
 
           // if (json.hasOwnProperty("invitae")) {
           //   // Invitiae Panel
@@ -833,10 +869,7 @@ export default {
       overexprData: [],
       omimPhenotype: [],
       hgmdPhenotype: [],
-      cancerGeneCensusPhenotype: {
-        somatic: [],
-        germline: []
-      },
+      cancerGeneCensusPhenotype: [],
       orphanetData: [],
       invitaeData: [],
       deoEtalPhenotype: []

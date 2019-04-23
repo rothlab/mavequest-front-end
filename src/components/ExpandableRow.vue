@@ -16,7 +16,7 @@
 
     <b-tooltip
       v-if="elements.length > parseInt(preview_items)"
-      type="is-info"
+      type="is-dark"
       :label="isExpandDetail ? 'Collapse' : 'Expand'"
       animated
     >

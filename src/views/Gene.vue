@@ -607,42 +607,22 @@
                       hoverable
                     >
                       <template slot-scope="props">
-                        <b-table-column field="id" label="Test ID">
+                        <b-table-column field="id" label="Test ID" width="100">
                           <a
                             :href="'https://www.invitae.com/en/physician/tests/'+ props.row.id"
                             target="_blank"
                           >{{props.row.id}}</a>
                         </b-table-column>
 
-                        <b-table-column field="name" label="Test Name">{{props.row.name}}</b-table-column>
-
                         <b-table-column field="panel" label="Panel">
-                          <b-tag
-                            class="is-light cell-line"
-                            v-for="panel in props.row.panel"
-                            v-bind:key="panel"
-                          >{{panel}}</b-tag>
+                          <ExpandableRow :elements="props.row.panel" 
+                            preview_items="3"></ExpandableRow>
                         </b-table-column>
+
+                        <b-table-column field="name" label="Test Name">{{props.row.name}}</b-table-column>
                       </template>
                     </b-table>
                   </div>
-                </div>
-              </div>
-
-              <div v-if="hasPhenotype.others">
-                <AssayTitle anchor="other-phenotype" title="Other Sources" icon="fas fa-bars"></AssayTitle>
-
-                <div id="deo_etal" class="content">
-                  <RecordTitle title="Deo et al. Phenotype" reflink="/about#deo-etal"></RecordTitle>
-
-                  <b-taglist class="in-paragraph in-list">
-                    <b-tag
-                      size="is-medium"
-                      type="is-info"
-                      v-for="item in deoEtalPhenotype"
-                      :key="item"
-                    >{{item.toUpperCase()}}</b-tag>
-                  </b-taglist>
                 </div>
               </div>
             </section>
@@ -703,35 +683,12 @@ const RefBadge = {
   }
 };
 
-// Declare Record title
-const RecordTitle = {
-  props: ["title", "reflink"],
-  render: function(createElement) {
-    let subElements = [
-      createElement(
-        "h4",
-        { class: "title is-inline", style: "margin-right: 0.75rem" },
-        this.title
-      )
-    ];
-
-    if (this.reflink) {
-      subElements.push(
-        RefBadge.methods.constructElement(this.reflink, createElement)
-      );
-    }
-
-    return createElement("div", subElements);
-  }
-};
-
 export default {
   name: "gene-details",
   components: {
     Header,
     ExpandableRow,
     AssayTitle,
-    RecordTitle,
     RefBadge,
     CytoscapeView,
     ErrorView
@@ -826,17 +783,12 @@ export default {
             this.orphanetData = json.orphanet;
           }
 
-          // if (json.hasOwnProperty("invitae")) {
-          //   // Invitiae Panel
-          //   this.hasPhenotype.invitae = true;
-          //   this.invitaeData = json.invitae.invitae_panel;
-          // }
-
-          // if (json.hasOwnProperty("deo_etal")) {
-          //   // Deo et. al Phenotype
-          //   this.hasPhenotype.others = true;
-          //   this.deoEtalPhenotype = json.deo_etal.deo_etal_phenotype;
-          // }
+          if (json.hasOwnProperty("invitae")) {
+            // Invitiae Panel
+            this.hasPhenotype.any = true;
+            this.hasPhenotype.invitae = true;
+            this.invitaeData = json.invitae;
+          }
         },
         response => {
           // Error handling
@@ -879,11 +831,9 @@ export default {
       genomeCRISPRData: [],
       overexprData: [],
       omimPhenotype: [],
-      hgmdPhenotype: [],
       cancerGeneCensusPhenotype: [],
       orphanetData: [],
       invitaeData: [],
-      deoEtalPhenotype: []
     };
   },
   methods: {

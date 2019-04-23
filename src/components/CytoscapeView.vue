@@ -71,14 +71,16 @@ export default {
           {
             selector: "node",
             style: {
-              "background-color": "#71C0F4",
+              "background-color": "#a0d5f8",
               label: "data(id)"
             }
           },
           {
             selector: "node.highlighted",
             style: {
-              "background-color": "#3273DC"
+              "background-color": "#3273DC",
+              label: "data(id)",
+              "z-index": 100
             }
           },
           {
@@ -100,10 +102,11 @@ export default {
           {
             selector: "edge.highlighted",
             style: {
-              width: 3,
+              width: 4,
               "line-color": "#209CEE",
               "target-arrow-color": "#ccc",
-              "target-arrow-shape": "triangle"
+              "target-arrow-shape": "triangle",
+              "z-index": 100
             }
           },
         ]
@@ -206,7 +209,7 @@ export default {
               node = evtTarget;
               edge = cy.edges("[target='" + evtTarget.id() + "']");
             } else {
-              node = cy.nodes("[id='" + evtTarget.id() + "']");
+              node = cy.nodes("[id='" + evtTarget.data().target + "']");
               edge = evtTarget;
             }
 

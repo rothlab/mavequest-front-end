@@ -411,7 +411,7 @@
                 <div class="content is-flex is-vcentered">
                   <button class="button is-outlined" @click="showCytoscapeView = !showCytoscapeView">
                     <b-icon pack="fas" icon="expand-arrows-alt"></b-icon>
-                    <span>Visualize</span>
+                    &nbsp;&nbsp; Visualize
                   </button>
 
                   &nbsp;&nbsp; {{geneName}} has {{huriData.length}} 

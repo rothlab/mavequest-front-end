@@ -407,22 +407,24 @@
               <div v-if="hasAssay.huri">
                 <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars"></AssayTitle>
 
-                <div class="content is-flex is-vcentered">
-                  <button
-                    class="button is-outlined"
-                    @click="showCytoscapeView = !showCytoscapeView"
-                  >
-                    <figure class="image is-24x24 is-marginless">
-                      <img src="../assets/cytoscape-logo.png" alt="cytoscape-logo">
-                    </figure>
-                    <span>&nbsp;&nbsp; Visualize with CytoScape.js</span>
-                  </button>
-                  &nbsp;&nbsp; {{geneName}} has {{huriData.length}}
-                  interaction pair{{huriData.length > 1 ? "s" : ""}}
-                  in the HuRI database.
-                  <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
-                    <CytoscapeView :head="geneName" :elements="huriData"/>
-                  </b-modal>
+                <div class="content">
+                  <div class="card has-table-padding in-paragraph in-list is-flex is-vcentered">
+                    <button
+                      class="button is-outlined"
+                      @click="showCytoscapeView = !showCytoscapeView"
+                    >
+                      <figure class="image is-24x24 is-marginless">
+                        <img src="../assets/cytoscape-logo.png" alt="cytoscape-logo">
+                      </figure>
+                      <span>&nbsp;&nbsp; Visualize with CytoScape.js</span>
+                    </button>
+                    &nbsp;&nbsp; {{geneName}} has {{huriData.length}}
+                    interaction pair{{huriData.length > 1 ? "s" : ""}}
+                    in the HuRI database.
+                    <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
+                      <CytoscapeView :head="geneName" :elements="huriData"/>
+                    </b-modal>
+                  </div>
                 </div>
               </div>
             </section>
@@ -431,6 +433,74 @@
 
             <section class="section is-paddingless" v-if="hasPhenotype.any">
               <h1 class="title">Disease Phenotype</h1>
+              <div v-if="hasPhenotype.clinvar">
+                <AssayTitle
+                  anchor="clinvar"
+                  title="Clinvar"
+                  icon="fas fa-bars"
+                  reflink="/about#clinvar"
+                ></AssayTitle>
+                <div class="content">
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <p>Benign: {{clinvarData.benign}}, Likely Benign: {{clinvarData.likely_benign}}, 
+                      Pathogenic: {{clinvarData.pathogenic_variants.length}}, 
+                      Likely Pathogenic: {{clinvarData.likely_pathogenic}}, 
+                      Uncertain: {{clinvarData.uncertain}}, Other: {{clinvarData.others}}, 
+                    </p>
+                    <b-table
+                      :data="clinvarData.pathogenic_variants"
+                      narrowed
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                      detailed
+                      detailed-key="id"
+                    >
+                      <template slot-scope="props">
+                        <b-table-column field="id" label="Clinvar ID" width="100">
+                          <a
+                            :href="'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+ props.row.id"
+                            target="_blank"
+                          >{{props.row.id}}</a>
+                        </b-table-column>
+
+                        <b-table-column field="count" label="Count">
+                          {{props.row.count}}
+                        </b-table-column>
+
+                        <b-table-column field="star" label="Review Status">
+                          <b-tooltip type="is-dark" :label="props.row.review_stats" multilined>
+                            <b-icon pack="fas" icon="star" type="is-warning" v-for="n in props.row.review_star" v-bind:key="n"></b-icon>
+                            <b-icon pack="far" icon="star" type="is-warning" v-if="props.row.review_star < 1"></b-icon>
+                          </b-tooltip>
+                        </b-table-column>
+
+                        <b-table-column class="is-capitalized" field="type" label="Type">
+                          {{props.row.type === "single nucleotide variant" ? "SNV" : props.row.type}}
+                        </b-table-column>
+
+                        <b-table-column class="is-capitalized" field="origin" label="Origin">
+                          <ExpandableRow :elements="props.row.origin.split('/')" preview_items="5"></ExpandableRow>
+                        </b-table-column>
+                      </template>
+
+                      <template slot="detail" slot-scope="props">
+                        <p class="title is-5">Phenotype</p>
+                        <div class="columns">
+                          <div class="column">
+                            <p class="is-marginless is-capitalized" v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 1)" v-bind:key="p">{{p}}</p>
+                          </div>
+                          <div class="column">
+                            <p class="is-marginless is-capitalized" v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 2)" v-bind:key="p">{{p}}</p>
+                          </div>
+                        </div>
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
+              </div>
+
               <div v-if="hasPhenotype.omim">
                 <AssayTitle
                   anchor="omim"
@@ -769,6 +839,14 @@ export default {
             this.hasPhenotype.omim = true;
             this.omimPhenotype = json.omim;
           }
+          
+          if (json.hasOwnProperty("clinvar")) {
+            // OMIM Phenotype
+            this.hasPhenotype.any = true;
+            this.hasPhenotype.clinvar = true;
+            this.clinvarData = json.clinvar;
+          }
+
           if (json.hasOwnProperty("cancer_census")) {
             // Cancer Census Phenotype
             this.hasPhenotype.any = true;
@@ -830,6 +908,7 @@ export default {
       genomeRNAiData: [],
       genomeCRISPRData: [],
       overexprData: [],
+      clinvarData: {},
       omimPhenotype: [],
       cancerGeneCensusPhenotype: [],
       orphanetData: [],
@@ -884,6 +963,13 @@ export default {
         default:
           return "Unknown Type";
       }
+    },
+    splitInChunk(list, total, index) {
+      // Remove not provided unless there's nothing else
+      let l = list.filter(e => e != "not provided");
+      if (l.length < 1) l = ["not provided"]
+
+      return Lodash.chunk(l, total)[index - 1];
     }
   }
 };

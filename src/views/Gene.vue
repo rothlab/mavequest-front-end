@@ -443,11 +443,11 @@
                   reflink="/about#clinvar"
                 ></AssayTitle>
                 <div class="content">
-                  <div class="clinvar-stats clinvar-stats-adaptive">
-                    <apexchart type="bar" height="120px" :options="chartOptions" :series="clinvarStats"></apexchart>
-                  </div>
-
                   <div class="card has-table-padding in-paragraph in-list">
+                    <div class="clinvar-stats clinvar-stats-adaptive">
+                      <apexchart type="bar" height="120px" :options="chartOptions" :series="clinvarStats"></apexchart>
+                    </div>
+
                     <b-table
                       :data="clinvarData.pathogenic_variants"
                       narrowed
@@ -458,6 +458,12 @@
                       detailed
                       detailed-key="id"
                     >
+                      <template slot="bottom-left">
+                          Click&nbsp;
+                          <b-icon pack="fas" type="is-link" size="is-small" icon="chevron-right"></b-icon>
+                          &nbsp;to Show Phenotypes
+                      </template>
+
                       <template slot-scope="props">
                         <b-table-column field="id" label="Clinvar ID" width="100">
                           <a
@@ -469,7 +475,7 @@
                         <b-table-column field="count" label="Count">{{props.row.count}}</b-table-column>
 
                         <b-table-column field="star" label="Review Status">
-                          <b-tooltip type="is-dark" :label="props.row.review_stats" multilined>
+                          <b-tooltip class="is-capitalized" type="is-dark" :label="props.row.review_stats" multilined>
                             <b-icon
                               pack="fas"
                               icon="star"

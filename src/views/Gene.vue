@@ -1013,7 +1013,8 @@ export default {
         },
         legend: {
           onItemClick: { toggleDataSeries: false },
-          position: "top"
+          position: "top",
+          offsetY: 15
         },
         responsive: [{
           breakpoint: 768,
@@ -1116,11 +1117,12 @@ export default {
 }
 @media all and (max-width: 768px) {
   .clinvar-stats-adaptive {
-    margin-top: -40px;
+    margin-top: -35px !important;
   }
 }
 .clinvar-stats {
     overflow: hidden;
+    margin-top: -10px;
     margin-bottom: -50px;
 }
 </style>

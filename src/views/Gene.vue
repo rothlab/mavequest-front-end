@@ -74,7 +74,9 @@
                   <div class="column gene-summary">
                     <p class="is-capitalized is-italic" style="margin-bottom:0.5rem">
                       {{description}}
-                      <span v-if="alias.length > 1">(Alias: {{alias.join(", ")}})</span>
+                      <span v-if="alias || alias_description">
+                      (Alias: {{flatten([alias, alias_description]).join(", ")}})
+                      </span>
                     </p>
 
                     <b-field grouped group-multiline class="gene-summary">
@@ -448,7 +450,7 @@
                       <apexchart type="bar" height="120px" :options="chartOptions" :series="clinvarStats"></apexchart>
                     </div>
 
-                    <b-table
+                    <b-table v-if="clinvarData.pathogenic_variants"
                       :data="clinvarData.pathogenic_variants"
                       narrowed
                       paginated
@@ -457,6 +459,8 @@
                       hoverable
                       detailed
                       detailed-key="id"
+                      default-sort="review_star"
+                      default-sort-direction="desc"
                     >
                       <template slot="bottom-left">
                           Click&nbsp;
@@ -472,9 +476,7 @@
                           >{{props.row.id}}</a>
                         </b-table-column>
 
-                        <b-table-column field="count" label="Count">{{props.row.count}}</b-table-column>
-
-                        <b-table-column field="star" label="Review Status">
+                        <b-table-column field="review_star" label="Review Status" sortable>
                           <b-tooltip class="is-capitalized" type="is-dark" :label="props.row.review_stats" multilined>
                             <b-icon
                               pack="fas"
@@ -523,6 +525,8 @@
                         </div>
                       </template>
                     </b-table>
+
+                    <div v-else class="has-text-centered">No pathogenic variants available.</div>
                   </div>
                 </div>
               </div>
@@ -957,6 +961,7 @@ export default {
       omimID: "",
       lastUpdate: "",
       alias: [],
+      alias_description: [],
       hasAssay: {},
       hasPhenotype: {},
       orthologyData: [],
@@ -1058,7 +1063,7 @@ export default {
       this.$scrollTo(element, option);
     },
     flatten(list) {
-      return Lodash.flattenDeep(list.filter(e => e != "NA"));
+      return Lodash.flattenDeep(list.filter(e => e != "NA" && e != undefined));
     },
     parseOmimType(type) {
       switch (type) {
@@ -1124,5 +1129,6 @@ export default {
     overflow: hidden;
     margin-top: -10px;
     margin-bottom: -50px;
+    z-index: 1;
 }
 </style>

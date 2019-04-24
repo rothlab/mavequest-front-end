@@ -33,6 +33,9 @@
               </ul>
               <p class="menu-label" v-if="hasPhenotype.any">Disease Phenotype</p>
               <ul class="menu-list" v-if="hasPhenotype.any">
+                <li v-if="hasPhenotype.clinvar">
+                  <a href="#clinvar">Clinvar</a>
+                </li>
                 <li v-if="hasPhenotype.omim">
                   <a href="#omim">OMIM</a>
                 </li>
@@ -49,8 +52,7 @@
                   <a href="#other-phenotype">Other Sources</a>
                 </li>
               </ul>
-              <p class="menu-label">Last Update: {{lastUpdate}}</p>
-
+              <p class="menu-label" v-if="lastUpdate">Last Update: {{lastUpdate}}</p>
             </aside>
           </div>
 
@@ -441,12 +443,11 @@
                   reflink="/about#clinvar"
                 ></AssayTitle>
                 <div class="content">
+                  <div class="clinvar-stats clinvar-stats-adaptive">
+                    <apexchart type="bar" height="120px" :options="chartOptions" :series="clinvarStats"></apexchart>
+                  </div>
+
                   <div class="card has-table-padding in-paragraph in-list">
-                    <p>Benign: {{clinvarData.benign}}, Likely Benign: {{clinvarData.likely_benign}}, 
-                      Pathogenic: {{clinvarData.pathogenic_variants.length}}, 
-                      Likely Pathogenic: {{clinvarData.likely_pathogenic}}, 
-                      Uncertain: {{clinvarData.uncertain}}, Other: {{clinvarData.others}}, 
-                    </p>
                     <b-table
                       :data="clinvarData.pathogenic_variants"
                       narrowed
@@ -465,20 +466,31 @@
                           >{{props.row.id}}</a>
                         </b-table-column>
 
-                        <b-table-column field="count" label="Count">
-                          {{props.row.count}}
-                        </b-table-column>
+                        <b-table-column field="count" label="Count">{{props.row.count}}</b-table-column>
 
                         <b-table-column field="star" label="Review Status">
                           <b-tooltip type="is-dark" :label="props.row.review_stats" multilined>
-                            <b-icon pack="fas" icon="star" type="is-warning" v-for="n in props.row.review_star" v-bind:key="n"></b-icon>
-                            <b-icon pack="far" icon="star" type="is-warning" v-if="props.row.review_star < 1"></b-icon>
+                            <b-icon
+                              pack="fas"
+                              icon="star"
+                              type="is-warning"
+                              v-for="n in props.row.review_star"
+                              v-bind:key="n"
+                            ></b-icon>
+                            <b-icon
+                              pack="far"
+                              icon="star"
+                              type="is-warning"
+                              v-if="props.row.review_star < 1"
+                            ></b-icon>
                           </b-tooltip>
                         </b-table-column>
 
-                        <b-table-column class="is-capitalized" field="type" label="Type">
-                          {{props.row.type === "single nucleotide variant" ? "SNV" : props.row.type}}
-                        </b-table-column>
+                        <b-table-column
+                          class="is-capitalized"
+                          field="type"
+                          label="Type"
+                        >{{props.row.type === "single nucleotide variant" ? "SNV" : props.row.type}}</b-table-column>
 
                         <b-table-column class="is-capitalized" field="origin" label="Origin">
                           <ExpandableRow :elements="props.row.origin.split('/')" preview_items="5"></ExpandableRow>
@@ -489,10 +501,18 @@
                         <p class="title is-5">Phenotype</p>
                         <div class="columns">
                           <div class="column">
-                            <p class="is-marginless is-capitalized" v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 1)" v-bind:key="p">{{p}}</p>
+                            <p
+                              class="is-marginless is-capitalized"
+                              v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 1)"
+                              v-bind:key="p"
+                            >{{p}}</p>
                           </div>
                           <div class="column">
-                            <p class="is-marginless is-capitalized" v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 2)" v-bind:key="p">{{p}}</p>
+                            <p
+                              class="is-marginless is-capitalized"
+                              v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 2)"
+                              v-bind:key="p"
+                            >{{p}}</p>
                           </div>
                         </div>
                       </template>
@@ -646,13 +666,13 @@
                         </b-table-column>
 
                         <b-table-column field="type" label="Type" width="300">
-                          <ExpandableRow :elements="props.row.prev_type.split('|')" preview_items="3"></ExpandableRow>
+                          <ExpandableRow
+                            :elements="props.row.prev_type.split('|')"
+                            preview_items="3"
+                          ></ExpandableRow>
                         </b-table-column>
 
-                        <b-table-column
-                          field="disorder"
-                          label="Disorder"
-                        >{{props.row.disorder}}</b-table-column>
+                        <b-table-column field="disorder" label="Disorder">{{props.row.disorder}}</b-table-column>
                       </template>
                     </b-table>
                   </div>
@@ -685,8 +705,7 @@
                         </b-table-column>
 
                         <b-table-column field="panel" label="Panel">
-                          <ExpandableRow :elements="props.row.panel" 
-                            preview_items="3"></ExpandableRow>
+                          <ExpandableRow :elements="props.row.panel" preview_items="3"></ExpandableRow>
                         </b-table-column>
 
                         <b-table-column field="name" label="Test Name">{{props.row.name}}</b-table-column>
@@ -709,6 +728,7 @@ import ExpandableRow from "@/components/ExpandableRow.vue";
 import CytoscapeView from "@/components/CytoscapeView.vue";
 import ErrorView from "@/components/ErrorView.vue";
 import Lodash from "lodash";
+import VueApexCharts from 'vue-apexcharts'
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
@@ -761,7 +781,8 @@ export default {
     AssayTitle,
     RefBadge,
     CytoscapeView,
-    ErrorView
+    ErrorView,
+    'apexchart': VueApexCharts
   },
   created() {
     this.geneName = this.$route.params.name.toUpperCase();
@@ -796,8 +817,12 @@ export default {
 
           // Handle date
           const date = new Date(json.last_update);
-          this.lastUpdate = date.getFullYear() + '-' + (date.getMonth() + 1)
-            + '-' + date.getDate();
+          this.lastUpdate =
+            date.getFullYear() +
+            "-" +
+            (date.getMonth() + 1) +
+            "-" +
+            date.getDate();
 
           // Populate Assay information
           if (json.hasOwnProperty("genome_rnai")) {
@@ -839,12 +864,40 @@ export default {
             this.hasPhenotype.omim = true;
             this.omimPhenotype = json.omim;
           }
-          
+
           if (json.hasOwnProperty("clinvar")) {
             // OMIM Phenotype
             this.hasPhenotype.any = true;
             this.hasPhenotype.clinvar = true;
             this.clinvarData = json.clinvar;
+
+            // Construct apexgraph
+            this.clinvarStats = [
+              {
+                name: 'Benign',
+                data: [this.clinvarData.benign]
+              },
+              {
+                name: 'Likely Benign',
+                data: [this.clinvarData.likely_benign]
+              },
+              {
+                name: 'Uncertain',
+                data: [this.clinvarData.uncertain]
+              },
+              {
+                name: 'Likely Pathogenic',
+                data: [this.clinvarData.likely_pathogenic]
+              },
+              {
+                name: 'Pathogenic',
+                data: [this.clinvarData.pathogenic]
+              },
+              {
+                name: 'Others',
+                data: [this.clinvarData.others]
+              }
+            ]
           }
 
           if (json.hasOwnProperty("cancer_census")) {
@@ -896,7 +949,7 @@ export default {
       entrezID: "",
       ensemblID: "",
       omimID: "",
-      lastUpdate: Date(),
+      lastUpdate: "",
       alias: [],
       hasAssay: {},
       hasPhenotype: {},
@@ -909,10 +962,60 @@ export default {
       genomeCRISPRData: [],
       overexprData: [],
       clinvarData: {},
+      clinvarStats: [],
       omimPhenotype: [],
       cancerGeneCensusPhenotype: [],
       orphanetData: [],
       invitaeData: [],
+      chartOptions: {
+        chart: {
+          stacked: true,
+          stackType: '100%',
+          toolbar: { show: false }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+          },
+        },
+        stroke: {
+          width: 1,
+          colors: ['#fff']
+        },
+        xaxis: {
+          labels: { show: false },
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+          crosshairs: { show: false },
+          tooltip: { enabled: false }
+        },
+        yaxis: { 
+          show: false,
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+          crosshairs: { show: false },
+          tooltip: { enabled: false }
+        },
+        grid: { show: false },
+        tooltip: {
+          x: { show: false },
+          theme: "light",
+        },
+        dataLabels: { 
+          enabled: true,
+          style: { fontSize: '18px' }
+        },
+        legend: {
+          onItemClick: { toggleDataSeries: false },
+          position: "top"
+        },
+        responsive: [{
+          breakpoint: 768,
+          options: {
+            legend: { show: false }
+          }
+        }]
+      }
     };
   },
   methods: {
@@ -967,7 +1070,7 @@ export default {
     splitInChunk(list, total, index) {
       // Remove not provided unless there's nothing else
       let l = list.filter(e => e != "not provided");
-      if (l.length < 1) l = ["not provided"]
+      if (l.length < 1) l = ["not provided"];
 
       return Lodash.chunk(l, total)[index - 1];
     }
@@ -1004,5 +1107,14 @@ export default {
 .omim-phenotype {
   margin-left: 0.5rem;
   margin-bottom: 0.75rem;
+}
+@media all and (max-width: 768px) {
+  .clinvar-stats-adaptive {
+    margin-top: -40px;
+  }
+}
+.clinvar-stats {
+    overflow: hidden;
+    margin-bottom: -50px;
 }
 </style>

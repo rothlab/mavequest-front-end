@@ -553,6 +553,11 @@
                       hoverable
                       narrowed
                     >
+                      <template slot="bottom-left">
+                        Visit OMIM website:&nbsp;
+                        <a :href="'https://omim.org/entry/' + omimID" target="_blank" rel="noopener noreferrer">{{omimID}}</a>
+                        &nbsp;(OMIM ID)
+                      </template>
                       <template slot-scope="props" slot="header">
                         {{props.column.label}}
                         <b-tooltip
@@ -572,7 +577,14 @@
                       </template>
 
                       <template slot-scope="props">
-                        <b-table-column field="phenotype" label="Phenotype">{{props.row.phenotype}}</b-table-column>
+                        <b-table-column field="phenotype" label="Phenotype">
+                          {{props.row.phenotype.replace(/\d*$/, "")}}
+                          <a
+                            :href="'https://www.omim.org/entry/' + props.row.phenotype.match(/\d*$/).toString()"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >{{props.row.phenotype.match(/\d*$/).toString()}}</a>
+                        </b-table-column>
 
                         <b-table-column field="badge" label="Annotation" :meta="true">
                           <ExpandableRow
@@ -608,6 +620,11 @@
                       hoverable
                       narrowed
                     >
+                      <template slot="bottom-left">
+                        Visit Cancer Census website:&nbsp;
+                        <a :href="'https://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=' + geneName" target="_blank" rel="noopener noreferrer">{{geneName}}</a>
+                      </template>
+
                       <template slot-scope="props">
                         <b-table-column field="tier" label="Tier" width="50">{{props.row.tier}}</b-table-column>
 

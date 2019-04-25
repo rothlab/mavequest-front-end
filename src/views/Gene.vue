@@ -748,27 +748,6 @@ import ErrorView from "@/components/ErrorView.vue";
 import Lodash from "lodash";
 import VueApexCharts from 'vue-apexcharts'
 
-// Declare assay title as a little in-line component as it is not going to be used by another component/view
-const AssayTitle = {
-  props: ["title", "icon", "anchor", "reflink"],
-  render() {
-    return (
-      <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
-        <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
-        <span id={this.anchor} class="is-size-4 is-anchor">
-          {this.title} &nbsp;
-        </span>
-        <a href={this.reflink} target="_blank" v-show={this.reflink}>
-          <b-tag>
-            <b-icon icon="far fa-file-alt" />
-            <span>Source</span>
-          </b-tag>
-        </a>
-      </div>
-    );
-  }
-};
-
 // Declare reference badge
 const RefBadge = {
   props: ["reflink"],
@@ -783,11 +762,29 @@ const RefBadge = {
         [
           createElement("b-tag", [
             createElement("b-icon", { props: { icon: "far fa-file-alt" } }),
-            createElement("span", "Source")
+            createElement("span", { 
+              style: { "vertical-align": "text-bottom" }
+              }, "Source")
           ])
         ]
       );
     }
+  }
+};
+
+// Declare assay title as a little in-line component as it is not going to be used by another component/view
+const AssayTitle = {
+  props: ["title", "icon", "anchor", "reflink"],
+  render() {
+    return (
+      <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
+        <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
+        <span id={this.anchor} class="is-size-4 is-anchor">
+          {this.title} &nbsp;
+        </span>
+        <RefBadge reflink={this.reflink}></RefBadge>
+      </div>
+    );
   }
 };
 

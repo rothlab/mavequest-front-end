@@ -16,40 +16,37 @@
               <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
               <ul class="menu-list" v-if="hasAssay.any">
                 <li v-if="hasAssay.genome_crispr">
-                  <a href="#genome-crispr">GenomeCRISPR</a>
+                  <a href="#genome-crispr" v-scroll-to="'#genome-crispr'">GenomeCRISPR</a>
                 </li>
                 <li v-if="hasAssay.genome_rnai">
-                  <a href="#genome-rnai">GenomeRNAi</a>
+                  <a href="#genome-rnai" v-scroll-to="'#genome-rnai'">GenomeRNAi</a>
                 </li>
                 <li v-if="hasAssay.orthology">
-                  <a href="#comp">Orthology</a>
+                  <a href="#orthology" v-scroll-to="'#orthology'">Orthology</a>
                 </li>
                 <li v-if="hasAssay.overexpression">
-                  <a href="#over-expression">Over Expression</a>
+                  <a href="#over-expression" v-scroll-to="'#over-expression'">Over Expression</a>
                 </li>
                 <li v-if="hasAssay.huri">
-                  <a href="#huri">Human Interactome</a>
+                  <a href="#huri" v-scroll-to="'#huri'">Human Interactome</a>
                 </li>
               </ul>
               <p class="menu-label" v-if="hasPhenotype.any">Disease Phenotype</p>
               <ul class="menu-list" v-if="hasPhenotype.any">
                 <li v-if="hasPhenotype.clinvar">
-                  <a href="#clinvar">Clinvar</a>
+                  <a href="#clinvar" v-scroll-to="'#clinvar'">Clinvar</a>
                 </li>
                 <li v-if="hasPhenotype.omim">
-                  <a href="#omim">OMIM</a>
+                  <a href="#omim" v-scroll-to="'#omim'">OMIM</a>
                 </li>
                 <li v-if="hasPhenotype.cancer_census">
-                  <a href="#cancer_census">Cancer Gene Census</a>
+                  <a href="#cancer_census" v-scroll-to="'#cancer_census'">Cancer Gene Census</a>
                 </li>
                 <li v-if="hasPhenotype.orphanet">
-                  <a href="#orpha">Orphanet</a>
+                  <a href="#orpha" v-scroll-to="'#orpha'">Orphanet</a>
                 </li>
                 <li v-if="hasPhenotype.invitae">
-                  <a href="#invitae">Invitae</a>
-                </li>
-                <li v-if="hasPhenotype.others">
-                  <a href="#other-phenotype">Other Sources</a>
+                  <a href="#invitae" v-scroll-to="'#invitae'">Invitae</a>
                 </li>
               </ul>
               <p class="menu-label" v-if="lastUpdate">Last Update: {{lastUpdate}}</p>
@@ -652,7 +649,7 @@
               <div v-if="hasPhenotype.orphanet">
                 <AssayTitle
                   anchor="orpha"
-                  title="Orphanet Database"
+                  title="Orphanet"
                   icon="fas fa-bars"
                   reflink="/about#orphanet"
                 ></AssayTitle>
@@ -700,7 +697,7 @@
               <div v-if="hasPhenotype.invitae">
                 <AssayTitle
                   anchor="invitae"
-                  title="Invitae Panel Database"
+                  title="Invitae Panels"
                   icon="fas fa-bars"
                   reflink="/about#invitae"
                 ></AssayTitle>
@@ -805,7 +802,7 @@ export default {
   mounted() {
     // Update highlighted navbar item
     this.$emit("updateNav", "search");
-
+    
     // Display loading animation
     const loadingComponent = this.$loading.open();
 

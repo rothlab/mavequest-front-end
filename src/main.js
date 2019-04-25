@@ -4,14 +4,17 @@ import router from './router'
 import * as Sentry from '@sentry/browser'
 
 // Register error handler
-Sentry.init({
-  dsn: 'https://2fca57c8cda5499086923120812e3b9f@sentry.io/1410585',
-  release: process.env.GIT_COMMITHASH,
-  integrations: [new Sentry.Integrations.Vue({ 
-    Vue,
-    attachProps: true
-  })]
-})
+if (process.env.NODE_ENV != 'development') {
+  
+  Sentry.init({
+    dsn: 'https://2fca57c8cda5499086923120812e3b9f@sentry.io/1410585',
+    release: process.env.GIT_COMMITHASH,
+    integrations: [new Sentry.Integrations.Vue({ 
+      Vue,
+      attachProps: true
+    })]
+  })
+}
 
 // Import UI framework related libraries
 import Buefy from 'buefy'
@@ -25,6 +28,7 @@ import VueResource from 'vue-resource'
 import VueCytoscape from 'vue-cytoscape'
 import VueScrollTo from 'vue-scrollto'
 import VueAnalytics from 'vue-analytics'
+import VueResize from 'vue-resize'
 
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
@@ -52,7 +56,8 @@ Vue.use(Buefy, {
   debug: {
     sendHitTask: process.env.NODE_ENV === 'production'
   }
-});
+})
+.use(VueResize);
 
 new Vue({
   router,

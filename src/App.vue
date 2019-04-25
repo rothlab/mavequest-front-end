@@ -67,6 +67,9 @@ $navbar-breakpoint: 0px;
 
 // Import cytoscape styles
 @import "~vue-cytoscape/dist/vue-cytoscape.css";
+
+// Import Vue Resize
+@import "~vue-resize/dist/vue-resize.css";
 </style>
 
 <style>

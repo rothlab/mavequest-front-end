@@ -53,7 +53,7 @@
                 </b-table-column>
                 <b-table-column field="potential_assay" label="Potential Assay">
                   <b-tag
-                    class="assay-phenotype"
+                    class="assay-phenotype is-capitalized"
                     v-for="assay in props.row.potential_assay"
                     :key="assay.id"
                   >
@@ -64,7 +64,7 @@
                 </b-table-column>
                 <b-table-column field="disease_phenotype" label="Disease Phenotype">
                   <b-tag
-                    class="assay-phenotype"
+                    class="assay-phenotype is-capitalized"
                     v-for="phenotype in props.row.disease_phenotype"
                     :key="phenotype.id"
                   >
@@ -179,11 +179,13 @@ export default {
 
               // Find genes that don't have potential assay or disease phenotype
               this.geneInfo.forEach(element => {
-                if (element.potential_assay.length < 1) {
+                if (!element.potential_assay || 
+                  element.potential_assay.length < 1) {
                   this.geneWOAssay.push(element.gene_name);
                 }
 
-                if (element.disease_phenotype.length < 1) {
+                if (!element.disease_phenotype || 
+                  element.disease_phenotype.length < 1) {
                   this.geneWOPhenotype.push(element.gene_name);
                 }
               });
@@ -357,17 +359,19 @@ export default {
     formatTag(tag) {
       switch (tag) {
         case "genome_rnai":
-          return "RNAi";
+          return "RNAi"
         case "genome_crispr":
-          return "CRISPR KO";
-        case "yeast_comp":
-          return "Yeast Complementation"
-        case "human_comp":
-          return "Human Complementation"
+          return "CRISPR KO"
+        case "huri":
+          return "Interactome"
         case "overexpression":
           return "Over Expression"
+        case "omim":
+          return "OMIM"
+        case "cancer_census":
+          return "Cancer Census"
         default:
-          return tag.toUpperCase();
+          return tag;
       }
     }
   }

@@ -71,9 +71,9 @@
                   <div class="column gene-summary">
                     <p class="is-capitalized is-italic" style="margin-bottom:0.5rem">
                       {{description}}
-                      <span v-if="alias || alias_description">
-                      (Alias: {{flatten([alias, alias_description]).join(", ")}})
-                      </span>
+                      <span
+                        v-if="alias || alias_description"
+                      >(Alias: {{flatten([alias, alias_description]).join(", ")}})</span>
                     </p>
 
                     <b-field grouped group-multiline class="gene-summary">
@@ -136,10 +136,93 @@
                     </b-field>
                   </div>
                 </div>
+
+                <div class="has-background-white">
+                  <b-collapse aria-id="transcript-peptide" :open.sync="showTranscripts">
+                    <div
+                      slot="trigger"
+                      class="panel-heading"
+                      role="button"
+                      aria-controls="transcript-peptide"
+                    >
+                      <b-icon pack="fas" icon="chevron-right" size="is-small"
+                        :style="{ transform: showTranscripts ? 'rotate(0.25turn)' : '' } "></b-icon>
+                      <span>&nbsp;&nbsp;Peptides and Transcripts</span>
+                    </div>
+
+                    <div class="item-border">
+                      <b-table
+                        class="is-fullwidth"
+                        :data="transcriptList"
+                        paginated
+                        per-page="10"
+                        pagination-simple
+                        hoverable
+                        narrowed
+                        default-sort="peptide_length"
+                        default-sort-direction="desc"
+                      >
+                        <template slot-scope="props" slot="header">
+                          {{props.column.label}}
+                          <b-tooltip
+                            v-if="props.column.meta"
+                            label="Find more details on Ensembl website."
+                            type="is-dark"
+                            multilined
+                          >
+                            <a
+                              href="https://www.ensembl.org/info/genome/genebuild/biotypes.html"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <b-icon pack="fas" size="is-small" icon="question-circle"></b-icon>
+                            </a>
+                          </b-tooltip>
+                        </template>
+
+                        <template slot-scope="props">
+                          <b-table-column field="transcript" label="Transcript ID" width="200">
+                            <a
+                              :href="'https://www.ensembl.org/Homo_sapiens/transview??transcript=' + props.row.id"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >{{props.row.id}}</a>
+                          </b-table-column>
+                          <b-table-column field="name" label="Display Name">{{props.row.name}}</b-table-column>
+                          <b-table-column
+                            class="is-capitalized"
+                            field="biotype"
+                            label="Biotype"
+                            sortable
+                            meta="true"
+                          >{{props.row.biotype.replace(/_/g, " ")}}</b-table-column>
+                          <b-table-column
+                            field="num_exons"
+                            label="# Exons"
+                            sortable
+                          >{{props.row.num_exons}}</b-table-column>
+                          <b-table-column field="peptide" label="Peptide ID">
+                            <a v-if="props.row.peptide_id != 'NA'"
+                              :href="'https://www.ensembl.org/Homo_sapiens/protview?peptide=' + props.row.peptide_id"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >{{props.row.peptide_id}}</a>
+                            <span v-else>{{props.row.peptide_id}}</span>
+                          </b-table-column>
+                          <b-table-column
+                            field="peptide_length"
+                            label="Length (a.a.)"
+                            sortable
+                          >{{props.row.peptide_length}}</b-table-column>
+                        </template>
+                      </b-table>
+                    </div>
+                  </b-collapse>
+                </div>
               </div>
             </section>
 
-            <!-- No-info banner -->
+            <!-- No assays and phenotypes banner -->
             <section v-if="(!hasAssay.any && !hasPhenotype.any) && !isLoading">
               <ErrorView icon="fas fa-file" response="No Potential Assays or Phenotypes Found"></ErrorView>
             </section>
@@ -444,10 +527,16 @@
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <div class="clinvar-stats clinvar-stats-adaptive">
-                      <apexchart type="bar" height="120px" :options="chartOptions" :series="clinvarStats"></apexchart>
+                      <apexchart
+                        type="bar"
+                        height="120px"
+                        :options="chartOptions"
+                        :series="clinvarStats"
+                      ></apexchart>
                     </div>
 
-                    <b-table v-if="clinvarData.pathogenic_variants"
+                    <b-table
+                      v-if="clinvarData.pathogenic_variants"
                       :data="clinvarData.pathogenic_variants"
                       narrowed
                       paginated
@@ -461,9 +550,8 @@
                       class="clinvar-table"
                     >
                       <template slot="bottom-left">
-                          Click&nbsp;
-                          <b-icon pack="fas" type="is-link" size="is-small" icon="chevron-right"></b-icon>
-                          &nbsp;to Show Phenotypes
+                        Click&nbsp;
+                        <b-icon pack="fas" type="is-link" size="is-small" icon="chevron-right"></b-icon>&nbsp;to Show Phenotypes
                       </template>
 
                       <template slot-scope="props">
@@ -481,7 +569,12 @@
                         >{{props.row.name}}</b-table-column>
 
                         <b-table-column field="review_star" label="Review Status" sortable>
-                          <b-tooltip class="is-capitalized" type="is-dark" :label="props.row.review_stats" multilined>
+                          <b-tooltip
+                            class="is-capitalized"
+                            type="is-dark"
+                            :label="props.row.review_stats"
+                            multilined
+                          >
                             <b-icon
                               pack="fas"
                               icon="star"
@@ -537,12 +630,7 @@
               </div>
 
               <div v-if="hasPhenotype.omim">
-                <AssayTitle
-                  anchor="omim"
-                  title="OMIM"
-                  icon="fas fa-bars"
-                  reflink="/about#omim"
-                ></AssayTitle>
+                <AssayTitle anchor="omim" title="OMIM" icon="fas fa-bars" reflink="/about#omim"></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table
@@ -555,7 +643,11 @@
                     >
                       <template slot="bottom-left">
                         Visit OMIM website:&nbsp;
-                        <a :href="'https://omim.org/entry/' + omimID" target="_blank" rel="noopener noreferrer">{{omimID}}</a>
+                        <a
+                          :href="'https://omim.org/entry/' + omimID"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >{{omimID}}</a>
                         &nbsp;(OMIM ID)
                       </template>
                       <template slot-scope="props" slot="header">
@@ -622,7 +714,11 @@
                     >
                       <template slot="bottom-left">
                         Visit Cancer Census website:&nbsp;
-                        <a :href="'https://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=' + geneName" target="_blank" rel="noopener noreferrer">{{geneName}}</a>
+                        <a
+                          :href="'https://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=' + geneName"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >{{geneName}}</a>
                       </template>
 
                       <template slot-scope="props">
@@ -760,7 +856,7 @@ import ExpandableRow from "@/components/ExpandableRow.vue";
 import CytoscapeView from "@/components/CytoscapeView.vue";
 import ErrorView from "@/components/ErrorView.vue";
 import Lodash from "lodash";
-import VueApexCharts from 'vue-apexcharts'
+import VueApexCharts from "vue-apexcharts";
 
 // Declare reference badge
 const RefBadge = {
@@ -776,9 +872,13 @@ const RefBadge = {
         [
           createElement("b-tag", [
             createElement("b-icon", { props: { icon: "far fa-file-alt" } }),
-            createElement("span", { 
-              style: { "vertical-align": "text-bottom" }
-              }, "Source")
+            createElement(
+              "span",
+              {
+                style: { "vertical-align": "text-bottom" }
+              },
+              "Source"
+            )
           ])
         ]
       );
@@ -793,10 +893,14 @@ const AssayTitle = {
     return (
       <div class="block" style="margin-top:1.5rem">
         <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
-        <span id={this.anchor} class="is-size-4 is-anchor" style="vertical-align: text-bottom;">
+        <span
+          id={this.anchor}
+          class="is-size-4 is-anchor"
+          style="vertical-align: text-bottom;"
+        >
           {this.title} &nbsp;
         </span>
-        <RefBadge reflink={this.reflink} style="vertical-align: super;"></RefBadge>
+        <RefBadge reflink={this.reflink} style="vertical-align: super;" />
       </div>
     );
   }
@@ -811,7 +915,7 @@ export default {
     RefBadge,
     CytoscapeView,
     ErrorView,
-    'apexchart': VueApexCharts
+    apexchart: VueApexCharts
   },
   created() {
     this.geneName = this.$route.params.name.toUpperCase();
@@ -819,7 +923,7 @@ export default {
   mounted() {
     // Update highlighted navbar item
     this.$emit("updateNav", "search");
-    
+
     // Display loading animation
     const loadingComponent = this.$loading.open();
 
@@ -903,30 +1007,30 @@ export default {
             // Construct apexgraph
             this.clinvarStats = [
               {
-                name: 'Benign',
+                name: "Benign",
                 data: [this.clinvarData.benign]
               },
               {
-                name: 'Likely Benign',
+                name: "Likely Benign",
                 data: [this.clinvarData.likely_benign]
               },
               {
-                name: 'Uncertain',
+                name: "Uncertain",
                 data: [this.clinvarData.uncertain]
               },
               {
-                name: 'Likely Pathogenic',
+                name: "Likely Pathogenic",
                 data: [this.clinvarData.likely_pathogenic]
               },
               {
-                name: 'Pathogenic',
+                name: "Pathogenic",
                 data: [this.clinvarData.pathogenic]
               },
               {
-                name: 'Others',
+                name: "Others",
                 data: [this.clinvarData.others]
               }
-            ]
+            ];
           }
 
           if (json.hasOwnProperty("cancer_census")) {
@@ -957,6 +1061,32 @@ export default {
         }
       )
       .then(() => {
+        // Get Ensembl Data
+        this.$http
+          .get(
+            "https://rest.ensembl.org/lookup/id/" +
+              this.ensemblID +
+              "?expand=1;content-type=application/json"
+          )
+          .then(res => {
+            const json = res.body;
+
+            if (json.hasOwnProperty("Transcript")) {
+              // Populate transcripts database
+              for (const entity of json.Transcript) {
+                this.transcriptList.push({
+                  id: entity.id,
+                  name: entity.display_name,
+                  biotype: entity.biotype,
+                  num_exons: entity.Exon.length,
+                  peptide_id: entity.Translation ? entity.Translation.id : "NA",
+                  peptide_length: entity.Translation ? entity.Translation.length : "NA"
+                });
+              }
+            }
+          })
+      })
+      .then(() => {
         // Close loading animation
         loadingComponent.close();
         this.isLoading = false;
@@ -972,6 +1102,7 @@ export default {
       isExpandDetail: false,
       isLoading: true,
       showErrorComponent: false,
+      showTranscripts: false,
       errorResponse: undefined,
       isFloat: false,
       description: "",
@@ -979,6 +1110,8 @@ export default {
       ensemblID: "",
       omimID: "",
       lastUpdate: "",
+      transcriptList: [],
+      peptideList: [],
       alias: [],
       alias_description: [],
       hasAssay: {},
@@ -1000,17 +1133,17 @@ export default {
       chartOptions: {
         chart: {
           stacked: true,
-          stackType: '100%',
+          stackType: "100%",
           toolbar: { show: false }
         },
         plotOptions: {
           bar: {
-            horizontal: true,
-          },
+            horizontal: true
+          }
         },
         stroke: {
           width: 1,
-          colors: ['#fff']
+          colors: ["#fff"]
         },
         xaxis: {
           labels: { show: false },
@@ -1019,7 +1152,7 @@ export default {
           crosshairs: { show: false },
           tooltip: { enabled: false }
         },
-        yaxis: { 
+        yaxis: {
           show: false,
           axisBorder: { show: false },
           axisTicks: { show: false },
@@ -1031,26 +1164,37 @@ export default {
           x: { show: false },
           y: {
             formatter: function(value, { series }) {
-              return value + ", " + (value / series.map(Number).reduce((t, n) => t + parseInt(n)) * 100).toFixed(2) + "%"
+              return (
+                value +
+                ", " +
+                (
+                  (value /
+                    series.map(Number).reduce((t, n) => t + parseInt(n))) *
+                  100
+                ).toFixed(2) +
+                "%"
+              );
             }
           },
-          theme: "light",
+          theme: "light"
         },
-        dataLabels: { 
+        dataLabels: {
           enabled: true,
-          style: { fontSize: '18px' }
+          style: { fontSize: "18px" }
         },
         legend: {
           onItemClick: { toggleDataSeries: false },
           position: "top",
           offsetY: 15
         },
-        responsive: [{
-          breakpoint: 768,
-          options: {
-            legend: { show: false }
+        responsive: [
+          {
+            breakpoint: 768,
+            options: {
+              legend: { show: false }
+            }
           }
-        }]
+        ]
       }
     };
   },
@@ -1129,25 +1273,9 @@ export default {
   border-radius: 8px;
   padding: 1rem;
 }
-/* Adaptive styling */
-@media all and (max-width: 768px) {
-  .gene-card-adaptive {
-    padding-bottom: 0px;
-  }
-  .gene-summary {
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-  }
-}
 .omim-phenotype {
   margin-left: 0.5rem;
   margin-bottom: 0.75rem;
-}
-@media all and (max-width: 768px) {
-  .clinvar-stats-adaptive {
-    margin-top: -35px !important;
-  }
 }
 .clinvar-stats {
   overflow: hidden;
@@ -1158,5 +1286,27 @@ export default {
 .clinvar-table {
   position: relative;
   z-index: 2;
+}
+.item-border {
+  padding: 0.5rem;
+  border-style: solid;
+  border-width: 1px;
+  border-color: hsl(0, 0%, 86%);
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+/* Adaptive styling */
+@media all and (max-width: 768px) {
+  .gene-card-adaptive {
+    padding-bottom: 0px;
+  }
+  .gene-summary {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .clinvar-stats-adaptive {
+    margin-top: -35px !important;
+  }
 }
 </style>

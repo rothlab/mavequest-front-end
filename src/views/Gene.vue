@@ -542,7 +542,7 @@
               <div v-if="hasPhenotype.omim">
                 <AssayTitle
                   anchor="omim"
-                  title="OMIM Database"
+                  title="OMIM"
                   icon="fas fa-bars"
                   reflink="/about#omim"
                 ></AssayTitle>
@@ -777,12 +777,12 @@ const AssayTitle = {
   props: ["title", "icon", "anchor", "reflink"],
   render() {
     return (
-      <div class="block is-flex is-vcentered" style="margin-top:1.5rem">
+      <div class="block" style="margin-top:1.5rem">
         <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
-        <span id={this.anchor} class="is-size-4 is-anchor">
+        <span id={this.anchor} class="is-size-4 is-anchor" style="vertical-align: text-bottom;">
           {this.title} &nbsp;
         </span>
-        <RefBadge reflink={this.reflink}></RefBadge>
+        <RefBadge reflink={this.reflink} style="vertical-align: super;"></RefBadge>
       </div>
     );
   }

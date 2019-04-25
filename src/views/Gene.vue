@@ -461,6 +461,7 @@
                       detailed-key="id"
                       default-sort="review_star"
                       default-sort-direction="desc"
+                      class="clinvar-table"
                     >
                       <template slot="bottom-left">
                           Click&nbsp;
@@ -475,6 +476,12 @@
                             target="_blank"
                           >{{props.row.id}}</a>
                         </b-table-column>
+
+                        <b-table-column
+                          class="is-capitalized"
+                          field="name"
+                          label="Name"
+                        >{{props.row.name}}</b-table-column>
 
                         <b-table-column field="review_star" label="Review Status" sortable>
                           <b-tooltip class="is-capitalized" type="is-dark" :label="props.row.review_stats" multilined>
@@ -495,6 +502,7 @@
                         </b-table-column>
 
                         <b-table-column
+                          sortable
                           class="is-capitalized"
                           field="type"
                           label="Type"
@@ -1010,6 +1018,11 @@ export default {
         grid: { show: false },
         tooltip: {
           x: { show: false },
+          y: {
+            formatter: function(value, { series }) {
+              return value + ", " + (value / series.map(Number).reduce((t, n) => t + parseInt(n)) * 100).toFixed(2) + "%"
+            }
+          },
           theme: "light",
         },
         dataLabels: { 
@@ -1126,9 +1139,13 @@ export default {
   }
 }
 .clinvar-stats {
-    overflow: hidden;
-    margin-top: -10px;
-    margin-bottom: -50px;
-    z-index: 1;
+  overflow: hidden;
+  margin-top: -10px;
+  margin-bottom: -50px;
+  z-index: 1;
+}
+.clinvar-table {
+  position: relative;
+  z-index: 2;
 }
 </style>

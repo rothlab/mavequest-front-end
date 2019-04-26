@@ -755,7 +755,7 @@
                           ></b-icon>
                         </b-table-column>
 
-                        <b-table-column field="germline" label="Germline" width="400">
+                        <b-table-column v-if="props.row.tumour_germline" field="germline" label="Germline" width="400">
                           <ExpandableRow
                             class="is-capitalized"
                             :elements="props.row.tumour_germline.map(e => e.trim())"
@@ -763,7 +763,7 @@
                           ></ExpandableRow>
                         </b-table-column>
 
-                        <b-table-column field="somatic" label="Somatic">
+                        <b-table-column v-if="props.row.tumour_somatic" field="somatic" label="Somatic">
                           <ExpandableRow
                             class="is-capitalized"
                             :elements="props.row.tumour_somatic.map(e => e.trim())"

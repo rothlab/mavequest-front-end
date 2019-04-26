@@ -60,6 +60,7 @@ export default {
 
 // Navbar related styles
 $navbar-breakpoint: 0px;
+$table-row-active-background-color: $cyan;
 
 // Import Bulma and Buefy styles
 @import "~bulma";
@@ -78,6 +79,9 @@ $navbar-breakpoint: 0px;
 }
 .is-vcentered {
   align-items: center;
+}
+.is-hcentered {
+  justify-content: center;
 }
 .in-paragraph {
   margin-bottom: 1.5rem;

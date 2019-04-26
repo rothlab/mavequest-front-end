@@ -195,6 +195,7 @@
                             label="Biotype"
                             sortable
                             meta="true"
+                            :custom-sort="bioTypeSort"
                           >{{props.row.biotype.replace(/_/g, " ")}}</b-table-column>
                           <b-table-column
                             field="num_exons"
@@ -1111,7 +1112,6 @@ export default {
       omimID: "",
       lastUpdate: "",
       transcriptList: [],
-      peptideList: [],
       alias: [],
       alias_description: [],
       hasAssay: {},
@@ -1253,6 +1253,25 @@ export default {
       if (l.length < 1) l = ["not provided"];
 
       return Lodash.chunk(l, total)[index - 1];
+    },
+    bioTypeSort(a, b, isAsc) {
+      // Priority lower to higher
+      const priority = ["retained_intron", "processed_transcript", "protein_coding"];
+
+      const biotypeA = a.biotype;
+      const biotypeB = b.biotype;
+      const indA = priority.indexOf(biotypeA);
+      const indB = priority.indexOf(biotypeB);
+
+      if (indA === -1 && indB === -1) {
+        // None was in the priority list
+        // Just do a normal string comparison
+        return isAsc ? biotypeA.localeCompare(biotypeB) : biotypeB.localeCompare(biotypeA);
+      } else {
+        // If one in the priority list 
+        // Rank based on priority
+        return isAsc ? indB - indA : indA - indB;
+      }
     }
   }
 };

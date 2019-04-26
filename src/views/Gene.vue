@@ -147,7 +147,7 @@
                     >
                       <b-icon pack="fas" icon="chevron-right" size="is-small"
                         :style="{ transform: showTranscripts ? 'rotate(0.25turn)' : '' } "></b-icon>
-                      <span>&nbsp;&nbsp;Peptides and Transcripts</span>
+                      <span>&nbsp;&nbsp;Isoforms, Transcripts and Peptides</span>
                     </div>
 
                     <div class="item-border">
@@ -161,7 +161,22 @@
                         narrowed
                         default-sort="peptide_length"
                         default-sort-direction="desc"
+                        :selected="transcriptList[0]"
                       >
+                        <template slot="bottom-left">
+                          <b-tag type="is-info" size="is-medium">Canonical isoform</b-tag>
+                        </template>
+
+                        <template slot="empty">
+                          <p class="title is-6 is-flex is-vcentered is-hcentered" v-if="loadingTranscriptsStatus === 1">
+                            <SyncLoader :size="5" color="#7A7A7A"></SyncLoader>
+                            <span class="has-text-grey">&nbsp;&nbsp;Loading</span>
+                          </p>
+                          <p class="has-text-centered title is-6" v-else-if="loadingTranscriptsStatus === -1">
+                            <span class="has-text-grey">Failed to load from Ensembl API</span>
+                          </p>
+                        </template>
+
                         <template slot-scope="props" slot="header">
                           {{props.column.label}}
                           <b-tooltip
@@ -859,6 +874,7 @@ import CytoscapeView from "@/components/CytoscapeView.vue";
 import ErrorView from "@/components/ErrorView.vue";
 import Lodash from "lodash";
 import VueApexCharts from "vue-apexcharts";
+import { SyncLoader } from '@saeris/vue-spinners';
 
 // Declare reference badge
 const RefBadge = {
@@ -917,7 +933,8 @@ export default {
     RefBadge,
     CytoscapeView,
     ErrorView,
-    apexchart: VueApexCharts
+    apexchart: VueApexCharts,
+    SyncLoader
   },
   created() {
     this.geneName = this.$route.params.name.toUpperCase();
@@ -1063,6 +1080,8 @@ export default {
         }
       )
       .then(() => {
+        this.loadingTranscriptsStatus = 1;
+
         // Get Ensembl Data
         this.$http
           .get(
@@ -1076,16 +1095,29 @@ export default {
             if (json.hasOwnProperty("Transcript")) {
               // Populate transcripts database
               for (const entity of json.Transcript) {
-                this.transcriptList.push({
+                const newEntry = {
                   id: entity.id,
                   name: entity.display_name,
                   biotype: entity.biotype,
                   num_exons: entity.Exon.length,
                   peptide_id: entity.Translation ? entity.Translation.id : "NA",
                   peptide_length: entity.Translation ? entity.Translation.length : "NA"
-                });
+                };
+
+                // Make sure canonical entry always goes to the front
+                if (entity.is_canonical) {
+                  this.transcriptList.unshift(newEntry);
+                } else {
+                  this.transcriptList.push(newEntry);
+                }
               }
             }
+          },
+          res => {
+            // Error handling
+            this.loadingTranscriptsStatus = -1;
+            this.showErrorComponent = true;
+            this.errorResponse = res;
           })
       })
       .then(() => {
@@ -1103,6 +1135,7 @@ export default {
     return {
       isExpandDetail: false,
       isLoading: true,
+      loadingTranscriptsStatus: 0,
       showErrorComponent: false,
       showTranscripts: false,
       errorResponse: undefined,

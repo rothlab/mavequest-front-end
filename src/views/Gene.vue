@@ -214,6 +214,7 @@
                             field="peptide_length"
                             label="Length (a.a.)"
                             sortable
+                            :custom-sort="lengthAaSort"
                           >{{props.row.peptide_length}}</b-table-column>
                         </template>
                       </b-table>
@@ -1270,8 +1271,17 @@ export default {
       } else {
         // If one in the priority list 
         // Rank based on priority
-        return isAsc ? indB - indA : indA - indB;
+        return isAsc ? indA - indB : indB - indA;
       }
+    },
+    lengthAaSort(a, b, isAsc) {
+      const lenA = a.peptide_length;
+      const lenB = b.peptide_length;
+
+      if (lenA === "NA") return 1;
+      if (lenB === "NA") return -1;
+
+      return isAsc ? lenA - lenB : lenB - lenA;
     }
   }
 };

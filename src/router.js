@@ -39,5 +39,8 @@ export default new Router({
       name: 'redirect',
       component: () => import('./views/Redirect.vue')
     }
-  ]
+  ],
+  scrollBehavior () {
+    return { x: 0, y: 0 }
+  }
 })

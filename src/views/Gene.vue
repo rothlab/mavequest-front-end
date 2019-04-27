@@ -147,7 +147,7 @@
                     >
                       <b-icon pack="fas" icon="chevron-right" size="is-small"
                         :style="{ transform: showTranscripts ? 'rotate(0.25turn)' : '' } "></b-icon>
-                      <span>&nbsp;&nbsp;Isoforms, Transcripts and Peptides</span>
+                      <span>&nbsp;&nbsp;Isoforms and Transcripts</span>
                     </div>
 
                     <div class="item-border">
@@ -910,7 +910,7 @@ const AssayTitle = {
   render() {
     return (
       <div class="block" style="margin-top:1.5rem">
-        <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
+        <div class="is-hidden-mobile"><b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;</div>
         <span
           id={this.anchor}
           class="is-size-4 is-anchor"

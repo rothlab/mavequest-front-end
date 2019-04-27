@@ -6,13 +6,18 @@
       <b-loading :active.sync="isLoading" :is-full-page="false" :can-cancel="true"></b-loading>
       <div class="cy-navigator"></div>
       <div class="cy-copyright has-text-grey-light">
-        Powered by
-        <a
-          class="has-text-grey"
-          href="https://js.cytoscape.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Cytoscape.js</a>
+        <figure class="image is-16x16 is-marginless is-inline-block">
+          <img src="../assets/cytoscape-logo.png" alt="cytoscape-logo">
+        </figure>
+        <span class="is-size-6" style="vertical-align: text-bottom;">
+          Powered by
+          <a
+            class="has-text-grey"
+            href="https://js.cytoscape.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Cytoscape.js</a>
+        </span>
       </div>
     </div>
 

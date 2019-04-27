@@ -507,24 +507,28 @@
 
               <div v-if="hasAssay.huri">
                 <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars"></AssayTitle>
+                <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
+                  <CytoscapeView :head="geneName" :elements="huriData"/>
+                </b-modal>
 
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list is-flex is-vcentered">
-                    <button
-                      class="button is-outlined"
-                      @click="showCytoscapeView = !showCytoscapeView"
-                    >
-                      <figure class="image is-24x24 is-marginless">
-                        <img src="../assets/cytoscape-logo.png" alt="cytoscape-logo">
-                      </figure>
-                      <span>&nbsp;&nbsp; Visualize with CytoScape.js</span>
-                    </button>
-                    &nbsp;&nbsp; {{geneName}} has {{huriData.length}}
-                    interaction pair{{huriData.length > 1 ? "s" : ""}}
-                    in the HuRI database.
-                    <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
-                      <CytoscapeView :head="geneName" :elements="huriData"/>
-                    </b-modal>
+                    <div class="level is-fullwidth">
+                      <div class="level-left">
+                        <span class="subtitle is-5 is-vcentered is-flex">
+                          {{geneName}} has&nbsp;
+                          <b-tag rounded size="is-medium" type="is-dark">{{huriData.length}}</b-tag>
+                          &nbsp;interaction pair{{huriData.length > 1 ? "s" : ""}}
+                          in the HuRI database.
+                        </span>
+                      </div>
+                      <div class="level-right">
+                        <button
+                          class="button is-outlined is-info is-fullwidth"
+                          @click="showCytoscapeView = !showCytoscapeView"
+                        >Visualize with CytoScape.js</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -910,7 +914,7 @@ const AssayTitle = {
   render() {
     return (
       <div class="block" style="margin-top:1.5rem">
-        <div class="is-hidden-mobile"><b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;</div>
+        <div class="is-hidden-mobile is-inline"><b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;</div>
         <span
           id={this.anchor}
           class="is-size-4 is-anchor"

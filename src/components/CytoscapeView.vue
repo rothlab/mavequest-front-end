@@ -224,7 +224,15 @@ export default {
           cy.unbind("tap");
           cy.on("tap", evt => {
             const evtTarget = evt.target;
-            if (evtTarget === cy) return;
+            if (evtTarget === cy) {
+              cy.nodes().removeClass("highlighted");
+              cy.edges().removeClass("highlighted");
+              this.showMessage = false;
+              this.selectedEdge = [];
+
+              return;
+            }
+
             if (evtTarget.group() === "nodes" && evtTarget.hasClass("head"))
               return;
 
@@ -244,9 +252,17 @@ export default {
             node.addClass("highlighted");
             edge.addClass("highlighted");
 
-            // Store tapped edge
-            this.showMessage = true;
-            this.selectedEdge = edge.data();
+            if (window.innerWidth < 768) {
+              this.$toast.open({ 
+                message: "Cannot show interactions on mobile devices.",
+                type: "is-warning",
+                queue: false,
+              });
+            } else {
+              // Store tapped edge
+              this.showMessage = true;
+              this.selectedEdge = edge.data();
+            }
           });
         })
         .then(() => {
@@ -259,8 +275,8 @@ export default {
     handleResize() {
       this.$cytoscape.instance.then(cy => {
         cy.resize();
-        cy.center();
-        cy.fit(80);
+        // Only center the network when it's not zoomed in
+        if (cy.zoom() <= 0.85) cy.center();
       });
     }
   }

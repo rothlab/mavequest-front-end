@@ -1,54 +1,57 @@
 <template>
-  <div class="card">
-    <resize-observer @notify="handleResize" />
-    <div class="card-image">
-      <div class="content cytoscape">
-        <cytoscape :config="config" :preConfig="preConfig"/>
-        <b-loading :active.sync="isLoading" :is-full-page="false" :can-cancel="true"></b-loading>
-        <div class="cy-navigator"></div>
-        <div class="cy-copyright has-text-grey-light">Powered by 
-          <a class="has-text-grey"
-            href="https://js.cytoscape.org/" 
-            target="_blank" rel="noopener noreferrer">
-            Cytoscape.js</a>
-        </div>
+  <div class="card cytoscape-container">
+    <div class="cytoscape-display">
+      <cytoscape :config="config" :preConfig="preConfig"/>
+      <resize-observer @notify="handleResize"/>
+      <b-loading :active.sync="isLoading" :is-full-page="false" :can-cancel="true"></b-loading>
+      <div class="cy-navigator"></div>
+      <div class="cy-copyright has-text-grey-light">
+        <figure class="image is-16x16 is-marginless is-inline-block">
+          <img src="../assets/cytoscape-logo.png" alt="cytoscape-logo">
+        </figure>
+        <span class="is-size-6" style="vertical-align: text-bottom;">
+          Powered by
+          <a
+            class="has-text-grey"
+            href="https://js.cytoscape.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Cytoscape.js</a>
+        </span>
       </div>
     </div>
-    <div class="card-content" v-if="showMessage">
+
+    <div class="cy-info is-hidden-mobile" v-if="showMessage">
       <b-message type="is-info">
-          <div class="columns">
-            <div class="column is-3">
-              <p class="title is-4">{{selectedEdge.name}}</p>
-              <p class="subtitle is-6">
-                <span>Total Interations: {{selectedEdge.entries.length}}</span>
-                <br>
-                <span>
-                  Total Methods:
-                  {{selectedEdge.entries.map(e => e.method_id).filter(uniq).length}}
-                </span>
-              </p>
-            </div>
-            <div class="column interaction-detail">
-              <div
-                class="level is-marginless"
-                v-for="entry in selectedEdge.entries"
-                v-bind:key="JSON.stringify(entry)"
-              >
-                <div class="level-left">
-                  <a
-                    class="is-capitalized"
-                    :href="'http://purl.obolibrary.org/obo/MI_' 
+        <p class="is-flex is-vcentered">
+          <span class="title is-4 is-marginless">{{selectedEdge.name}}</span>
+          <b-tag
+            type="is-dark" class="cy-badge"
+          >{{selectedEdge.entries.length}} interations, 
+          {{selectedEdge.entries.map(e => e.method_id).filter(uniq).length}} methods</b-tag>
+        </p>
+
+        <div
+          class="cy-list-interation-container is-fullwidth is-marginless"
+          v-for="entry in selectedEdge.entries"
+          v-bind:key="JSON.stringify(entry)"
+        >
+          <div>
+            <a
+              class="is-capitalized"
+              :href="'http://purl.obolibrary.org/obo/MI_' 
                     + entry.method_id"
-                  >{{entry.method}}</a>
-                </div>
-                <div class="level-right">
-                  <span>{{entry.ref}} &nbsp;</span>
-                  <a :href="'https://www.ncbi.nlm.nih.gov/pubmed/' 
-                  + entry.pubmed_id">PMID</a>
-                </div>
-              </div>
-            </div>
+            >{{entry.method}}</a>
           </div>
+          <div class="source">
+            <b-tooltip :label="entry.ref" type="is-dark">
+              <a
+                :href="'https://www.ncbi.nlm.nih.gov/pubmed/' 
+                    + entry.pubmed_id"
+              >PMID</a>
+            </b-tooltip>
+          </div>
+        </div>
       </b-message>
     </div>
   </div>
@@ -57,7 +60,7 @@
 <script>
 import Panzoom from "cytoscape-panzoom";
 import "cytoscape-panzoom/cytoscape.js-panzoom.css";
-import Navitagor from "cytoscape-navigator"
+import Navitagor from "cytoscape-navigator";
 import "cytoscape-navigator/cytoscape.js-navigator.css";
 
 export default {
@@ -117,7 +120,7 @@ export default {
               "target-arrow-shape": "triangle",
               "z-index": 100
             }
-          },
+          }
         ]
       },
       isLoading: false,
@@ -159,7 +162,7 @@ export default {
             this.edges.push({
               data: {
                 id: interaction.name,
-                name: this.head + '-' + subId,
+                name: this.head + "-" + subId,
                 source: this.head,
                 target: subId,
                 entries: interaction.entries
@@ -216,17 +219,27 @@ export default {
             name: "cose",
             animate: true,
             padding: 50,
-            nodeOverlap: 60,
+            nodeOverlap: 60
           }).run();
           cy.reset();
           cy.center();
           cy.fit(80);
 
           // Register click event
-          cy.unbind('tap');
+          cy.unbind("tap");
           cy.on("tap", evt => {
             const evtTarget = evt.target;
-            if (evtTarget === cy) return;
+            if (evtTarget === cy) {
+              cy.nodes().removeClass("highlighted");
+              cy.edges().removeClass("highlighted");
+              this.showMessage = false;
+              this.selectedEdge = [];
+
+              return;
+            }
+
+            if (evtTarget.group() === "nodes" && evtTarget.hasClass("head"))
+              return;
 
             // Extract tapped edge and node
             let node, edge;
@@ -239,14 +252,22 @@ export default {
             }
 
             // Highlight the tapped edge and node
-            cy.nodes().removeClass('highlighted');
-            cy.edges().removeClass('highlighted');
-            node.addClass('highlighted');
-            edge.addClass('highlighted');
+            cy.nodes().removeClass("highlighted");
+            cy.edges().removeClass("highlighted");
+            node.addClass("highlighted");
+            edge.addClass("highlighted");
 
-            // Store tapped edge
-            this.showMessage = true;
-            this.selectedEdge = edge.data();
+            if (window.innerWidth < 768) {
+              this.$toast.open({ 
+                message: "Cannot show interactions on mobile devices.",
+                type: "is-warning",
+                queue: false,
+              });
+            } else {
+              // Store tapped edge
+              this.showMessage = true;
+              this.selectedEdge = edge.data();
+            }
           });
         })
         .then(() => {
@@ -257,15 +278,23 @@ export default {
       return self.indexOf(value) === index;
     },
     handleResize() {
-      this.$cytoscape.instance.then(cy => cy.resize());
+      this.$cytoscape.instance.then(cy => {
+        cy.resize();
+        // Only center the network when it's not zoomed in
+        if (cy.zoom() <= 0.85) cy.center();
+      });
     }
   }
 };
 </script>
 
 <style>
-.cytoscape {
-  width: 50vw;
+.cytoscape-container {
+  display: flex;
+  max-height: 70vh;
+}
+.card > .cytoscape-display {
+  min-width: 50vw;
   height: 70vh;
 }
 .cy-panzoom-zoom-button > .icon {
@@ -280,12 +309,17 @@ export default {
   margin: 1rem;
   z-index: 9 !important;
 }
-.interaction-detail {
-  flex: none;
-  width: 80%;
-  max-height: 20vh;
-  overflow-y: scroll;
-  overflow-x: hidden; 
+.cy-info {
+  min-width: 20vw;
+  max-width: 30vw;
+  margin: 1rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.cy-badge {
+  margin-left: auto;
+  padding-left: 1rem;
+  text-align: right;
 }
 .cy-navigator {
   position: relative;
@@ -296,7 +330,7 @@ export default {
   right: 2.5vh;
   z-index: 200;
   opacity: 1;
-  font-weight:bolder;
+  font-weight: bolder;
   height: 10vh;
   width: 10vh;
   overflow: hidden;
@@ -310,5 +344,21 @@ export default {
   left: 1.25em;
   top: -5vh;
   z-index: 200;
+}
+.cy-list-interation-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+}
+.cy-list-interation-container .source {
+  margin-left: auto;
+  padding-left: 1rem;
+  text-align: right;
+}
+@media screen and (max-width: 768px) {
+  .card > .cytoscape-display {
+    width: 100vw;
+  }
 }
 </style>

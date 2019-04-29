@@ -12,6 +12,8 @@
           field="gene_symbol"
           @typing="getGeneNames"
           class="search"
+          @blur.capture="addGene"
+          @submit="searchGenes"
           placeholder="Search with Gene Symbol"
         >
 
@@ -91,7 +93,7 @@ export default {
       autoCompleteRes: [],
       isFetching: false,
       emptyMessage: "No genes found.",
-      isFullView: true
+      isFullView: true,
     };
   },
   methods: {
@@ -195,7 +197,10 @@ export default {
           this.autoCompleteRes = this.autoCompleteRes.concat(aliasList);
           this.isFetching = false;
         });
-    })
+    }),
+    addGene: function (evt) {
+      this.$refs.searchBar.addTag(evt.target.value.toUpperCase());
+    }
   }
 };
 </script>

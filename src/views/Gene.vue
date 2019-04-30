@@ -1157,7 +1157,7 @@ export default {
       hasAssay: {},
       hasPhenotype: {},
       orthologyData: [],
-      tkoPubmed: ["26627737", "28655737"],
+      tkoPubmed: ["26627737", "24987113", "28655737"],
       huri: [],
       showCytoscapeView: false,
       genomeRNAiTotalEntries: 0,

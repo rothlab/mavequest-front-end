@@ -13,14 +13,14 @@
           <!-- Table of Contents -->
           <div class="column is-3 is-hidden-mobile">
             <aside class="menu float">
-              <scrollactive :offset="500">
+              <scrollactive :offset="400">
                 <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
                 <ul class="menu-list" v-if="hasAssay.any">
                   <li v-if="hasAssay.genome_crispr">
-                    <a href="#genome-crispr" class="scrollactive-item">GenomeCRISPR</a>
+                    <a href="#genome_crispr" class="scrollactive-item">GenomeCRISPR</a>
                   </li>
                   <li v-if="hasAssay.genome_rnai">
-                    <a href="#genome-rnai" class="scrollactive-item">GenomeRNAi</a>
+                    <a href="#genome_rnai" class="scrollactive-item">GenomeRNAi</a>
                   </li>
                   <li v-if="hasAssay.orthology">
                     <a href="#orthology" class="scrollactive-item">Orthology</a>
@@ -251,7 +251,7 @@
 
               <div v-if="hasAssay.genome_crispr">
                 <AssayTitle
-                  anchor="genome-crispr"
+                  anchor="genome_crispr"
                   title="GenomeCRISPR"
                   icon="fas fa-bars"
                   reflink="/about#genome-crispr"
@@ -309,7 +309,7 @@
 
               <div v-if="hasAssay.genome_rnai">
                 <AssayTitle
-                  anchor="genome-rnai"
+                  anchor="genome_rnai"
                   title="GenomeRNAi"
                   icon="fas fa-bars"
                   reflink="/about#genome-rnai"

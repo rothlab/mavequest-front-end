@@ -10,24 +10,26 @@
           <!-- Table of content -->
           <div class="column is-3 is-hidden-mobile">
             <aside class="menu float">
-              <p class="menu-label">MaveQuest</p>
-              <ul class="menu-list">
-                <li>
-                  <a href="#what-is-mavequest">What is MaveQuest?</a>
-                </li>
-                <li>
-                  <a href="#contact-us">Contact Us</a>
-                </li>
-              </ul>
-              <p class="menu-label">Acknowledgement</p>
-              <ul class="menu-list">
-                <li>
-                  <a href="#primary-data">Primary Data Source</a>
-                </li>
-                <li>
-                  <a href="#open-source">Open Source Products</a>
-                </li>
-              </ul>
+              <scrollactive :offset="400">
+                <p class="menu-label">MaveQuest</p>
+                <ul class="menu-list">
+                  <li>
+                    <a href="#what-is-mavequest" class="scrollactive-item">What is MaveQuest?</a>
+                  </li>
+                  <li>
+                    <a href="#contact-us" class="scrollactive-item">Contact Us</a>
+                  </li>
+                </ul>
+                <p class="menu-label">Acknowledgement</p>
+                <ul class="menu-list">
+                  <li>
+                    <a href="#primary-data" class="scrollactive-item">Primary Data Source</a>
+                  </li>
+                  <li>
+                    <a href="#open-source" class="scrollactive-item">Open Source Products</a>
+                  </li>
+                </ul>
+              </scrollactive>
             </aside>
           </div>
 

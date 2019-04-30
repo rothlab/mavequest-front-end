@@ -207,6 +207,31 @@
                 </p>
               </div>
 
+              <!-- Clinvar -->
+              <div ref="clinvar" class="in-paragraph">
+                <h4 class="in-list" id="clinvar">
+                  ClinVar &nbsp;
+                  <a
+                    href="https://www.ncbi.nlm.nih.gov/clinvar/"
+                    target="_blank"
+                  >
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  Landrum, Melissa J., Jennifer M. Lee, Mark Benson, Garth Brown, Chen Chao, Shanmuga Chitipiralla, Baoshan Gu et al.
+                  <strong>ClinVar: public archive of interpretations of clinically relevant variants. </strong>
+                  <i>Nucleic acids research</i> 44, no. D1 (2015): D862-D868.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/26582918"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
+
               <!-- OMIM -->
               <div ref="omim" class="in-paragraph">
                 <h4 class="in-list" id="omim">

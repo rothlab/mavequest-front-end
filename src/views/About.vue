@@ -1,33 +1,35 @@
 <template>
   <div class="about">
     <!-- Header -->
-    <Header title="About MaveQuest" v-observe-visibility="visibilityChanged"></Header>
+    <Header title="About MaveQuest"></Header>
 
     <!-- Main -->
     <section class="section">
       <div class="container">
         <div class="columns">
           <!-- Table of content -->
-          <div class="column is-3 is-hidden-mobile">
-            <aside class="menu" :class="{float: isFloat}">
-              <p class="menu-label">MaveQuest</p>
-              <ul class="menu-list">
-                <li>
-                  <a href="#what-is-mavequest">What is MaveQuest?</a>
-                </li>
-                <li>
-                  <a href="#contact-us">Contact Us</a>
-                </li>
-              </ul>
-              <p class="menu-label">Acknowledgement</p>
-              <ul class="menu-list">
-                <li>
-                  <a href="#primary-data">Primary Data Source</a>
-                </li>
-                <li>
-                  <a href="#open-source">Open Source Products</a>
-                </li>
-              </ul>
+          <div class="column is-3 is-hidden-touch">
+            <aside class="menu float">
+              <scrollactive ref="scrollactive" :offset="400">
+                <p class="menu-label">MaveQuest</p>
+                <ul class="menu-list">
+                  <li>
+                    <a href="#what-is-mavequest" class="scrollactive-item">What is MaveQuest?</a>
+                  </li>
+                  <li>
+                    <a href="#contact-us" class="scrollactive-item">Contact Us</a>
+                  </li>
+                </ul>
+                <p class="menu-label">Acknowledgement</p>
+                <ul class="menu-list">
+                  <li>
+                    <a href="#primary-data" class="scrollactive-item">Primary Data Source</a>
+                  </li>
+                  <li>
+                    <a href="#open-source" class="scrollactive-item">Open Source Products</a>
+                  </li>
+                </ul>
+              </scrollactive>
             </aside>
           </div>
 
@@ -105,8 +107,8 @@
               <h2 id="primary-data" class="subtitle is-anchor">Primary Data Source</h2>
 
               <!-- Genome CRISPR -->
-              <div ref="genome-crispr" class="in-paragraph">
-                <h4 class="in-list" id="genome-crispr">
+              <div ref="genome_crispr" class="in-paragraph">
+                <h4 class="in-list" id="genome_crispr">
                   GenomeCRISPR &nbsp;
                   <a href="http://genomecrispr.dkfz.de/" target="_blank">
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -114,7 +116,7 @@
                 </h4>
                 <p>
                   Rauscher, B., Heigwer, F., Breinig, M., Winter, J., & Boutros, M.
-                  <strong>GenomeCRISPR - a database for high-throughput CRISPR/Cas9 screens.</strong>
+                  <strong>GenomeCRISPR - a database for high-throughput CRISPR/Cas9 screens. </strong>
                   <i>Nucleic acids research</i> (2016): gkw997.
                   <b-tag type="is-light">
                     <a
@@ -126,37 +128,9 @@
                 </p>
               </div>
 
-              <!-- TKO -->
-              <div ref="tko" class="in-paragraph">
-                <h4 class="in-list" id="tko">
-                  The Toronto KnockOut Library (TKO) &nbsp;
-                  <a
-                    href="http://tko.ccbr.utoronto.ca/"
-                    target="_blank"
-                  >
-                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
-                  </a>
-                </h4>
-                <p>
-                  Hart T, Tong A, Chan K, van Leeuwen J, Seetharaman A, Aregger M, Chandrashekhar M,
-                  Hustedt N, Seth S, Noonan A, Habsid A, Sizova O, Nedyalkova L, Climie R, Lawson K,
-                  Augusta Sartori M, Alibai S, Tieu D, Masud S, Mero P, Weiss A, Brown KR, Usaj M,
-                  Billman M, Rahman M, Costanzo M, Myers CL, Andrews B, Boone C, Durocher D, Moffat J.
-                  <strong>Evaluation and Design of Genome-Wide CRISPR/SpCas9 Knockout Screens.</strong>
-                  <i>G3: Genes, Genomes, Genetics</i> (2017): g3-117.
-                  <b-tag type="is-light">
-                    <a
-                      class="has-text-dark"
-                      href="https://www.ncbi.nlm.nih.gov/pubmed/28655737"
-                      target="_blank"
-                    >PubMed</a>
-                  </b-tag>
-                </p>
-              </div>
-
               <!-- Genome RNAi -->
-              <div ref="genome-rnai" class="in-paragraph">
-                <h4 class="in-list" id="genome-rnai">
+              <div ref="genome_rnai" class="in-paragraph">
+                <h4 class="in-list" id="genome_rnai">
                   GenomeRNAi &nbsp;
                   <a href="http://www.genomernai.org/" target="_blank">
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -164,7 +138,7 @@
                 </h4>
                 <p>
                   Schmidt, E. E., Pelz, O., Buhlmann, S., Kerr, G., Horn, T., & Boutros, M.
-                  <strong>GenomeRNAi: a database for cell-based and in vivo RNAi phenotypes, 2013 update.</strong>
+                  <strong>GenomeRNAi: a database for cell-based and in vivo RNAi phenotypes, 2013 update. </strong>
                   <i>Nucleic acids research</i> 41, no. D1 (2012): D1021-D1026.
                   <b-tag type="is-light">
                     <a
@@ -176,7 +150,38 @@
                 </p>
               </div>
 
-              <!-- Y2H -->
+              <!-- Orthology -->
+              <div ref="orthology" class="in-paragraph">
+                <h4 class="in-list" id="orthology">Orthology</h4>
+
+                <p>
+                  Sonnhammer, Erik LL, and Gabriel Östlund.
+                  <strong>InParanoid 8: orthology analysis between 273 proteomes, mostly eukaryotic. </strong>
+                  <i>Nucleic acids research</i> 43, no. D1 (2014): D234-D239.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/25429972"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+
+                <p>
+                  Heinicke, Sven, Michael S. Livstone, Charles Lu, Rose Oughtred, Fan Kang, Samuel V. Angiuoli, Owen White, David Botstein, and Kara Dolinski.
+                  <strong>The Princeton Protein Orthology Database (P-POD): a comparative genomics analysis tool for biologists. </strong>
+                  <i>PloS one</i> 2, no. 8 (2007): e766.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/17712414"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
+
+              <!-- HuRI -->
               <div ref="huri" class="in-paragraph">
                 <h4 class="in-list" id="huri">
                   The Human Reference Protein Interactome Mapping Project (HuRI) &nbsp;
@@ -188,10 +193,45 @@
                   </a>
                 </h4>
 
-                <p>Publication in preparation.</p>
+                <p>
+                  Luck, Katja, Dae Kyum Kim, Luke Lambourne, Kerstin Spirohn, Bridget E. Begg, Wenting Bian, Ruth Brignall et al.
+                  <strong>A reference map of the human protein interactome. </strong>
+                  <i>bioRxiv</i> (2019): 605451.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.biorxiv.org/content/10.1101/605451v2"
+                      target="_blank"
+                    >bioRxiv</a>
+                  </b-tag>
+                </p>
               </div>
 
-              <!-- Yeast Complementation -->
+              <!-- Clinvar -->
+              <div ref="clinvar" class="in-paragraph">
+                <h4 class="in-list" id="clinvar">
+                  ClinVar &nbsp;
+                  <a
+                    href="https://www.ncbi.nlm.nih.gov/clinvar/"
+                    target="_blank"
+                  >
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  Landrum, Melissa J., Jennifer M. Lee, Mark Benson, Garth Brown, Chen Chao, Shanmuga Chitipiralla, Baoshan Gu et al.
+                  <strong>ClinVar: public archive of interpretations of clinically relevant variants. </strong>
+                  <i>Nucleic acids research</i> 44, no. D1 (2015): D862-D868.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/26582918"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
+
               <!-- OMIM -->
               <div ref="omim" class="in-paragraph">
                 <h4 class="in-list" id="omim">
@@ -208,34 +248,9 @@
                 </p>
               </div>
 
-              <!-- HGMD -->
-              <div ref="hgmd" class="in-paragraph">
-                <h4 class="in-list" id="hgmd">
-                  The Human Gene Mutation Database (HGMD) &nbsp;
-                  <a
-                    href="http://www.hgmd.cf.ac.uk/"
-                    target="_blank"
-                  >
-                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
-                  </a>
-                </h4>
-                <p>
-                  Stenson, Peter D., Matthew Mort, Edward V. Ball, Katy Howells, Andrew D. Phillips, Nick ST Thomas, and David N. Cooper.
-                  <strong>The human gene mutation database: 2008 update.</strong>
-                  <i>Genome medicine</i> 1, no. 1 (2009): 13.
-                  <b-tag type="is-light">
-                    <a
-                      class="has-text-dark"
-                      href="https://www.ncbi.nlm.nih.gov/pubmed/12754702"
-                      target="_blank"
-                    >PubMed</a>
-                  </b-tag>
-                </p>
-              </div>
-
-              <!-- Sanger -->
-              <div ref="cancer-census" class="in-paragraph">
-                <h4 class="in-list" id="cancer-census">
+              <!-- Cancer Census -->
+              <div ref="cancer_census" class="in-paragraph">
+                <h4 class="in-list" id="cancer_census">
                   The Cancer Gene Census &nbsp;
                   <a
                     href="https://cancer.sanger.ac.uk/census"
@@ -331,13 +346,17 @@ export default {
   },
   data() {
     return {
-      isFloat: false,
+      hash: "",
       stats: {
         total: 0,
         assay: 0,
         phenotype: 0
       }
     };
+  },
+  beforeMount() {
+    // Capture the hash before it's overwritten by vue-scrollactive
+    this.hash = window.location.hash;
   },
   mounted() {
     // Update highlighted navbar item
@@ -346,33 +365,24 @@ export default {
     // Update database stats
     this.getDatabaseStats();
 
-    // Scroll to the element if route has is set
-    if (this.$route.hash) {
-      this.scrollToElement(this.$route.hash);
+    // Check if scrolling needs to be handled separately
+    const autoScrollItems = this.$refs.scrollactive.$data.items;
+    let handleScrolling = true;
+    for (const item of autoScrollItems) {
+      if (item.getAttribute('href') === this.hash) {
+        handleScrolling = false;
+      }
     }
-
-    // Highlight data source if given as part of the url
-    const elementID = this.$route.hash.replace("#", "");
-    if (this.$refs.hasOwnProperty(elementID)) {
-      this.$refs[elementID].className += " highlight";
+    if (handleScrolling) {
+      // Highlight data source if given as part of the url
+      const elementID = this.hash.replace("#", "");
+      if (this.$refs.hasOwnProperty(elementID)) {
+        this.$refs[elementID].className += " highlight";
+        this.$refs.scrollactive.scrollTo(this.$refs[elementID]);
+      }
     }
   },
   methods: {
-    visibilityChanged(visible) {
-      // Position the table of contents absolutely so that it will stay on the screen
-      this.isFloat = !visible;
-    },
-    scrollToElement(element) {
-      const option = {
-        easing: "ease-in-out",
-        offset: -60,
-        force: true,
-        cancelable: true,
-        x: false,
-        y: true
-      };
-      this.$scrollTo(element, option);
-    },
     getDatabaseStats() {
       this.$http
         .get(this.$apiEntryPoint + "/stats")
@@ -386,7 +396,7 @@ export default {
 
 <style scoped>
 .float {
-  position: fixed;
+  position: sticky;
   top: 4rem;
 }
 .highlight {
@@ -407,4 +417,3 @@ export default {
   margin-bottom: 3rem;
 }
 </style>
-

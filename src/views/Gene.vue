@@ -1,7 +1,7 @@
 <template>
   <div class="details">
     <!-- Header -->
-    <Header v-bind:title="geneName" v-observe-visibility="visibilityChanged"></Header>
+    <Header v-bind:title="geneName"></Header>
 
     <!-- Main -->
     <section class="section fill-screen-withheader">
@@ -11,45 +11,47 @@
 
         <div class="columns" v-if="!showErrorComponent">
           <!-- Table of Contents -->
-          <div class="column is-3 is-hidden-mobile">
-            <aside class="menu" :class="{float: isFloat}">
-              <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
-              <ul class="menu-list" v-if="hasAssay.any">
-                <li v-if="hasAssay.genome_crispr">
-                  <a href="#genome-crispr" v-scroll-to="'#genome-crispr'">GenomeCRISPR</a>
-                </li>
-                <li v-if="hasAssay.genome_rnai">
-                  <a href="#genome-rnai" v-scroll-to="'#genome-rnai'">GenomeRNAi</a>
-                </li>
-                <li v-if="hasAssay.orthology">
-                  <a href="#orthology" v-scroll-to="'#orthology'">Orthology</a>
-                </li>
-                <li v-if="hasAssay.overexpression">
-                  <a href="#over-expression" v-scroll-to="'#over-expression'">Over Expression</a>
-                </li>
-                <li v-if="hasAssay.huri">
-                  <a href="#huri" v-scroll-to="'#huri'">Human Interactome</a>
-                </li>
-              </ul>
-              <p class="menu-label" v-if="hasPhenotype.any">Disease Phenotype</p>
-              <ul class="menu-list" v-if="hasPhenotype.any">
-                <li v-if="hasPhenotype.clinvar">
-                  <a href="#clinvar" v-scroll-to="'#clinvar'">Clinvar</a>
-                </li>
-                <li v-if="hasPhenotype.omim">
-                  <a href="#omim" v-scroll-to="'#omim'">OMIM</a>
-                </li>
-                <li v-if="hasPhenotype.cancer_census">
-                  <a href="#cancer_census" v-scroll-to="'#cancer_census'">Cancer Gene Census</a>
-                </li>
-                <li v-if="hasPhenotype.orphanet">
-                  <a href="#orpha" v-scroll-to="'#orpha'">Orphanet</a>
-                </li>
-                <li v-if="hasPhenotype.invitae">
-                  <a href="#invitae" v-scroll-to="'#invitae'">Invitae</a>
-                </li>
-              </ul>
-              <p class="menu-label" v-if="lastUpdate">Last Update: {{lastUpdate}}</p>
+          <div class="column is-3 is-hidden-touch">
+            <aside class="menu float">
+              <scrollactive ref="scrollactive" :offset="400">
+                <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
+                <ul class="menu-list" v-if="hasAssay.any">
+                  <li v-if="hasAssay.genome_crispr">
+                    <a href="#genome_crispr" class="scrollactive-item">GenomeCRISPR</a>
+                  </li>
+                  <li v-if="hasAssay.genome_rnai">
+                    <a href="#genome_rnai" class="scrollactive-item">GenomeRNAi</a>
+                  </li>
+                  <li v-if="hasAssay.orthology">
+                    <a href="#orthology" class="scrollactive-item">Orthology</a>
+                  </li>
+                  <li v-if="hasAssay.overexpression">
+                    <a href="#over-expression" class="scrollactive-item">Over Expression</a>
+                  </li>
+                  <li v-if="hasAssay.huri">
+                    <a href="#huri" class="scrollactive-item">Human Interactome</a>
+                  </li>
+                </ul>
+                <p class="menu-label" v-if="hasPhenotype.any">Disease Phenotype</p>
+                <ul class="menu-list" v-if="hasPhenotype.any">
+                  <li v-if="hasPhenotype.clinvar">
+                    <a href="#clinvar" class="scrollactive-item">Clinvar</a>
+                  </li>
+                  <li v-if="hasPhenotype.omim">
+                    <a href="#omim" class="scrollactive-item">OMIM</a>
+                  </li>
+                  <li v-if="hasPhenotype.cancer_census">
+                    <a href="#cancer_census" class="scrollactive-item">Cancer Gene Census</a>
+                  </li>
+                  <li v-if="hasPhenotype.orphanet">
+                    <a href="#orpha" class="scrollactive-item">Orphanet</a>
+                  </li>
+                  <li v-if="hasPhenotype.invitae">
+                    <a href="#invitae" class="scrollactive-item">Invitae</a>
+                  </li>
+                </ul>
+                <p class="menu-label" v-if="lastUpdate">Last Update: {{lastUpdate}}</p>
+              </scrollactive>
             </aside>
           </div>
 
@@ -249,10 +251,10 @@
 
               <div v-if="hasAssay.genome_crispr">
                 <AssayTitle
-                  anchor="genome-crispr"
+                  anchor="genome_crispr"
                   title="GenomeCRISPR"
                   icon="fas fa-bars"
-                  reflink="/about#genome-crispr"
+                  reflink="/about#genome_crispr"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -266,14 +268,13 @@
                   >
                     <template slot="bottom-left">
                       <a
-                        href="/about#tko"
+                        href="http://tko.ccbr.utoronto.ca/"
                         target="_blank"
                         v-if="genomeCRISPRData.filter(e => 
                             tkoPubmed.includes(e.source)).length > 0"
                       >
                         <b-tag type="is-warning" class="cell-line">TKO</b-tag>
                         <span>Toronto Knockout Library &nbsp;</span>
-                        <RefBadge reflink="/about#tko"></RefBadge>
                       </a>
                     </template>
 
@@ -307,10 +308,10 @@
 
               <div v-if="hasAssay.genome_rnai">
                 <AssayTitle
-                  anchor="genome-rnai"
+                  anchor="genome_rnai"
                   title="GenomeRNAi"
                   icon="fas fa-bars"
-                  reflink="/about#genome-rnai"
+                  reflink="/about#genome_rnai"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -506,7 +507,7 @@
               </div>
 
               <div v-if="hasAssay.huri">
-                <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars" reflink="/about#huri"></AssayTitle>
                 <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
                   <CytoscapeView :head="geneName" :elements="huriData"/>
                 </b-modal>
@@ -721,7 +722,7 @@
                   anchor="cancer_census"
                   title="Cancer Gene Census"
                   icon="fas fa-bars"
-                  reflink="/about#cancer-census"
+                  reflink="/about#cancer_census"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -934,7 +935,6 @@ export default {
     Header,
     ExpandableRow,
     AssayTitle,
-    RefBadge,
     CytoscapeView,
     ErrorView,
     apexchart: VueApexCharts,
@@ -942,6 +942,10 @@ export default {
   },
   created() {
     this.geneName = this.$route.params.name.toUpperCase();
+  },
+  beforeMount() {
+    // Capture the hash before it's overwritten by vue-scrollactive
+    this.hash = window.location.hash;
   },
   mounted() {
     // Update highlighted navbar item
@@ -1129,14 +1133,16 @@ export default {
         loadingComponent.close();
         this.isLoading = false;
 
-        // Scroll to the element if route has is set
-        if (this.$route.hash) {
-          this.scrollToElement(this.$route.hash);
+        // Scroll to element if set by hash
+        if (this.hash !== "") {
+          const element = document.getElementById(this.hash.replace("#", ""));
+          if (element) this.$refs.scrollactive.scrollTo(element);
         }
       });
   },
   data() {
     return {
+      hash: "",
       isExpandDetail: false,
       isLoading: true,
       loadingTranscriptsStatus: 0,
@@ -1155,7 +1161,7 @@ export default {
       hasAssay: {},
       hasPhenotype: {},
       orthologyData: [],
-      tkoPubmed: ["26627737", "28655737"],
+      tkoPubmed: ["26627737", "24987113", "28655737"],
       huri: [],
       showCytoscapeView: false,
       genomeRNAiTotalEntries: 0,
@@ -1237,10 +1243,6 @@ export default {
     };
   },
   methods: {
-    visibilityChanged(visible) {
-      // Position the table of contents absolutely so that it will stay on the screen
-      this.isFloat = !visible;
-    },
     getSpeciesName(taxonomy) {
       let name = String;
       switch (taxonomy) {
@@ -1256,17 +1258,6 @@ export default {
       }
 
       return name;
-    },
-    scrollToElement(element) {
-      const option = {
-        easing: "ease-in-out",
-        offset: -60,
-        force: true,
-        cancelable: true,
-        x: false,
-        y: true
-      };
-      this.$scrollTo(element, option);
     },
     flatten(list) {
       return Lodash.flattenDeep(list.filter(e => e != "NA" && e != undefined));
@@ -1326,7 +1317,7 @@ export default {
 
 <style scoped>
 .float {
-  position: fixed;
+  position: sticky;
   top: 4rem;
 }
 .has-table-padding {

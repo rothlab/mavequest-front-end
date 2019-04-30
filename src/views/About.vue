@@ -8,9 +8,9 @@
       <div class="container">
         <div class="columns">
           <!-- Table of content -->
-          <div class="column is-3 is-hidden-mobile">
+          <div class="column is-3 is-hidden-touch">
             <aside class="menu float">
-              <scrollactive :offset="400">
+              <scrollactive ref="scrollactive" :offset="500" :scrollOffset="10">
                 <p class="menu-label">MaveQuest</p>
                 <ul class="menu-list">
                   <li>
@@ -107,8 +107,8 @@
               <h2 id="primary-data" class="subtitle is-anchor">Primary Data Source</h2>
 
               <!-- Genome CRISPR -->
-              <div ref="genome-crispr" class="in-paragraph">
-                <h4 class="in-list" id="genome-crispr">
+              <div ref="genome_crispr" class="in-paragraph">
+                <h4 class="in-list" id="genome_crispr">
                   GenomeCRISPR &nbsp;
                   <a href="http://genomecrispr.dkfz.de/" target="_blank">
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -116,7 +116,7 @@
                 </h4>
                 <p>
                   Rauscher, B., Heigwer, F., Breinig, M., Winter, J., & Boutros, M.
-                  <strong>GenomeCRISPR - a database for high-throughput CRISPR/Cas9 screens.</strong>
+                  <strong>GenomeCRISPR - a database for high-throughput CRISPR/Cas9 screens. </strong>
                   <i>Nucleic acids research</i> (2016): gkw997.
                   <b-tag type="is-light">
                     <a
@@ -128,37 +128,9 @@
                 </p>
               </div>
 
-              <!-- TKO -->
-              <div ref="tko" class="in-paragraph">
-                <h4 class="in-list" id="tko">
-                  The Toronto KnockOut Library (TKO) &nbsp;
-                  <a
-                    href="http://tko.ccbr.utoronto.ca/"
-                    target="_blank"
-                  >
-                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
-                  </a>
-                </h4>
-                <p>
-                  Hart T, Tong A, Chan K, van Leeuwen J, Seetharaman A, Aregger M, Chandrashekhar M,
-                  Hustedt N, Seth S, Noonan A, Habsid A, Sizova O, Nedyalkova L, Climie R, Lawson K,
-                  Augusta Sartori M, Alibai S, Tieu D, Masud S, Mero P, Weiss A, Brown KR, Usaj M,
-                  Billman M, Rahman M, Costanzo M, Myers CL, Andrews B, Boone C, Durocher D, Moffat J.
-                  <strong>Evaluation and Design of Genome-Wide CRISPR/SpCas9 Knockout Screens.</strong>
-                  <i>G3: Genes, Genomes, Genetics</i> (2017): g3-117.
-                  <b-tag type="is-light">
-                    <a
-                      class="has-text-dark"
-                      href="https://www.ncbi.nlm.nih.gov/pubmed/28655737"
-                      target="_blank"
-                    >PubMed</a>
-                  </b-tag>
-                </p>
-              </div>
-
               <!-- Genome RNAi -->
-              <div ref="genome-rnai" class="in-paragraph">
-                <h4 class="in-list" id="genome-rnai">
+              <div ref="genome_rnai" class="in-paragraph">
+                <h4 class="in-list" id="genome_rnai">
                   GenomeRNAi &nbsp;
                   <a href="http://www.genomernai.org/" target="_blank">
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -236,8 +208,8 @@
               </div>
 
               <!-- Sanger -->
-              <div ref="cancer-census" class="in-paragraph">
-                <h4 class="in-list" id="cancer-census">
+              <div ref="cancer_census" class="in-paragraph">
+                <h4 class="in-list" id="cancer_census">
                   The Cancer Gene Census &nbsp;
                   <a
                     href="https://cancer.sanger.ac.uk/census"
@@ -333,13 +305,17 @@ export default {
   },
   data() {
     return {
-      isFloat: false,
+      hash: "",
       stats: {
         total: 0,
         assay: 0,
         phenotype: 0
       }
     };
+  },
+  beforeMount() {
+    // Capture the hash before it's overwritten by vue-scrollactive
+    this.hash = window.location.hash;
   },
   mounted() {
     // Update highlighted navbar item
@@ -348,29 +324,24 @@ export default {
     // Update database stats
     this.getDatabaseStats();
 
-    // Scroll to the element if route has is set
-    if (this.$route.hash) {
-      this.scrollToElement(this.$route.hash);
+    // Check if scrolling needs to be handled separately
+    const autoScrollItems = this.$refs.scrollactive.$data.items;
+    let handleScrolling = true;
+    for (const item of autoScrollItems) {
+      if (item.getAttribute('href') === this.hash) {
+        handleScrolling = false;
+      }
     }
-
-    // Highlight data source if given as part of the url
-    const elementID = this.$route.hash.replace("#", "");
-    if (this.$refs.hasOwnProperty(elementID)) {
-      this.$refs[elementID].className += " highlight";
+    if (handleScrolling) {
+      // Highlight data source if given as part of the url
+      const elementID = this.hash.replace("#", "");
+      if (this.$refs.hasOwnProperty(elementID)) {
+        this.$refs[elementID].className += " highlight";
+        this.$refs.scrollactive.scrollTo(this.$refs[elementID]);
+      }
     }
   },
   methods: {
-    scrollToElement(element) {
-      const option = {
-        easing: "ease-in-out",
-        offset: -60,
-        force: true,
-        cancelable: true,
-        x: false,
-        y: true
-      };
-      this.$scrollTo(element, option);
-    },
     getDatabaseStats() {
       this.$http
         .get(this.$apiEntryPoint + "/stats")
@@ -405,4 +376,3 @@ export default {
   margin-bottom: 3rem;
 }
 </style>
-

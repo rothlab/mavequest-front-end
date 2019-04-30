@@ -11,7 +11,7 @@
 
         <div class="columns" v-if="!showErrorComponent">
           <!-- Table of Contents -->
-          <div class="column is-3 is-hidden-mobile">
+          <div class="column is-3 is-hidden-touch">
             <aside class="menu float">
               <scrollactive :offset="400">
                 <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
@@ -254,7 +254,7 @@
                   anchor="genome_crispr"
                   title="GenomeCRISPR"
                   icon="fas fa-bars"
-                  reflink="/about#genome-crispr"
+                  reflink="/about#genome_crispr"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -268,14 +268,13 @@
                   >
                     <template slot="bottom-left">
                       <a
-                        href="/about#tko"
+                        href="http://tko.ccbr.utoronto.ca/"
                         target="_blank"
                         v-if="genomeCRISPRData.filter(e => 
                             tkoPubmed.includes(e.source)).length > 0"
                       >
                         <b-tag type="is-warning" class="cell-line">TKO</b-tag>
                         <span>Toronto Knockout Library &nbsp;</span>
-                        <RefBadge reflink="/about#tko"></RefBadge>
                       </a>
                     </template>
 
@@ -312,7 +311,7 @@
                   anchor="genome_rnai"
                   title="GenomeRNAi"
                   icon="fas fa-bars"
-                  reflink="/about#genome-rnai"
+                  reflink="/about#genome_rnai"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -508,7 +507,7 @@
               </div>
 
               <div v-if="hasAssay.huri">
-                <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars"></AssayTitle>
+                <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars" reflink="/about#huri"></AssayTitle>
                 <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
                   <CytoscapeView :head="geneName" :elements="huriData"/>
                 </b-modal>
@@ -723,7 +722,7 @@
                   anchor="cancer_census"
                   title="Cancer Gene Census"
                   icon="fas fa-bars"
-                  reflink="/about#cancer-census"
+                  reflink="/about#cancer_census"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -936,7 +935,6 @@ export default {
     Header,
     ExpandableRow,
     AssayTitle,
-    RefBadge,
     CytoscapeView,
     ErrorView,
     apexchart: VueApexCharts,

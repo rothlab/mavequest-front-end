@@ -138,7 +138,7 @@
                 </h4>
                 <p>
                   Schmidt, E. E., Pelz, O., Buhlmann, S., Kerr, G., Horn, T., & Boutros, M.
-                  <strong>GenomeRNAi: a database for cell-based and in vivo RNAi phenotypes, 2013 update.</strong>
+                  <strong>GenomeRNAi: a database for cell-based and in vivo RNAi phenotypes, 2013 update. </strong>
                   <i>Nucleic acids research</i> 41, no. D1 (2012): D1021-D1026.
                   <b-tag type="is-light">
                     <a
@@ -150,7 +150,38 @@
                 </p>
               </div>
 
-              <!-- Y2H -->
+              <!-- Orthology -->
+              <div ref="orthology" class="in-paragraph">
+                <h4 class="in-list" id="orthology">Orthology</h4>
+
+                <p>
+                  Sonnhammer, Erik LL, and Gabriel Östlund.
+                  <strong>InParanoid 8: orthology analysis between 273 proteomes, mostly eukaryotic. </strong>
+                  <i>Nucleic acids research</i> 43, no. D1 (2014): D234-D239.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/25429972"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+
+                <p>
+                  Heinicke, Sven, Michael S. Livstone, Charles Lu, Rose Oughtred, Fan Kang, Samuel V. Angiuoli, Owen White, David Botstein, and Kara Dolinski.
+                  <strong>The Princeton Protein Orthology Database (P-POD): a comparative genomics analysis tool for biologists. </strong>
+                  <i>PloS one</i> 2, no. 8 (2007): e766.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/17712414"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
+
+              <!-- HuRI -->
               <div ref="huri" class="in-paragraph">
                 <h4 class="in-list" id="huri">
                   The Human Reference Protein Interactome Mapping Project (HuRI) &nbsp;
@@ -162,10 +193,20 @@
                   </a>
                 </h4>
 
-                <p>Publication in preparation.</p>
+                <p>
+                  Luck, Katja, Dae Kyum Kim, Luke Lambourne, Kerstin Spirohn, Bridget E. Begg, Wenting Bian, Ruth Brignall et al.
+                  <strong>A reference map of the human protein interactome. </strong>
+                  <i>bioRxiv</i> (2019): 605451.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.biorxiv.org/content/10.1101/605451v2"
+                      target="_blank"
+                    >bioRxiv</a>
+                  </b-tag>
+                </p>
               </div>
 
-              <!-- Yeast Complementation -->
               <!-- OMIM -->
               <div ref="omim" class="in-paragraph">
                 <h4 class="in-list" id="omim">
@@ -182,32 +223,7 @@
                 </p>
               </div>
 
-              <!-- HGMD -->
-              <div ref="hgmd" class="in-paragraph">
-                <h4 class="in-list" id="hgmd">
-                  The Human Gene Mutation Database (HGMD) &nbsp;
-                  <a
-                    href="http://www.hgmd.cf.ac.uk/"
-                    target="_blank"
-                  >
-                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
-                  </a>
-                </h4>
-                <p>
-                  Stenson, Peter D., Matthew Mort, Edward V. Ball, Katy Howells, Andrew D. Phillips, Nick ST Thomas, and David N. Cooper.
-                  <strong>The human gene mutation database: 2008 update.</strong>
-                  <i>Genome medicine</i> 1, no. 1 (2009): 13.
-                  <b-tag type="is-light">
-                    <a
-                      class="has-text-dark"
-                      href="https://www.ncbi.nlm.nih.gov/pubmed/12754702"
-                      target="_blank"
-                    >PubMed</a>
-                  </b-tag>
-                </p>
-              </div>
-
-              <!-- Sanger -->
+              <!-- Cancer Census -->
               <div ref="cancer_census" class="in-paragraph">
                 <h4 class="in-list" id="cancer_census">
                   The Cancer Gene Census &nbsp;

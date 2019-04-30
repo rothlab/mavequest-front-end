@@ -10,7 +10,7 @@
           <!-- Table of content -->
           <div class="column is-3 is-hidden-touch">
             <aside class="menu float">
-              <scrollactive ref="scrollactive" :offset="500" :scrollOffset="10">
+              <scrollactive ref="scrollactive" :offset="400">
                 <p class="menu-label">MaveQuest</p>
                 <ul class="menu-list">
                   <li>

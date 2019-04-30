@@ -13,7 +13,7 @@
           <!-- Table of Contents -->
           <div class="column is-3 is-hidden-touch">
             <aside class="menu float">
-              <scrollactive :offset="400">
+              <scrollactive ref="scrollactive" :offset="400">
                 <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
                 <ul class="menu-list" v-if="hasAssay.any">
                   <li v-if="hasAssay.genome_crispr">
@@ -943,6 +943,10 @@ export default {
   created() {
     this.geneName = this.$route.params.name.toUpperCase();
   },
+  beforeMount() {
+    // Capture the hash before it's overwritten by vue-scrollactive
+    this.hash = window.location.hash;
+  },
   mounted() {
     // Update highlighted navbar item
     this.$emit("updateNav", "search");
@@ -1129,14 +1133,16 @@ export default {
         loadingComponent.close();
         this.isLoading = false;
 
-        // Scroll to the element if route has is set
-        if (this.$route.hash) {
-          this.scrollToElement(this.$route.hash);
+        // Scroll to element if set by hash
+        if (this.hash !== "") {
+          const element = document.getElementById(this.hash.replace("#", ""));
+          if (element) this.$refs.scrollactive.scrollTo(element);
         }
       });
   },
   data() {
     return {
+      hash: "",
       isExpandDetail: false,
       isLoading: true,
       loadingTranscriptsStatus: 0,
@@ -1252,17 +1258,6 @@ export default {
       }
 
       return name;
-    },
-    scrollToElement(element) {
-      const option = {
-        easing: "ease-in-out",
-        offset: -60,
-        force: true,
-        cancelable: true,
-        x: false,
-        y: true
-      };
-      this.$scrollTo(element, option);
     },
     flatten(list) {
       return Lodash.flattenDeep(list.filter(e => e != "NA" && e != undefined));

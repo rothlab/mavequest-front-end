@@ -25,7 +25,6 @@ import 'bulma-divider'
 import BackToTop from 'vue-backtotop'
 import VueResource from 'vue-resource'
 import VueCytoscape from 'vue-cytoscape'
-import VueScrollTo from 'vue-scrollto'
 import VueAnalytics from 'vue-analytics'
 import VueResize from 'vue-resize'
 import VueScrollactive from 'vue-scrollactive'
@@ -48,7 +47,6 @@ Vue.use(Buefy, {
 .use(BackToTop)
 .use(VueResource)
 .use(VueCytoscape)
-.use(VueScrollTo)
 .use(VueAnalytics, {
   id: 'UA-133761986-1',
   router,

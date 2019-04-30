@@ -1,7 +1,7 @@
 <template>
   <div class="about">
     <!-- Header -->
-    <Header title="About MaveQuest" v-observe-visibility="visibilityChanged"></Header>
+    <Header title="About MaveQuest"></Header>
 
     <!-- Main -->
     <section class="section">
@@ -9,7 +9,7 @@
         <div class="columns">
           <!-- Table of content -->
           <div class="column is-3 is-hidden-mobile">
-            <aside class="menu" :class="{float: isFloat}">
+            <aside class="menu float">
               <p class="menu-label">MaveQuest</p>
               <ul class="menu-list">
                 <li>
@@ -358,10 +358,6 @@ export default {
     }
   },
   methods: {
-    visibilityChanged(visible) {
-      // Position the table of contents absolutely so that it will stay on the screen
-      this.isFloat = !visible;
-    },
     scrollToElement(element) {
       const option = {
         easing: "ease-in-out",
@@ -386,7 +382,7 @@ export default {
 
 <style scoped>
 .float {
-  position: fixed;
+  position: sticky;
   top: 4rem;
 }
 .highlight {

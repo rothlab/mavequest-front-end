@@ -921,12 +921,6 @@ apply, that proxy's public statement of acceptance of any version is
 permanent authorization for you to choose that version for the
 Library.
 
-## Akryum/vue-observe-visibility
-
-<https://github.com/Akryum/vue-observe-visibility>
-
-MIT
-
 ## pagekit/vue-resource
 
 <https://github.com/pagekit/vue-resource/blob/develop/LICENSE>

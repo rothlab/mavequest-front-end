@@ -147,8 +147,12 @@
                       role="button"
                       aria-controls="transcript-peptide"
                     >
-                      <b-icon pack="fas" icon="chevron-right" size="is-small"
-                        :style="{ transform: showTranscripts ? 'rotate(0.25turn)' : '' } "></b-icon>
+                      <b-icon
+                        pack="fas"
+                        icon="chevron-right"
+                        size="is-small"
+                        :style="{ transform: showTranscripts ? 'rotate(0.25turn)' : '' } "
+                      ></b-icon>
                       <span>&nbsp;&nbsp;Isoforms and Transcripts</span>
                     </div>
 
@@ -170,11 +174,17 @@
                         </template>
 
                         <template slot="empty">
-                          <p class="title is-6 is-flex is-vcentered is-hcentered" v-if="loadingTranscriptsStatus === 1">
+                          <p
+                            class="title is-6 is-flex is-vcentered is-hcentered"
+                            v-if="loadingTranscriptsStatus === 1"
+                          >
                             <SyncLoader :size="5" color="#7A7A7A"></SyncLoader>
                             <span class="has-text-grey">&nbsp;&nbsp;Loading</span>
                           </p>
-                          <p class="has-text-centered title is-6" v-else-if="loadingTranscriptsStatus === -1">
+                          <p
+                            class="has-text-centered title is-6"
+                            v-else-if="loadingTranscriptsStatus === -1"
+                          >
                             <span class="has-text-grey">Failed to load from Ensembl API</span>
                           </p>
                         </template>
@@ -220,7 +230,8 @@
                             sortable
                           >{{props.row.num_exons}}</b-table-column>
                           <b-table-column field="peptide" label="Peptide ID">
-                            <a v-if="props.row.peptide_id != 'NA'"
+                            <a
+                              v-if="props.row.peptide_id != 'NA'"
                               :href="'https://www.ensembl.org/Homo_sapiens/protview?peptide=' + props.row.peptide_id"
                               target="_blank"
                               rel="noopener noreferrer"
@@ -507,7 +518,12 @@
               </div>
 
               <div v-if="hasAssay.huri">
-                <AssayTitle anchor="huri" title="Human Interactome" icon="fas fa-bars" reflink="/about#huri"></AssayTitle>
+                <AssayTitle
+                  anchor="huri"
+                  title="Human Interactome"
+                  icon="fas fa-bars"
+                  reflink="/about#huri"
+                ></AssayTitle>
                 <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
                   <CytoscapeView :head="geneName" :elements="huriData"/>
                 </b-modal>
@@ -546,17 +562,30 @@
                   icon="fas fa-bars"
                   reflink="/about#clinvar"
                 ></AssayTitle>
-                <div class="content">
-                  <div class="card has-table-padding in-paragraph in-list">
-                    <div class="clinvar-stats clinvar-stats-adaptive">
-                      <apexchart
-                        type="bar"
-                        height="120px"
-                        :options="chartOptions"
-                        :series="clinvarStats"
-                      ></apexchart>
-                    </div>
-
+                <div class="card">
+                  <header class="card-header">
+                    <p class="card-header-title">Clinvar Variant Summary</p>
+                  </header>
+                  <div class="card-content clinvar-stats clinvar-stats-adaptive">
+                    <apexchart
+                      type="bar"
+                      height="140px"
+                      :options="chartOptions"
+                      :series="clinvarStats"
+                    ></apexchart>
+                    <span class="has-text-grey-light" 
+                      style="position:relative; top:-2rem; float:right">
+                      <b-tooltip type="is-light" position="is-left" multilined
+                        label="Others are Clinvar variants that don't fit in any other categories.">
+                        What are Others?
+                      </b-tooltip>
+                    </span>
+                  </div>
+                  
+                  <header class="card-header">
+                    <p class="card-header-title">Pathogenic Variants</p>
+                  </header>
+                  <div class="card-content has-table-padding">
                     <b-table
                       v-if="clinvarData.pathogenic_variants"
                       :data="clinvarData.pathogenic_variants"
@@ -760,7 +789,12 @@
                           ></b-icon>
                         </b-table-column>
 
-                        <b-table-column v-if="props.row.tumour_germline" field="germline" label="Germline" width="400">
+                        <b-table-column
+                          v-if="props.row.tumour_germline"
+                          field="germline"
+                          label="Germline"
+                          width="400"
+                        >
                           <ExpandableRow
                             class="is-capitalized"
                             :elements="props.row.tumour_germline.map(e => e.trim())"
@@ -768,7 +802,11 @@
                           ></ExpandableRow>
                         </b-table-column>
 
-                        <b-table-column v-if="props.row.tumour_somatic" field="somatic" label="Somatic">
+                        <b-table-column
+                          v-if="props.row.tumour_somatic"
+                          field="somatic"
+                          label="Somatic"
+                        >
                           <ExpandableRow
                             class="is-capitalized"
                             :elements="props.row.tumour_somatic.map(e => e.trim())"
@@ -879,7 +917,7 @@ import CytoscapeView from "@/components/CytoscapeView.vue";
 import ErrorView from "@/components/ErrorView.vue";
 import Lodash from "lodash";
 import VueApexCharts from "vue-apexcharts";
-import { SyncLoader } from '@saeris/vue-spinners';
+import { SyncLoader } from "@saeris/vue-spinners";
 
 // Declare reference badge
 const RefBadge = {
@@ -915,7 +953,9 @@ const AssayTitle = {
   render() {
     return (
       <div class="block" style="margin-top:1.5rem">
-        <div class="is-hidden-mobile is-inline"><b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;</div>
+        <div class="is-hidden-mobile is-inline">
+          <b-icon size="is-medium" icon={this.icon} /> &nbsp;&nbsp;
+        </div>
         <span
           id={this.anchor}
           class="is-size-4 is-anchor"
@@ -1035,27 +1075,45 @@ export default {
             this.clinvarStats = [
               {
                 name: "Benign",
-                data: [this.clinvarData.benign]
+                data: [
+                  this.clinvarData.all_variants.benign,
+                  this.clinvarData.missense_variants.benign
+                ]
               },
               {
                 name: "Likely Benign",
-                data: [this.clinvarData.likely_benign]
+                data: [
+                  this.clinvarData.all_variants.likely_benign,
+                  this.clinvarData.missense_variants.likely_benign
+                ]
               },
               {
                 name: "Uncertain",
-                data: [this.clinvarData.uncertain]
+                data: [
+                  this.clinvarData.all_variants.uncertain,
+                  this.clinvarData.missense_variants.uncertain
+                ]
               },
               {
                 name: "Likely Pathogenic",
-                data: [this.clinvarData.likely_pathogenic]
+                data: [
+                  this.clinvarData.all_variants.likely_pathogenic,
+                  this.clinvarData.missense_variants.likely_pathogenic
+                ]
               },
               {
                 name: "Pathogenic",
-                data: [this.clinvarData.pathogenic]
+                data: [
+                  this.clinvarData.all_variants.pathogenic,
+                  this.clinvarData.missense_variants.pathogenic
+                ]
               },
               {
                 name: "Others",
-                data: [this.clinvarData.others]
+                data: [
+                  this.clinvarData.all_variants.others,
+                  this.clinvarData.missense_variants.others
+                ]
               }
             ];
           }
@@ -1097,36 +1155,42 @@ export default {
               this.ensemblID +
               "?expand=1;content-type=application/json"
           )
-          .then(res => {
-            const json = res.body;
+          .then(
+            res => {
+              const json = res.body;
 
-            if (json.hasOwnProperty("Transcript")) {
-              // Populate transcripts database
-              for (const entity of json.Transcript) {
-                const newEntry = {
-                  id: entity.id,
-                  name: entity.display_name,
-                  biotype: entity.biotype,
-                  num_exons: entity.Exon.length,
-                  peptide_id: entity.Translation ? entity.Translation.id : "NA",
-                  peptide_length: entity.Translation ? entity.Translation.length : "NA"
-                };
+              if (json.hasOwnProperty("Transcript")) {
+                // Populate transcripts database
+                for (const entity of json.Transcript) {
+                  const newEntry = {
+                    id: entity.id,
+                    name: entity.display_name,
+                    biotype: entity.biotype,
+                    num_exons: entity.Exon.length,
+                    peptide_id: entity.Translation
+                      ? entity.Translation.id
+                      : "NA",
+                    peptide_length: entity.Translation
+                      ? entity.Translation.length
+                      : "NA"
+                  };
 
-                // Make sure canonical entry always goes to the front
-                if (entity.is_canonical) {
-                  this.transcriptList.unshift(newEntry);
-                } else {
-                  this.transcriptList.push(newEntry);
+                  // Make sure canonical entry always goes to the front
+                  if (entity.is_canonical) {
+                    this.transcriptList.unshift(newEntry);
+                  } else {
+                    this.transcriptList.push(newEntry);
+                  }
                 }
               }
+            },
+            res => {
+              // Error handling
+              this.loadingTranscriptsStatus = -1;
+              this.showErrorComponent = true;
+              this.errorResponse = res;
             }
-          },
-          res => {
-            // Error handling
-            this.loadingTranscriptsStatus = -1;
-            this.showErrorComponent = true;
-            this.errorResponse = res;
-          })
+          );
       })
       .then(() => {
         // Close loading animation
@@ -1177,7 +1241,6 @@ export default {
       chartOptions: {
         chart: {
           stacked: true,
-          stackType: "100%",
           toolbar: { show: false }
         },
         plotOptions: {
@@ -1189,31 +1252,32 @@ export default {
           width: 1,
           colors: ["#fff"]
         },
-        xaxis: {
-          labels: { show: false },
-          axisBorder: { show: false },
-          axisTicks: { show: false },
-          crosshairs: { show: false },
-          tooltip: { enabled: false }
+        grid: {
+          xaxis: { lines: { show: false } },
+          yaxis: { lines: { show: false } }
         },
+        labels: ["All Variants", "Missense Variants"],
+        xaxis: { show: false },
         yaxis: {
-          show: false,
-          axisBorder: { show: false },
-          axisTicks: { show: false },
-          crosshairs: { show: false },
-          tooltip: { enabled: false }
+          labels: {
+            style: {
+              fontSize: "16px"
+            },
+            maxWidth: 200
+          }
         },
-        grid: { show: false },
         tooltip: {
           x: { show: false },
           y: {
-            formatter: function(value, { series }) {
+            formatter: function(value, { series, dataPointIndex }) {
               return (
                 value +
                 ", " +
                 (
                   (value /
-                    series.map(Number).reduce((t, n) => t + parseInt(n))) *
+                    series
+                      .map(e => e[dataPointIndex])
+                      .reduce((t, n) => t + parseInt(n))) *
                   100
                 ).toFixed(2) +
                 "%"
@@ -1222,14 +1286,12 @@ export default {
           },
           theme: "light"
         },
-        dataLabels: {
-          enabled: true,
-          style: { fontSize: "18px" }
-        },
+        dataLabels: { enabled: false },
         legend: {
           onItemClick: { toggleDataSeries: false },
           position: "top",
-          offsetY: 15
+          offsetY: 15,
+          fontSize: "16px"
         },
         responsive: [
           {
@@ -1285,7 +1347,11 @@ export default {
     },
     bioTypeSort(a, b, isAsc) {
       // Priority lower to higher
-      const priority = ["retained_intron", "processed_transcript", "protein_coding"];
+      const priority = [
+        "retained_intron",
+        "processed_transcript",
+        "protein_coding"
+      ];
 
       const biotypeA = a.biotype;
       const biotypeB = b.biotype;
@@ -1295,9 +1361,11 @@ export default {
       if (indA === -1 && indB === -1) {
         // None was in the priority list
         // Just do a normal string comparison
-        return isAsc ? biotypeA.localeCompare(biotypeB) : biotypeB.localeCompare(biotypeA);
+        return isAsc
+          ? biotypeA.localeCompare(biotypeB)
+          : biotypeB.localeCompare(biotypeA);
       } else {
-        // If one in the priority list 
+        // If one in the priority list
         // Rank based on priority
         return isAsc ? indA - indB : indB - indA;
       }
@@ -1336,7 +1404,7 @@ export default {
 }
 .clinvar-stats {
   overflow: hidden;
-  margin-top: -10px;
+  margin-top: -30px;
   margin-bottom: -50px;
   z-index: 1;
 }
@@ -1363,7 +1431,8 @@ export default {
     justify-content: center;
   }
   .clinvar-stats-adaptive {
-    margin-top: -35px !important;
+    margin-top: -40px !important;
+    margin-bottom: -60px !important;
   }
 }
 </style>

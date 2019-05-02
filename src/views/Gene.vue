@@ -570,25 +570,36 @@
                     <apexchart
                       type="bar"
                       height="140px"
-                      :options="chartOptions"
-                      :series="clinvarStats"
+                      :options="variantSumChartOptions"
+                      :series="variantStats"
                     ></apexchart>
-                    <span class="has-text-grey-light" 
-                      style="position:relative; top:-2rem; float:right">
-                      <b-tooltip type="is-light" position="is-left" multilined
-                        label="Others are Clinvar variants that don't fit in any other categories.">
-                        What are Others?
-                      </b-tooltip>
+                    <span
+                      class="has-text-grey-light"
+                      style="position:relative; top:-2rem; float:right"
+                    >
+                      <b-tooltip
+                        type="is-light"
+                        position="is-left"
+                        multilined
+                        label="Others are Clinvar variants that don't fit in any other categories."
+                      >What are Others?</b-tooltip>
                     </span>
                   </div>
-                  
+
                   <header class="card-header">
                     <p class="card-header-title">Pathogenic Variants</p>
                   </header>
                   <div class="card-content has-table-padding">
+                    <apexchart
+                        type="scatter"
+                        height="200px"
+                        :options="pathogenicDistriChartOptions"
+                        :series="pathogenicDistriData"
+                    ></apexchart>
+
                     <b-table
-                      v-if="clinvarData.pathogenic_variants"
-                      :data="clinvarData.pathogenic_variants"
+                      v-if="pathoVariants"
+                      :data="pathoVariants"
                       narrowed
                       paginated
                       per-page="10"
@@ -1071,8 +1082,8 @@ export default {
             this.hasPhenotype.clinvar = true;
             this.clinvarData = json.clinvar;
 
-            // Construct apexgraph
-            this.clinvarStats = [
+            // Construct variant summary
+            this.variantStats = [
               {
                 name: "Benign",
                 data: [
@@ -1116,6 +1127,11 @@ export default {
                 ]
               }
             ];
+
+            // Construct pathogenic variant summary
+            if (json.clinvar.hasOwnProperty("pathogenic_variants")) {
+              this.pathoVariants = this.clinvarData.pathogenic_variants;
+            }
           }
 
           if (json.hasOwnProperty("cancer_census")) {
@@ -1233,12 +1249,12 @@ export default {
       genomeCRISPRData: [],
       overexprData: [],
       clinvarData: {},
-      clinvarStats: [],
+      variantStats: [],
       omimPhenotype: [],
       cancerGeneCensusPhenotype: [],
       orphanetData: [],
       invitaeData: [],
-      chartOptions: {
+      variantSumChartOptions: {
         chart: {
           stacked: true,
           toolbar: { show: false }
@@ -1301,8 +1317,90 @@ export default {
             }
           }
         ]
-      }
+      },
+      pathogenicDistriChartOptions: {
+        chart: {
+          zoom: {
+            enabled: true,
+            type: "x",
+            zoomedArea: {
+              fill: {
+                color: "#90CAF9",
+                opacity: 0.4
+              },
+              stroke: {
+                color: "#0D47A1",
+                opacity: 0.4,
+                width: 1
+              }
+            }
+          },
+          toolbar: {
+            tools: { download: false }
+          },
+          events: { 
+            dataPointSelection: this.selectDatapoint,
+            zoomed: this.selectDatapoints
+          }
+        },
+        grid: {
+          padding: { right: 40 }
+        },
+        xaxis: {
+          tickAmount: 10,
+          labels: {
+            formatter: function(val) {
+              return parseFloat(val).toFixed(0);
+            }
+          },
+          title: {
+            text: "Nucleotide Position",
+            style: { fontSize: "16px" }
+          },
+          tooltip: { enabled: false }
+        },
+        yaxis: {
+          title: {
+            text: "# SNVs",
+            style: { fontSize: "16px" }
+          }
+        },
+        tooltip: {
+          x: {
+            formatter: function(value) {
+              return "Position " + value;
+            }
+          }
+        }
+      },
+      pathoVariants: []
     };
+  },
+  computed: {
+    pathoVariantStats: function() {
+      if (this.clinvarData.pathogenic_variants) {
+        const pos = this.clinvarData.pathogenic_variants
+          .filter(e => e.isSnv)
+          .map(e => parseInt(e.name.match(/c.\d*/)[0].substring(2)));
+        const count = pos.reduce((acc, val) => {
+          acc[val] = acc[val] == undefined ? 1 : (acc[val] += 1);
+          return acc;
+        }, {});
+        return Object.entries(count).map(([key, value]) => [
+          parseInt(key),
+          value
+        ]);
+      }
+      return [];
+    },
+    pathogenicDistriData: function() {
+      return [
+        {
+          name: "SNVs",
+          data: this.pathoVariantStats
+        }
+      ];
+    }
   },
   methods: {
     getSpeciesName(taxonomy) {
@@ -1378,6 +1476,24 @@ export default {
       if (lenB === "NA") return -1;
 
       return isAsc ? lenA - lenB : lenB - lenA;
+    },
+    toggleDisplayAll() {
+      this.pathoVariants = this.clinvarData.pathogenic_variants
+      this.showDisplayAll = false;
+    },
+    selectDatapoints(chartContext, { xaxis }) {
+      // If zoomed out completely
+      if (!xaxis.min || !xaxis.max) {
+        this.pathoVariants = this.clinvarData.pathogenic_variants;
+        return;
+      }
+
+      // Filter variants
+      this.pathoVariants = this.clinvarData.pathogenic_variants.filter(e => {
+        if (!e.isSnv) return false;
+        const pos = parseInt(e.name.match(/c.\d*/)[0].substring(2));
+        return pos >= xaxis.min && pos <= xaxis.max
+      });
     }
   }
 };

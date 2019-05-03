@@ -61,6 +61,8 @@ export default {
 // Navbar related styles
 $navbar-breakpoint: 0px;
 $table-row-active-background-color: $cyan;
+$menu-item-active-color: $text;
+$menu-item-active-background-color: $grey-lighter;
 
 // Import Bulma and Buefy styles
 @import "~bulma";

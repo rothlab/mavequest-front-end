@@ -20,7 +20,7 @@
     </header>
     <div class="card-content has-table-padding">
       <apexchart
-        type="scatter"
+        type="area"
         height="200px"
         :options="pathogenicDistriChartOptions"
         :series="pathogenicDistriData"
@@ -214,6 +214,9 @@ export default {
             zoomed: this.selectDatapoints
           }
         },
+        dataLabels: { enabled: false },
+        stroke: { curve: 'straight' },
+        markers: { size: 0 },
         grid: {
           padding: { right: 40 }
         },
@@ -337,6 +340,9 @@ export default {
       // If zoomed out completely
       if (!xaxis.min || !xaxis.max) {
         this.pathoVariants = this.clinvarData.pathogenic_variants;
+        chartContext.updateOptions({
+          markers: { size: 0 }
+        });
         return;
       }
 
@@ -346,6 +352,18 @@ export default {
         const pos = parseInt(e.name.match(/c.\d*/)[0].substring(2));
         return pos >= xaxis.min && pos <= xaxis.max
       });
+
+      // If zoomed in enough, add dots
+      if (!chartContext.options.markers) {
+        chartContext.updateOptions({
+          markers: {
+            size: 5,
+            hover: {
+              size: 9
+            }
+          }
+        });
+      }
     }
   }
 }

@@ -304,7 +304,7 @@ export default {
     pathoVariantStats: function() {
       if (this.clinvarData.pathogenic_variants) {
         const pos = this.clinvarData.pathogenic_variants
-          .filter(e => e.isSnv)
+          .filter(e => e.isMissense && e.isSnv && e.name)
           .map(e => parseInt(e.name.match(/c.\d*/)[0].substring(2)));
         const count = pos.reduce((acc, val) => {
           acc[val] = acc[val] == undefined ? 1 : (acc[val] += 1);
@@ -348,7 +348,7 @@ export default {
 
       // Filter variants
       this.pathoVariants = this.clinvarData.pathogenic_variants.filter(e => {
-        if (!e.isSnv) return false;
+        if (!e.isSnv || !e.name) return false;
         const pos = parseInt(e.name.match(/c.\d*/)[0].substring(2));
         return pos >= xaxis.min && pos <= xaxis.max
       });

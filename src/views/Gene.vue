@@ -1176,16 +1176,6 @@ export default {
   margin-left: 0.5rem;
   margin-bottom: 0.75rem;
 }
-.clinvar-stats {
-  overflow: hidden;
-  margin-top: -30px;
-  margin-bottom: -50px;
-  z-index: 1;
-}
-.clinvar-table {
-  position: relative;
-  z-index: 2;
-}
 .item-border {
   padding: 0.5rem;
   border-style: solid;

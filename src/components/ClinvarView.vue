@@ -5,12 +5,13 @@
     </header>
     <div class="card-content clinvar-stats clinvar-stats-adaptive">
       <apexchart type="bar" height="140px" :options="variantSumChartOptions" :series="variantStats"></apexchart>
-      <span class="has-text-grey-light" style="position:relative; top:-2rem; float:right">
+      <span v-if="this.clinvarData.all_variants.others > 0" class="has-text-grey-light" style="position:relative; top:-2rem; float:right">
         <b-tooltip
           type="is-light"
           position="is-left"
           multilined
-          label="Others are Clinvar variants that don't fit in any other categories."
+          size="is-small"
+          label="Variants don't fit in other categories."
         >What are Others?</b-tooltip>
       </span>
     </div>
@@ -185,7 +186,8 @@ export default {
           {
             breakpoint: 768,
             options: {
-              legend: { show: false }
+              legend: { show: false },
+              labels: ["All", "Missense"]
             }
           }
         ]
@@ -370,5 +372,22 @@ export default {
 </script>
 
 <style scoped>
-
+.clinvar-stats {
+  overflow: hidden;
+  margin-top: -30px;
+  margin-bottom: -50px;
+  z-index: 1;
+}
+.clinvar-table {
+  position: relative;
+  z-index: 2;
+}
+@media all and (max-width: 768px) {
+    .clinvar-stats-adaptive {
+    margin-top: -40px !important;
+    margin-bottom: -60px !important;
+    margin-left: -20px !important;
+    margin-right: -10px !important;
+  }
+}
 </style>

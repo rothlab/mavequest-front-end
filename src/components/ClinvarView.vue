@@ -19,7 +19,7 @@
     <header class="card-header">
       <p class="card-header-title">Pathogenic Variants</p>
     </header>
-    <div class="card-content has-table-padding">
+    <div class="card-content">
       <apexchart
         class="pathogenic-stats pathogenic-stats-adaptive"
         type="area"
@@ -55,7 +55,11 @@
             >{{props.row.id}}</a>
           </b-table-column>
 
-          <b-table-column class="is-capitalized" field="name" label="Name">{{props.row.name}}</b-table-column>
+          <b-table-column class="is-capitalized" field="name" label="Name">
+            <div class="is-text-overflow-mobile">
+              {{props.row.name}}
+            </div>
+          </b-table-column>
 
           <b-table-column field="review_star" label="Review Status" sortable>
             <b-tooltip
@@ -220,6 +224,20 @@ export default {
         dataLabels: { enabled: false },
         stroke: { curve: 'straight' },
         markers: { size: 0 },
+        responsive: [
+          {
+            breakpoint: 768,
+            options: {
+              chart: {
+                toolbar: { show: false },
+                zoom: { enabled: false }
+              },
+              xaxis: {
+                title: {offsetY: -10}
+              }
+            }
+          }
+        ],
         xaxis: {
           tickAmount: 10,
           labels: {
@@ -379,7 +397,7 @@ export default {
 .pathogenic-stats {
   overflow: hidden;
   margin-top: -10px;
-  margin-right: 0px;
+  margin-left: -25px;
   z-index: 1;
 }
 .clinvar-table {
@@ -394,9 +412,16 @@ export default {
     margin-right: -10px !important;
   }
   .pathogenic-stats-adaptive {
-    margin-top: -10px !important;
-    margin-left: -20px !important;
-    margin-right: -10px !important;
+    margin-top: -30px !important;
+    margin-left: -30px !important;
+    margin-right: -25px !important;
+    margin-bottom: -20px !important;
+  }
+  .is-text-overflow-mobile {
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 </style>

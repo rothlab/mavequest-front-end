@@ -21,6 +21,7 @@
     </header>
     <div class="card-content has-table-padding">
       <apexchart
+        class="pathogenic-stats pathogenic-stats-adaptive"
         type="area"
         height="200px"
         :options="pathogenicDistriChartOptions"
@@ -219,9 +220,6 @@ export default {
         dataLabels: { enabled: false },
         stroke: { curve: 'straight' },
         markers: { size: 0 },
-        grid: {
-          padding: { right: 40 }
-        },
         xaxis: {
           tickAmount: 10,
           labels: {
@@ -238,8 +236,8 @@ export default {
         yaxis: {
           title: {
             text: "# SNVs",
-            style: { fontSize: "16px" }
-          }
+            style: { fontSize: "16px" },
+          },
         },
         tooltip: {
           x: {
@@ -378,14 +376,25 @@ export default {
   margin-bottom: -50px;
   z-index: 1;
 }
+.pathogenic-stats {
+  overflow: hidden;
+  margin-top: -10px;
+  margin-right: 0px;
+  z-index: 1;
+}
 .clinvar-table {
   position: relative;
   z-index: 2;
 }
 @media all and (max-width: 768px) {
-    .clinvar-stats-adaptive {
+  .clinvar-stats-adaptive {
     margin-top: -40px !important;
     margin-bottom: -60px !important;
+    margin-left: -20px !important;
+    margin-right: -10px !important;
+  }
+  .pathogenic-stats-adaptive {
+    margin-top: -10px !important;
     margin-left: -20px !important;
     margin-right: -10px !important;
   }

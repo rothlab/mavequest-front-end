@@ -1112,13 +1112,6 @@ export default {
           return "Unknown Type";
       }
     },
-    splitInChunk(list, total, index) {
-      // Remove not provided unless there's nothing else
-      let l = list.filter(e => e != "not provided");
-      if (l.length < 1) l = ["not provided"];
-
-      return Lodash.chunk(l, total)[index - 1];
-    },
     bioTypeSort(a, b, isAsc) {
       // Priority lower to higher
       const priority = [

@@ -1,6 +1,9 @@
 # Get version from travis tag
 version=$1
 
+### Run test cases
+npm run test:unit
+
 ### Submit source map to sentry
 # Create a release
 sentry-cli releases new -p mavequest $version

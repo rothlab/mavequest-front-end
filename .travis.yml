@@ -11,7 +11,7 @@ script:
 - npm run build
 deploy:
   provider: script
-  script: gae-deploy.sh $TRAVIS_TAG
+  script: sh ./gae-deploy.sh $TRAVIS_TAG
   on:
     tags: true
     branch: prod

@@ -18,6 +18,5 @@ deploy:
     tag: true
 before_install:
 - openssl aes-256-cbc -K $encrypted_199e361aa0e1_key -iv $encrypted_199e361aa0e1_iv
-  -in travis-ci-gae-deploy.json.enc -out .\\travis-ci-gae-deploy.json -d
-- openssl aes-256-cbc -K $encrypted_199e361aa0e1_key -iv $encrypted_199e361aa0e1_iv
-  -in .sentryclirc.enc -out .\\.sentryclirc -d
+  -in credentials.tar.enc -out .\\credentials.tar -d
+- tar xvf credentials.tar

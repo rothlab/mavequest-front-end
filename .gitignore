@@ -1,4 +1,5 @@
 .DS_Store
+.sentryclirc
 node_modules
 /dist
 /coverage
@@ -21,3 +22,4 @@ yarn-error.log*
 *.sln
 *.sw*
 travis-ci-gae-deploy.json
+credentials.tar

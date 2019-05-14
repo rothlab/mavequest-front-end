@@ -18,7 +18,7 @@
 
     <b-tag
       v-if="elements.length > parseInt(preview_items)"
-      class="has-background-grey element"
+      class="has-background-grey"
       @click.native="expandShrinkElements"
     >
       <b-icon
@@ -75,13 +75,12 @@ export default {
   .element {
     justify-content: left;
     max-width: 200px;
-    overflow: hidden;
   }
   .element > span > span {
     display: block;
     max-width: 185px;
-    overflow: hidden;
-    text-overflow: ellipsis; 
+    text-overflow: ellipsis;
+    overflow-x: hidden;
   }
 }
 .element:last-child {

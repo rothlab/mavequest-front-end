@@ -7,29 +7,27 @@
       v-bind:key="element"
     >
       <!-- Add link if prefix is given -->
-      <a v-if="!!link_prefix" :href="link_prefix + element" 
-        target="_blank" rel="noopener noreferrer">
-        {{element}}
-      </a>
+      <a
+        v-if="!!link_prefix"
+        :href="link_prefix + element"
+        target="_blank"
+        rel="noopener noreferrer"
+      >{{element}}</a>
       <span v-else>{{element}}</span>
     </b-tag>
 
-    <b-tooltip
+    <b-tag
       v-if="elements.length > parseInt(preview_items)"
-      type="is-dark"
-      :label="isExpandDetail ? 'Collapse' : 'Expand'"
-      animated
+      class="has-background-grey element"
+      @click.native="expandShrinkElements"
     >
-      <b-tag class="has-background-grey element" 
-        @click.native="expandShrinkElements">
-        <b-icon
-          type="is-white"
-          pack="fas"
-          v-bind:icon="isExpandDetail ? 'minus' : 'plus'"
-          size="is-small"
-        ></b-icon>
-      </b-tag>
-    </b-tooltip>
+      <b-icon
+        type="is-white"
+        pack="fas"
+        v-bind:icon="isExpandDetail ? 'minus' : 'plus'"
+        size="is-small"
+      ></b-icon>
+    </b-tag>
   </div>
 </template>
 
@@ -55,7 +53,10 @@ export default {
   methods: {
     expandShrinkElements() {
       if (this.isExpandDetail) {
-        this.total_elements = this.elements.slice(0, parseInt(this.preview_items));
+        this.total_elements = this.elements.slice(
+          0,
+          parseInt(this.preview_items)
+        );
       } else {
         this.total_elements = this.elements;
       }
@@ -69,5 +70,21 @@ export default {
 <style scoped>
 .element {
   margin-right: 5px;
+}
+@media all and (max-width: 768px) {
+  .element {
+    justify-content: left;
+    max-width: 200px;
+    overflow: hidden;
+  }
+  .element > span > span {
+    display: block;
+    max-width: 185px;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+  }
+}
+.element:last-child {
+  margin-right: 0px;
 }
 </style>

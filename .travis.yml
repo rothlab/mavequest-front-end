@@ -14,6 +14,7 @@ deploy:
   script: gae-deploy.sh $TRAVIS_TAG
   on:
     tag: true
+    all_branches: true
 before_install:
 - openssl aes-256-cbc -K $encrypted_e9464e2524e7_key -iv $encrypted_e9464e2524e7_iv
   -in credentials.tar.enc -out credentials.tar -d

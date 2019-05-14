@@ -1,13 +1,13 @@
 {
   "name": "mavequest",
-  "version": "2.4.2",
+  "version": "2.4.3",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "deploy": "@powershell -ExecutionPolicy Unrestricted -Command ./sentry-sync.ps1 && gcloud app deploy",
-    "test:unit": "vue-cli-service test:unit --watch"
+    "test:unit": "vue-cli-service test:unit --all"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.1",

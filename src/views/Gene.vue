@@ -533,9 +533,8 @@
                     <div class="level is-fullwidth">
                       <div class="level-left">
                         <span class="subtitle is-5 is-vcentered is-flex">
-                          {{geneName}} has&nbsp;
                           <b-tag rounded size="is-medium" type="is-dark">{{huriData.length}}</b-tag>
-                          &nbsp;interaction pair{{huriData.length > 1 ? "s" : ""}}
+                          &nbsp;pair{{huriData.length > 1 ? "s" : ""}}
                           in the HuRI database.
                         </span>
                       </div>
@@ -1113,13 +1112,6 @@ export default {
           return "Unknown Type";
       }
     },
-    splitInChunk(list, total, index) {
-      // Remove not provided unless there's nothing else
-      let l = list.filter(e => e != "not provided");
-      if (l.length < 1) l = ["not provided"];
-
-      return Lodash.chunk(l, total)[index - 1];
-    },
     bioTypeSort(a, b, isAsc) {
       // Priority lower to higher
       const priority = [
@@ -1176,16 +1168,6 @@ export default {
 .omim-phenotype {
   margin-left: 0.5rem;
   margin-bottom: 0.75rem;
-}
-.clinvar-stats {
-  overflow: hidden;
-  margin-top: -30px;
-  margin-bottom: -50px;
-  z-index: 1;
-}
-.clinvar-table {
-  position: relative;
-  z-index: 2;
 }
 .item-border {
   padding: 0.5rem;

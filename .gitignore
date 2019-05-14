@@ -1,6 +1,8 @@
 .DS_Store
+.sentryclirc
 node_modules
 /dist
+/coverage
 
 # local env files
 .env.local
@@ -19,3 +21,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+travis-ci-gae-deploy.json
+credentials.tar

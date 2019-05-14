@@ -5,12 +5,13 @@
     </header>
     <div class="card-content clinvar-stats clinvar-stats-adaptive">
       <apexchart type="bar" height="140px" :options="variantSumChartOptions" :series="variantStats"></apexchart>
-      <span class="has-text-grey-light" style="position:relative; top:-2rem; float:right">
+      <span v-if="this.clinvarData.all_variants.others > 0" class="has-text-grey-light" style="position:relative; top:-2rem; float:right">
         <b-tooltip
           type="is-light"
           position="is-left"
           multilined
-          label="Others are Clinvar variants that don't fit in any other categories."
+          size="is-small"
+          label="Variants don't fit in other categories."
         >What are Others?</b-tooltip>
       </span>
     </div>
@@ -18,94 +19,99 @@
     <header class="card-header">
       <p class="card-header-title">Pathogenic Variants</p>
     </header>
-    <div class="card-content has-table-padding">
-      <apexchart
-        type="area"
-        height="200px"
-        :options="pathogenicDistriChartOptions"
-        :series="pathogenicDistriData"
-      ></apexchart>
+    <div class="card-content">
+      <div class="pathogenic-stats pathogenic-stats-adaptive">
+        <apexchart
+          type="area"
+          height="200px"
+          :options="pathogenicDistriChartOptions"
+          :series="pathogenicDistriData"
+        ></apexchart>
+      </div>
 
-      <b-table
-        v-if="pathoVariants"
-        :data="pathoVariants"
-        narrowed
-        paginated
-        per-page="10"
-        pagination-simple
-        hoverable
-        detailed
-        detailed-key="id"
-        default-sort="review_star"
-        default-sort-direction="desc"
-        class="clinvar-table"
-      >
-        <template slot="bottom-left">
-          Click&nbsp;
-          <b-icon pack="fas" type="is-link" size="is-small" icon="chevron-right"></b-icon>&nbsp;to Show Phenotypes
-        </template>
+      <div v-if="pathoVariants" class="clinvar-table">
+        <b-table
+          :data="pathoVariants"
+          narrowed
+          paginated
+          per-page="10"
+          pagination-simple
+          hoverable
+          detailed
+          detailed-key="id"
+          default-sort="review_star"
+          default-sort-direction="desc"
+        >
+          <template slot="bottom-left">
+            Click&nbsp;
+            <b-icon pack="fas" type="is-link" size="is-small" icon="chevron-right"></b-icon>&nbsp;to Show Phenotypes
+          </template>
 
-        <template slot-scope="props">
-          <b-table-column field="id" label="Clinvar ID" width="100">
-            <a
-              :href="'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+ props.row.id"
-              target="_blank"
-            >{{props.row.id}}</a>
-          </b-table-column>
+          <template slot-scope="props">
+            <b-table-column field="id" label="Clinvar ID" width="100">
+              <a
+                :href="'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+ props.row.id"
+                target="_blank"
+              >{{props.row.id}}</a>
+            </b-table-column>
 
-          <b-table-column class="is-capitalized" field="name" label="Name">{{props.row.name}}</b-table-column>
+            <b-table-column class="is-capitalized" field="name" label="Name">
+              <span style="word-wrap: anywhere;">{{props.row.name}}</span>
+            </b-table-column>
 
-          <b-table-column field="review_star" label="Review Status" sortable>
-            <b-tooltip
+            <b-table-column field="review_star" label="Review Status" sortable>
+              <b-tooltip
+                class="is-capitalized"
+                type="is-dark"
+                :label="props.row.review_stats"
+                multilined
+                size="is-small"
+                :position="isMobile ? 'is-left' : 'is-top'"
+              >
+                <b-icon
+                  pack="fas"
+                  icon="star"
+                  type="is-warning"
+                  v-for="n in props.row.review_star"
+                  v-bind:key="n"
+                ></b-icon>
+                <b-icon pack="far" icon="star" type="is-warning" v-if="props.row.review_star < 1"></b-icon>
+              </b-tooltip>
+            </b-table-column>
+
+            <b-table-column
+              sortable
               class="is-capitalized"
-              type="is-dark"
-              :label="props.row.review_stats"
-              multilined
-            >
-              <b-icon
-                pack="fas"
-                icon="star"
-                type="is-warning"
-                v-for="n in props.row.review_star"
-                v-bind:key="n"
-              ></b-icon>
-              <b-icon pack="far" icon="star" type="is-warning" v-if="props.row.review_star < 1"></b-icon>
-            </b-tooltip>
-          </b-table-column>
+              field="type"
+              label="Type"
+            >{{props.row.type === "single nucleotide variant" ? "SNV" : props.row.type}}</b-table-column>
 
-          <b-table-column
-            sortable
-            class="is-capitalized"
-            field="type"
-            label="Type"
-          >{{props.row.type === "single nucleotide variant" ? "SNV" : props.row.type}}</b-table-column>
+            <b-table-column width="200" class="is-capitalized" field="origin" label="Origin">
+              <ExpandableRow :elements="props.row.origin.split('/')" preview_items="5"></ExpandableRow>
+            </b-table-column>
+          </template>
 
-          <b-table-column class="is-capitalized" field="origin" label="Origin">
-            <ExpandableRow :elements="props.row.origin.split('/')" preview_items="5"></ExpandableRow>
-          </b-table-column>
-        </template>
-
-        <template slot="detail" slot-scope="props">
-          <p class="title is-5">Phenotype</p>
-          <div class="columns">
-            <div class="column">
-              <p
-                class="is-marginless is-capitalized"
-                v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 1)"
-                v-bind:key="p"
-              >{{p}}</p>
+          <template slot="detail" slot-scope="props">
+            <p class="title is-5">Phenotype</p>
+            <div class="columns">
+              <div class="column">
+                <p
+                  class="is-marginless is-capitalized"
+                  v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 1)"
+                  v-bind:key="p"
+                >{{p}}</p>
+              </div>
+              <div class="column">
+                <p
+                  class="is-marginless is-capitalized"
+                  v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 2)"
+                  v-bind:key="p"
+                >{{p}}</p>
+              </div>
             </div>
-            <div class="column">
-              <p
-                class="is-marginless is-capitalized"
-                v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 2)"
-                v-bind:key="p"
-              >{{p}}</p>
-            </div>
-          </div>
-        </template>
-      </b-table>
-
+          </template>
+        </b-table>
+      </div>
       <div v-else class="has-text-centered">No pathogenic variants available.</div>
     </div>
   </div>
@@ -114,6 +120,7 @@
 <script>
 import VueApexCharts from "vue-apexcharts";
 import ExpandableRow from "@/components/ExpandableRow.vue";
+import Lodash from "lodash";
 
 export default {
   name: "clinvar-view",
@@ -126,6 +133,7 @@ export default {
   },
   data() {
     return {
+      isMobile: window.innerWidth < 768,
       variantSumChartOptions: {
         chart: {
           stacked: true,
@@ -185,7 +193,8 @@ export default {
           {
             breakpoint: 768,
             options: {
-              legend: { show: false }
+              legend: { show: false },
+              labels: ["All", "Missense"]
             }
           }
         ]
@@ -217,9 +226,20 @@ export default {
         dataLabels: { enabled: false },
         stroke: { curve: 'straight' },
         markers: { size: 0 },
-        grid: {
-          padding: { right: 40 }
-        },
+        responsive: [
+          {
+            breakpoint: 768,
+            options: {
+              chart: {
+                toolbar: { show: false },
+                zoom: { enabled: false }
+              },
+              xaxis: {
+                title: {offsetY: -10}
+              }
+            }
+          }
+        ],
         xaxis: {
           tickAmount: 10,
           labels: {
@@ -236,8 +256,8 @@ export default {
         yaxis: {
           title: {
             text: "# SNVs",
-            style: { fontSize: "16px" }
-          }
+            style: { fontSize: "16px" },
+          },
         },
         tooltip: {
           x: {
@@ -336,6 +356,13 @@ export default {
       this.pathoVariants = this.clinvarData.pathogenic_variants
       this.showDisplayAll = false;
     },
+    splitInChunk(list, total, index) {
+      // Remove not provided unless there's nothing else
+      let l = list.filter(e => e != "not provided");
+      if (l.length < 1) l = ["not provided"];
+
+      return Lodash.chunk(l, total)[index - 1];
+    },
     selectDatapoints(chartContext, { xaxis }) {
       // If zoomed out completely
       if (!xaxis.min || !xaxis.max) {
@@ -370,5 +397,34 @@ export default {
 </script>
 
 <style scoped>
-
+.clinvar-stats {
+  overflow: hidden;
+  margin-top: -30px;
+  margin-bottom: -50px;
+  z-index: 1;
+}
+.pathogenic-stats {
+  overflow: hidden;
+  margin-top: -10px;
+  margin-left: -25px;
+  z-index: 1;
+}
+.clinvar-table {
+  position: relative;
+  z-index: 2;
+}
+@media all and (max-width: 768px) {
+  .clinvar-stats-adaptive {
+    margin-top: -40px !important;
+    margin-bottom: -60px !important;
+    margin-left: -20px !important;
+    margin-right: -10px !important;
+  }
+  .pathogenic-stats-adaptive {
+    margin-top: -30px !important;
+    margin-left: -30px !important;
+    margin-right: -25px !important;
+    margin-bottom: -20px !important;
+  }
+}
 </style>

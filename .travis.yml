@@ -13,6 +13,7 @@ script:
 deploy:
   provider: script
   script: sh ./gae-deploy.sh $TRAVIS_TAG
+  skip_cleanup: true
   on:
     tags: true
     branch: prod

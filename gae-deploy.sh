@@ -15,4 +15,4 @@ version=$1
 
 ### Deploy to GAE
 gcloud auth activate-service-account --key-file "travis-ci-gae-deploy.json"
-gcloud app deploy --version ${version//./-} --project "glass-ally-143617"
+gcloud app deploy --quiet --version ${version//./-} --project "glass-ally-143617"

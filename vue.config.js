@@ -3,8 +3,8 @@ const Webpack = require('webpack');
 const gitRevisionPlugin = new GitRevisionPlugin({
   versionCommand: 'describe --tag --long'
 });
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-    .BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+//     .BundleAnalyzerPlugin;
 
 module.exports = {
   // generate sourceMap for production build?

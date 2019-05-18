@@ -4,11 +4,10 @@ node_js:
 cache:
   directories:
   - node_modules
-  - $HOME/google-cloud-sdk
+  - "$HOME/google-cloud-sdk"
 env:
   global:
-  # Do not prompt for user input when using any SDK methods.
-  - CLOUDSDK_CORE_DISABLE_PROMPTS=1 
+  - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 install:
 - npm install
 script:
@@ -22,10 +21,7 @@ deploy:
   on:
     tags: true
     branch: prod
-before_install:
-- if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf "$HOME/google-cloud-sdk"; curl https://sdk.cloud.google.com | bash > /dev/null; fi
-- source $HOME/google-cloud-sdk/path.bash.inc
-- gcloud components update
-- openssl aes-256-cbc -K $encrypted_e9464e2524e7_key -iv $encrypted_e9464e2524e7_iv
-  -in credentials.tar.enc -out credentials.tar -d
-- tar xvf credentials.tar
+notifications:
+  slack:
+    secure: HdY8xIrfLkR+BOtnJe06Xl5pZpWhboJAC7Rhk68ICJBwuoQcfHUtJEeS65qjq89Ky7DTsurDwh4gc1mZWAr5KmQalv6ry5n7jLTRln+tC9w3+uf0yIMxw1J5RfI42rS4/TKgtHhBOayhdgKd08X9BIAVeUSdttUU4wbFA1zft9i69xbG39bVXMF67+D0j9p8H3arAORRfVv4YqLkUo5RpK2nwFVbHoAZsKUOz96B0s8f6isG3Ti6jwFVhs8d7rGDcKwaj/ykLf7+FIa5h2n2ox9qEMaxWxFVVHgsAS8wvfKCpSf0xPkaADpBHeJADPbcNOEOD7Ty6q5IRxfNvaCILnVaZUW4Y27u5BmIiruo+FdhgRB1Y1c3Zhdd2UGeep9ON8xex0OrGfIC+FszbiHJv846W+yjZcj6YMQ9WnORHOMXV2bl/9fgwZcaxNbeXfKcgZmAaTZeZfvsbZMyGpvApDLHqUJXAVwhGMyDUZiHrvHtjSnwoECRs0wNIlh30+GvtV4QAkVxOdGPi8kMFW9QpmxnKIqyZKEGSxydoDqg6/Avm4+Do7TW6W+cGpsaB5PDKY7qXI2129CAT3B77cK3OKt0jTmeQgfsyi4yiaZEpC7zMXR64ILJwr7y6M3lspRaSObXFeoK2EO7xhk5gkTrJn//my5op+RpUhi2TzdbvE8=
+    

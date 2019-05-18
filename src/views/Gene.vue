@@ -800,7 +800,7 @@ import ExpandableRow from "@/components/ExpandableRow.vue";
 import CytoscapeView from "@/components/CytoscapeView.vue";
 import ClinvarView from "@/components/ClinvarView.vue";
 import ErrorView from "@/components/ErrorView.vue";
-import Lodash from "lodash";
+import flattenDeep from "lodash/flattenDeep";
 import { SyncLoader } from "@saeris/vue-spinners";
 
 // Declare reference badge
@@ -1096,7 +1096,7 @@ export default {
       return name;
     },
     flatten(list) {
-      return Lodash.flattenDeep(list.filter(e => e != "NA" && e != undefined));
+      return flattenDeep(list.filter(e => e != "NA" && e != undefined));
     },
     parseOmimType(type) {
       switch (type) {

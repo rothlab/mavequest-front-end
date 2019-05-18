@@ -4,6 +4,11 @@ node_js:
 cache:
   directories:
   - node_modules
+  - $HOME/google-cloud-sdk
+env:
+  global:
+  # Do not prompt for user input when using any SDK methods.
+  - CLOUDSDK_CORE_DISABLE_PROMPTS=1 
 install:
 - npm install
 script:
@@ -12,12 +17,15 @@ script:
 - npm run build
 deploy:
   provider: script
-  script: sh ./gae-deploy.sh $TRAVIS_TAG
+  script: bash ./gae-deploy.sh $TRAVIS_TAG
   skip_cleanup: true
   on:
     tags: true
     branch: prod
 before_install:
+- if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf "$HOME/google-cloud-sdk"; curl https://sdk.cloud.google.com | bash > /dev/null; fi
+- source $HOME/google-cloud-sdk/path.bash.inc
+- gcloud components update
 - openssl aes-256-cbc -K $encrypted_e9464e2524e7_key -iv $encrypted_e9464e2524e7_iv
   -in credentials.tar.enc -out credentials.tar -d
 - tar xvf credentials.tar

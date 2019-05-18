@@ -120,7 +120,7 @@
 <script>
 import VueApexCharts from "vue-apexcharts";
 import ExpandableRow from "@/components/ExpandableRow.vue";
-import Lodash from "lodash";
+import chunk from "lodash/chunk";
 
 export default {
   name: "clinvar-view",
@@ -361,7 +361,7 @@ export default {
       let l = list.filter(e => e != "not provided");
       if (l.length < 1) l = ["not provided"];
 
-      return Lodash.chunk(l, total)[index - 1];
+      return chunk(l, total)[index - 1];
     },
     selectDatapoints(chartContext, { xaxis }) {
       // If zoomed out completely

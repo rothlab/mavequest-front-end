@@ -48,7 +48,7 @@
           </template>
 
           <template slot-scope="props">
-            <b-table-column field="id" label="Clinvar ID" width="100">
+            <b-table-column field="id" label="Clinvar ID">
               <a
                 :href="'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+ props.row.id"
                 target="_blank"
@@ -56,7 +56,7 @@
             </b-table-column>
 
             <b-table-column class="is-capitalized" field="name" label="Name">
-              <span style="word-wrap: anywhere;">{{props.row.name}}</span>
+              <span style="word-break: break-all;">{{props.row.name}}</span>
             </b-table-column>
 
             <b-table-column field="review_star" label="Review Status" sortable>
@@ -86,7 +86,7 @@
               label="Type"
             >{{props.row.type === "single nucleotide variant" ? "SNV" : props.row.type}}</b-table-column>
 
-            <b-table-column width="200" class="is-capitalized" field="origin" label="Origin">
+            <b-table-column class="is-capitalized" field="origin" label="Origin">
               <ExpandableRow :elements="props.row.origin.split('/')" preview_items="5"></ExpandableRow>
             </b-table-column>
           </template>

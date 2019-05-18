@@ -16,7 +16,7 @@ module.exports = {
         'process.env.GIT_VERSION': JSON.stringify(gitRevisionPlugin.version()),
         'process.env.GIT_COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash())
       }),
-      new BundleAnalyzerPlugin()
+      // new BundleAnalyzerPlugin()
     ]
   },
 }

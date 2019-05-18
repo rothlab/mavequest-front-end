@@ -2,14 +2,14 @@
 import Vue from 'vue'
 import router from './router'
 import * as Sentry from '@sentry/browser'
+import * as Integrations from '@sentry/integrations'
 
 // Register error handler
 if (process.env.NODE_ENV != 'development') {
-  
   Sentry.init({
     dsn: 'https://2fca57c8cda5499086923120812e3b9f@sentry.io/1410585',
-    release: process.env.GIT_COMMITHASH,
-    integrations: [new Sentry.Integrations.Vue({ 
+    release: process.env.GIT_VERSION,
+    integrations: [new Integrations.Vue({ 
       Vue,
       attachProps: true
     })]

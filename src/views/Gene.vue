@@ -259,7 +259,7 @@
 
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
-
+              
               <div v-if="hasAssay.genome_crispr">
                 <AssayTitle
                   anchor="genome_crispr"
@@ -267,54 +267,10 @@
                   icon="fas fa-bars"
                   reflink="/about#genome_crispr"
                 ></AssayTitle>
-
-                <div class="card has-table-padding in-paragraph in-list">
-                  <b-table
-                    :data="genomeCRISPRData"
-                    paginated
-                    per-page="10"
-                    pagination-simple
-                    hoverable
-                    narrowed
-                  >
-                    <template slot="bottom-left">
-                      <a
-                        href="http://tko.ccbr.utoronto.ca/"
-                        target="_blank"
-                        v-if="genomeCRISPRData.filter(e => 
-                            tkoPubmed.includes(e.source)).length > 0"
-                      >
-                        <b-tag type="is-warning" class="cell-line">TKO</b-tag>
-                        <span>Toronto Knockout Library &nbsp;</span>
-                      </a>
-                    </template>
-
-                    <template slot-scope="props">
-                      <b-table-column field="source" label="Pubmed Source" width="150">
-                        <a
-                          :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + 
-                              props.row.source"
-                          target="_blank"
-                        >
-                          <span>{{props.row.source}} &nbsp;</span>
-                          <b-tag type="is-warning" v-show="tkoPubmed.includes(props.row.source)">TKO</b-tag>
-                        </a>
-                      </b-table-column>
-
-                      <b-table-column
-                        field="condition"
-                        label="Condition"
-                        width="300"
-                      >{{props.row.condition}}</b-table-column>
-
-                      <b-table-column field="screen" label="Screen" width="150">{{props.row.screen}}</b-table-column>
-
-                      <b-table-column field="cellline" label="Cell Lines">
-                        <ExpandableRow :elements="props.row.cellline" preview_items="5"></ExpandableRow>
-                      </b-table-column>
-                    </template>
-                  </b-table>
-                </div>
+                <GenomeCRISPRView 
+                  :genomeCRISPRData="genomeCRISPRData"
+                  :genomeCRISPRStats="genomeCRISPRStats">
+                </GenomeCRISPRView>
               </div>
 
               <div v-if="hasAssay.genome_rnai">
@@ -797,6 +753,7 @@
 <script>
 import Header from "@/components/Header.vue";
 import ExpandableRow from "@/components/ExpandableRow.vue";
+import GenomeCRISPRView from "@/components/GenomeCRISPRView.vue";
 import CytoscapeView from "@/components/CytoscapeView.vue";
 import ClinvarView from "@/components/ClinvarView.vue";
 import ErrorView from "@/components/ErrorView.vue";
@@ -859,6 +816,7 @@ export default {
     Header,
     ExpandableRow,
     AssayTitle,
+    GenomeCRISPRView,
     CytoscapeView,
     ClinvarView,
     ErrorView,
@@ -920,6 +878,7 @@ export default {
             this.hasAssay.any = true;
             this.hasAssay.genome_crispr = true;
             this.genomeCRISPRData = json.genome_crispr;
+            this.genomeCRISPRStats = json.genome_crispr_stats;
           }
 
           if (json.hasOwnProperty("orthology")) {
@@ -1063,12 +1022,12 @@ export default {
       hasAssay: {},
       hasPhenotype: {},
       orthologyData: [],
-      tkoPubmed: ["26627737", "24987113", "28655737"],
       huri: [],
       showCytoscapeView: false,
       genomeRNAiTotalEntries: 0,
       genomeRNAiData: [],
       genomeCRISPRData: [],
+      genomeCRISPRStats: {},
       overexprData: [],
       clinvarData: {},
       variantStats: [],

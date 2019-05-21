@@ -219,6 +219,20 @@ export default {
     showHitsDistroModal(id) {
       this.isModalShown = true;
       this.modalScreenId = id;
+      // Add annotation
+      const hits = this.genomeCRISPRStats[id];
+      const rank = Math.round(this.percentRank(Object.values(this.genomeCRISPRStats), hits) * 100);
+      this.modalPlotOptions.annotations['points'] = [{
+        x: rank,
+        y: hits,
+        marker: {
+          size: 6,
+          fillColor: '#fff',
+          strokeColor: 'red',
+          radius: 2,
+        },
+        label: { text: undefined }
+      }];
     }
   }
 };

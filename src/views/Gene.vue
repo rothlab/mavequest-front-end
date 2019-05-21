@@ -265,6 +265,7 @@
                   anchor="genome_crispr"
                   title="GenomeCRISPR"
                   icon="fas fa-bars"
+                  :dblink="'http://genomecrispr.dkfz.de/#!/results/' + geneName"
                   reflink="/about#genome_crispr"
                 ></AssayTitle>
                 <GenomeCRISPRView 
@@ -278,6 +279,7 @@
                   anchor="genome_rnai"
                   title="GenomeRNAi"
                   icon="fas fa-bars"
+                  :dblink="'http://www.genomernai.org/v17/geneSearch/' + geneName"
                   reflink="/about#genome_rnai"
                 ></AssayTitle>
 
@@ -354,6 +356,7 @@
                   anchor="orthology"
                   title="Orthology"
                   icon="fas fa-bars"
+                  :dblink="'http://inparanoid.sbc.su.se/cgi-bin/gene_search.cgi?id='+ geneName"
                   reflink="/about#orthology"
                 ></AssayTitle>
 
@@ -515,13 +518,20 @@
                   anchor="clinvar"
                   title="Clinvar"
                   icon="fas fa-bars"
+                  :dblink="'https://www.ncbi.nlm.nih.gov/clinvar/?term=' + geneName + '[gene]'"
                   reflink="/about#clinvar"
                 ></AssayTitle>
                 <ClinvarView :clinvarData="clinvarData"></ClinvarView>
               </div>
 
               <div v-if="hasPhenotype.omim">
-                <AssayTitle anchor="omim" title="OMIM" icon="fas fa-bars" reflink="/about#omim"></AssayTitle>
+                <AssayTitle 
+                  anchor="omim"
+                  title="OMIM"
+                  icon="fas fa-bars"
+                  :dblink="'https://omim.org/entry/' + omimID"
+                  reflink="/about#omim"
+                ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
                     <b-table
@@ -532,15 +542,6 @@
                       hoverable
                       narrowed
                     >
-                      <template slot="bottom-left">
-                        Visit OMIM website:&nbsp;
-                        <a
-                          :href="'https://omim.org/entry/' + omimID"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >{{omimID}}</a>
-                        &nbsp;(OMIM ID)
-                      </template>
                       <template slot-scope="props" slot="header">
                         {{props.column.label}}
                         <b-tooltip
@@ -591,6 +592,7 @@
                   anchor="cancer_census"
                   title="Cancer Gene Census"
                   icon="fas fa-bars"
+                  :dblink="'https://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=' + geneName"
                   reflink="/about#cancer_census"
                 ></AssayTitle>
                 <div class="content">
@@ -603,15 +605,6 @@
                       hoverable
                       narrowed
                     >
-                      <template slot="bottom-left">
-                        Visit Cancer Census website:&nbsp;
-                        <a
-                          :href="'https://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=' + geneName"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >{{geneName}}</a>
-                      </template>
-
                       <template slot-scope="props">
                         <b-table-column field="tier" label="Tier" width="50">{{props.row.tier}}</b-table-column>
 
@@ -664,6 +657,8 @@
                   anchor="orpha"
                   title="Orphanet"
                   icon="fas fa-bars"
+                  :dblink="'https://www.orpha.net/consor/cgi-bin/Disease_Genes_Simple.php?lng=EN&Disease_Disease_Genes_diseaseGroup=' 
+                    + geneName + '&Disease_Disease_Genes_diseaseType=Gen'"
                   reflink="/about#orphanet"
                 ></AssayTitle>
                 <div class="content">
@@ -679,8 +674,7 @@
                       <template slot-scope="props">
                         <b-table-column field="id" label="ORPHA ID" width="100">
                           <a
-                            :href="'https://www.orpha.net/consor/cgi-bin/Disease_Search_Simple.php?lng=EN&Disease_Disease_Search_diseaseGroup='
-                             + props.row.id + '&Disease_Disease_Search_diseaseType=ORPHA'"
+                            :href="'https://www.orpha.net/consor/cgi-bin/OC_Exp.php?lng=en&Expert='+ props.row.id"
                             target="_blank"
                           >{{props.row.id}}</a>
                         </b-table-column>
@@ -712,6 +706,7 @@
                   anchor="invitae"
                   title="Invitae Panels"
                   icon="fas fa-bars"
+                  :dblink="'https://www.invitae.com/search?q='+ geneName"
                   reflink="/about#invitae"
                 ></AssayTitle>
                 <div class="content">
@@ -774,13 +769,6 @@ const RefBadge = {
         [
           createElement("b-tag", [
             createElement("b-icon", { props: { icon: "far fa-file-alt" } }),
-            createElement(
-              "span",
-              {
-                style: { "vertical-align": "text-bottom" }
-              },
-              "Source"
-            )
           ])
         ]
       );
@@ -788,9 +776,32 @@ const RefBadge = {
   }
 };
 
+// Declare reference badge
+const LinkBadge = {
+  props: ["reflink"],
+  render: function(createElement) {
+    return this.constructElement(this.reflink, createElement);
+  },
+  methods: {
+    constructElement: function(reflink, createElement) {
+      if (reflink) {
+        return createElement(
+          "a",
+          { attrs: { href: reflink, target: "_blank" } },
+          [
+            createElement("b-tag", [
+              createElement("b-icon", { props: { icon: "fas fa-database" } }),
+            ])
+          ]
+        );
+      }
+    }
+  }
+};
+
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
-  props: ["title", "icon", "anchor", "reflink"],
+  props: ["title", "icon", "anchor", "dblink", "reflink"],
   render() {
     return (
       <div class="block" style="margin-top:1.5rem">
@@ -804,7 +815,14 @@ const AssayTitle = {
         >
           {this.title} &nbsp;
         </span>
-        <RefBadge reflink={this.reflink} style="vertical-align: super;" />
+        <b-tooltip style="display:initial;" type="is-light" 
+          position="is-bottom" label="Visit original site">
+          <LinkBadge reflink={this.dblink} style="vertical-align: super; margin-right: 5px" />
+        </b-tooltip>
+        <b-tooltip style="display:initial;" type="is-light" 
+          position="is-bottom" label="Reference">
+          <RefBadge reflink={this.reflink} style="vertical-align: super;" />
+        </b-tooltip>
       </div>
     );
   }

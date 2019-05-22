@@ -259,7 +259,7 @@
 
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
-              
+
               <div v-if="hasAssay.genome_crispr">
                 <AssayTitle
                   anchor="genome_crispr"
@@ -268,10 +268,10 @@
                   :dblink="'http://genomecrispr.dkfz.de/#!/results/' + geneName"
                   reflink="/about#genome_crispr"
                 ></AssayTitle>
-                <GenomeCRISPRView 
+                <GenomeCRISPRView
                   :genomeCRISPRData="genomeCRISPRData"
-                  :genomeCRISPRStats="genomeCRISPRStats">
-                </GenomeCRISPRView>
+                  :genomeCRISPRStats="genomeCRISPRStats"
+                ></GenomeCRISPRView>
               </div>
 
               <div v-if="hasAssay.genome_rnai">
@@ -356,7 +356,9 @@
                   anchor="orthology"
                   title="Orthology"
                   icon="fas fa-bars"
-                  :dblink="'http://inparanoid.sbc.su.se/cgi-bin/gene_search.cgi?id='+ geneName"
+                  :dblink="['http://inparanoid.sbc.su.se/cgi-bin/gene_search.cgi?id='+ geneName, 
+                  'http://ppod.princeton.edu/cgi-bin/ppod.cgi?s=' + geneName + '&an=2&t=10&t=42']"
+                  :dblabel="['Inparanoid', 'P-POD']"
                   reflink="/about#orthology"
                 ></AssayTitle>
 
@@ -369,18 +371,6 @@
                     hoverable
                     narrowed
                   >
-                    <template slot-scope="props" slot="header">
-                      {{props.column.label}}
-                      <b-tooltip
-                        v-if="!!props.column.meta"
-                        :label="props.column.meta"
-                        type="is-dark"
-                        multilined
-                      >
-                        <b-icon pack="fas" size="is-small" icon="question-circle"></b-icon>
-                      </b-tooltip>
-                    </template>
-
                     <template slot-scope="props">
                       <b-table-column field="source" label="Pubmed Source" width="150">
                         <a
@@ -395,11 +385,9 @@
 
                       <b-table-column
                         field="complementation"
-                        label="Complementation"
-                        meta="Trans-species complementation. 
-                        NA stands for data not available."
-                        width="200"
-                      >{{props.row.complementation}}</b-table-column>
+                        label="Trans-species Complementation"
+                        width="300"
+                      >{{parseComplementation(props.row.complementation)}}</b-table-column>
 
                       <b-table-column field="gene" label="Gene">
                         <!-- Use different source for S. cerevisiae and S. pombe -->
@@ -525,7 +513,7 @@
               </div>
 
               <div v-if="hasPhenotype.omim">
-                <AssayTitle 
+                <AssayTitle
                   anchor="omim"
                   title="OMIM"
                   icon="fas fa-bars"
@@ -768,7 +756,7 @@ const RefBadge = {
         { attrs: { href: reflink, target: "_blank" } },
         [
           createElement("b-tag", [
-            createElement("b-icon", { props: { icon: "far fa-file-alt" } }),
+            createElement("b-icon", { props: { icon: "far fa-file-alt" } })
           ])
         ]
       );
@@ -778,30 +766,44 @@ const RefBadge = {
 
 // Declare reference badge
 const LinkBadge = {
-  props: ["reflink"],
+  props: ["reflink", "label"],
   render: function(createElement) {
-    return this.constructElement(this.reflink, createElement);
+    return this.constructElement(this.reflink, this.label, createElement);
   },
   methods: {
-    constructElement: function(reflink, createElement) {
-      if (reflink) {
+    constructElement: function(reflink, label, createElement) {
+      if (!(Array.isArray(reflink) && Array.isArray(label))) {
+        reflink = [reflink];
+        label = [label];
+      }
+
+      const inner = reflink.map((e, i) => {
+        const icon = [
+          createElement("b-icon", { props: { icon: "fas fa-database" } })
+          ];
+        
+        if (label[i]) icon.push(createElement("span", label[i]));
+
         return createElement(
           "a",
-          { attrs: { href: reflink, target: "_blank" } },
+          { attrs: { href: e, target: "_blank", style: "margin-right: 5px;" } },
           [
-            createElement("b-tag", [
-              createElement("b-icon", { props: { icon: "fas fa-database" } }),
-            ])
+            createElement("b-tag", icon)
           ]
-        );
-      }
+        )}
+      );
+      return createElement(
+        "div",
+        { attrs: { style: "display: inline" } },
+        inner
+      );
     }
   }
 };
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
-  props: ["title", "icon", "anchor", "dblink", "reflink"],
+  props: ["title", "icon", "anchor", "dblink", "dblabel", "reflink"],
   render() {
     return (
       <div class="block" style="margin-top:1.5rem">
@@ -815,12 +817,24 @@ const AssayTitle = {
         >
           {this.title} &nbsp;
         </span>
-        <b-tooltip style="display:initial;" type="is-light" 
-          position="is-bottom" label="Visit original site">
-          <LinkBadge reflink={this.dblink} style="vertical-align: super; margin-right: 5px" />
+        <b-tooltip
+          style="display:initial;"
+          type="is-light"
+          position="is-bottom"
+          label="Visit source database(s)"
+        >
+          <LinkBadge
+            reflink={this.dblink}
+            label={this.dblabel}
+            style="vertical-align: super;"
+          />
         </b-tooltip>
-        <b-tooltip style="display:initial;" type="is-light" 
-          position="is-bottom" label="Reference">
+        <b-tooltip
+          style="display:initial;"
+          type="is-light"
+          position="is-bottom"
+          label="Reference"
+        >
           <RefBadge reflink={this.reflink} style="vertical-align: super;" />
         </b-tooltip>
       </div>
@@ -1052,7 +1066,7 @@ export default {
       omimPhenotype: [],
       cancerGeneCensusPhenotype: [],
       orphanetData: [],
-      invitaeData: [],
+      invitaeData: []
     };
   },
   methods: {
@@ -1074,6 +1088,16 @@ export default {
     },
     flatten(list) {
       return flattenDeep(list.filter(e => e != "NA" && e != undefined));
+    },
+    parseComplementation(comp) {
+      switch (comp) {
+        case "NA":
+          return "Data not available";
+        case "conflicting":
+          return "Conflicting evidence";
+        default:
+          return comp;
+      }
     },
     parseOmimType(type) {
       switch (type) {

@@ -26,7 +26,7 @@
                     <a href="#primary-data" class="scrollactive-item">Primary Data Source</a>
                   </li>
                   <li>
-                    <a href="#open-source" class="scrollactive-item">Open Source Products</a>
+                    <a href="#open-source" class="scrollactive-item">Open Source Projects</a>
                   </li>
                 </ul>
               </scrollactive>

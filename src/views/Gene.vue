@@ -970,6 +970,8 @@ export default {
         }
       )
       .then(() => {
+        if (this.showErrorComponent) return;
+        
         this.loadingTranscriptsStatus = 1;
 
         // Get Ensembl Data

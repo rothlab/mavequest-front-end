@@ -179,6 +179,19 @@
                     >PubMed</a>
                   </b-tag>
                 </p>
+
+                <p>
+                  Howe, Douglas G., Judith A. Blake, Yvonne M. Bradford, Carol J. Bult, Brian R. Calvi, Stacia R. Engel, James A. Kadin et al.
+                  <strong>Model organism data evolving in support of translational medicine. </strong>
+                  <i>Lab animal</i> (2018): 1.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/30224793"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
               </div>
 
               <!-- HuRI -->

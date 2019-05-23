@@ -5,19 +5,23 @@
     </header>
     <div class="card-content clinvar-stats clinvar-stats-adaptive">
       <apexchart type="bar" height="140px" :options="variantSumChartOptions" :series="variantStats"></apexchart>
-      <span v-if="this.clinvarData.all_variants.others > 0" class="has-text-grey-light" style="position:relative; top:-2rem; float:right">
+      <div v-if="this.clinvarData.all_variants.others > 0" class="has-text-grey-light" style="position:relative; top:-2rem; float:right">
         <b-tooltip
           type="is-light"
           position="is-left"
           multilined
           size="is-small"
           label="Variants don't fit in other categories."
-        >What are Others?</b-tooltip>
-      </span>
+          style="display: initial;"
+        >
+          <b-icon pack="fas" icon="lightbulb" size="is-small"></b-icon>
+          <span> What are Others?</span>
+        </b-tooltip>
+      </div>
     </div>
 
     <header class="card-header">
-      <p class="card-header-title">Pathogenic Variants</p>
+      <p class="card-header-title">(Likely) Pathogenic Variants</p>
     </header>
     <div class="card-content">
       <div class="pathogenic-stats pathogenic-stats-adaptive">
@@ -27,6 +31,16 @@
           :options="pathogenicDistriChartOptions"
           :series="pathogenicDistriData"
         ></apexchart>
+        <span 
+          class="has-text-grey-light" 
+          style="position:relative; top:-2rem; float:right"
+        >
+          <b-icon pack="fas" icon="lightbulb" size="is-small"></b-icon>
+          <span v-if="!hasZoomedIn"> Select a region to zoom in</span>
+          <span v-else> Click 
+            <b-icon pack="fas" icon="home" size="is-small"></b-icon>
+            to reset zoom</span>
+        </span>
       </div>
 
       <div v-if="pathoVariants" class="clinvar-table">
@@ -43,6 +57,9 @@
           default-sort-direction="desc"
         >
           <template slot="bottom-left">
+            <b-tag size="is-medium" style="margin-right: 5px;"
+              type="is-info" v-if="hasZoomedIn"
+            >Limited to Selected SNVs</b-tag>
             Click&nbsp;
             <b-icon pack="fas" type="is-link" size="is-small" icon="chevron-right"></b-icon>&nbsp;to Show Phenotypes
           </template>
@@ -78,6 +95,8 @@
                 <b-icon pack="far" icon="star" type="is-warning" v-if="props.row.review_star < 1"></b-icon>
               </b-tooltip>
             </b-table-column>
+
+            <b-table-column field="count" label="Count">{{props.row.count}}</b-table-column>
 
             <b-table-column
               sortable
@@ -134,6 +153,7 @@ export default {
   data() {
     return {
       isMobile: window.innerWidth < 768,
+      hasZoomedIn: false,
       variantSumChartOptions: {
         chart: {
           stacked: true,
@@ -217,7 +237,10 @@ export default {
             }
           },
           toolbar: {
-            tools: { download: false }
+            tools: { 
+              download: false,
+              reset: '<i class="fas fa-home"></i>'
+            }
           },
           events: { 
             zoomed: this.selectDatapoints
@@ -352,10 +375,6 @@ export default {
     }
   },
   methods: {
-    toggleDisplayAll() {
-      this.pathoVariants = this.clinvarData.pathogenic_variants
-      this.showDisplayAll = false;
-    },
     splitInChunk(list, total, index) {
       // Remove not provided unless there's nothing else
       let l = list.filter(e => e != "not provided");
@@ -370,6 +389,7 @@ export default {
         chartContext.updateOptions({
           markers: { size: 0 }
         });
+        this.hasZoomedIn = false;
         return;
       }
 
@@ -379,6 +399,7 @@ export default {
         const pos = parseInt(e.name.match(/c.\d*/)[0].substring(2));
         return pos >= xaxis.min && pos <= xaxis.max
       });
+      this.hasZoomedIn = true;
 
       // If zoomed in enough, add dots
       if (!chartContext.options.markers) {

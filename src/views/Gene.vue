@@ -357,8 +357,9 @@
                   title="Orthology"
                   icon="fas fa-bars"
                   :dblink="['http://inparanoid.sbc.su.se/cgi-bin/gene_search.cgi?id='+ geneName, 
-                  'http://ppod.princeton.edu/cgi-bin/ppod.cgi?s=' + geneName + '&an=2&t=10&t=42']"
-                  :dblabel="['Inparanoid', 'P-POD']"
+                  'http://ppod.princeton.edu/cgi-bin/ppod.cgi?s=' + geneName + '&an=2&t=10&t=42',
+                  'https://www.alliancegenome.org/search?category=gene&q=' +geneName + '&species=Homo%20sapiens']"
+                  :dblabel="['Inparanoid', 'P-POD', 'AGR']"
                   reflink="/about#orthology"
                 ></AssayTitle>
 
@@ -375,8 +376,9 @@
                       <b-table-column field="source" label="Pubmed Source" width="150">
                         <a
                           :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
-                          target="_blank"
+                          target="_blank" v-if="props.row.source != 'NA'"
                         >{{props.row.source}}</a>
+                        <span v-else>{{props.row.source}}</span>
                       </b-table-column>
 
                       <b-table-column field="species" label="Species" width="150">
@@ -391,18 +393,11 @@
 
                       <b-table-column field="gene" label="Gene">
                         <!-- Use different source for S. cerevisiae and S. pombe -->
-                        <div v-if="props.row.species == 'S. cerevisiae'">
+
+                        <div v-if="orthologDbAvailable.includes(props.row.species)">
                           <ExpandableRow
                             :elements="props.row.gene"
-                            link_prefix="https://www.yeastgenome.org/locus/"
-                            preview_items="5"
-                            bold
-                          ></ExpandableRow>
-                        </div>
-                        <div v-else-if="props.row.species == 'S. pombe'">
-                          <ExpandableRow
-                            :elements="props.row.gene"
-                            link_prefix="../redirect/spombe+"
+                            :link_prefix="'../redirect/' + props.row.species.replace('. ', '').toLowerCase() + '+'"
                             preview_items="5"
                             bold
                           ></ExpandableRow>
@@ -975,6 +970,8 @@ export default {
         }
       )
       .then(() => {
+        if (this.showErrorComponent) return;
+        
         this.loadingTranscriptsStatus = 1;
 
         // Get Ensembl Data
@@ -1054,6 +1051,8 @@ export default {
       hasAssay: {},
       hasPhenotype: {},
       orthologyData: [],
+      orthologDbAvailable: ['S. cerevisiae', 'S. pombe', 'M. musculus',
+        'D. melanogaster', 'C. elegans', 'R. norvegicus', 'D. rerio'],
       huri: [],
       showCytoscapeView: false,
       genomeRNAiTotalEntries: 0,

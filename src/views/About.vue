@@ -26,7 +26,7 @@
                     <a href="#primary-data" class="scrollactive-item">Primary Data Source</a>
                   </li>
                   <li>
-                    <a href="#open-source" class="scrollactive-item">Open Source Products</a>
+                    <a href="#open-source" class="scrollactive-item">Open Source Projects</a>
                   </li>
                 </ul>
               </scrollactive>
@@ -175,6 +175,19 @@
                     <a
                       class="has-text-dark"
                       href="https://www.ncbi.nlm.nih.gov/pubmed/17712414"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+
+                <p>
+                  Howe, Douglas G., Judith A. Blake, Yvonne M. Bradford, Carol J. Bult, Brian R. Calvi, Stacia R. Engel, James A. Kadin et al.
+                  <strong>Model organism data evolving in support of translational medicine. </strong>
+                  <i>Lab animal</i> (2018): 1.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/30224793"
                       target="_blank"
                     >PubMed</a>
                   </b-tag>

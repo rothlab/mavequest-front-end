@@ -2,7 +2,9 @@
   <div class="card has-table-padding in-paragraph in-list">
     <b-table :data="genomeCRISPRData" paginated per-page="10" pagination-simple hoverable narrowed>
       <template slot="bottom-left">
-        <div class="margin-bottom" v-if="screenWithHighHits">
+        <!-- Only show this panel if it has screens with a lot of hits -->
+        <div class="margin-bottom" 
+          v-if="genomeCRISPRData.filter(e => screenWithHighHits.includes(e.source)).length > 0">
           <b-icon
             type="is-danger"
             pack="fas"

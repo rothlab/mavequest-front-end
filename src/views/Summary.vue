@@ -34,7 +34,18 @@
               v-if="!showErrorComponent"
               @page-change="onPageChange"
             >
-              <!-- Customized table columns -->
+              <!-- Customize table headers  -->
+              <template slot-scope="props" slot="header">
+                <div v-if="props.column.meta">
+                  <span>{{ props.column.label }}&nbsp;</span>
+                  <FilterView :filters="props.column.meta" :formatter="formatTag"
+                    @updateFilter="updateRes"></FilterView>
+                </div>
+
+                <div v-else>{{ props.column.label }}</div>
+              </template>
+
+              <!-- Customize table columns -->
               <template slot-scope="props">
                 <b-table-column field="gene_name" label="Gene Name">
                   <a
@@ -51,7 +62,8 @@
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
                   </a>
                 </b-table-column>
-                <b-table-column field="potential_assay" label="Potential Assay">
+                <b-table-column field="potential_assay" label="Potential Assay"
+                  :meta="availAssays">
                   <b-tag
                     class="assay-phenotype is-capitalized"
                     v-for="assay in props.row.potential_assay"
@@ -62,7 +74,8 @@
                     </a>
                   </b-tag>
                 </b-table-column>
-                <b-table-column field="disease_phenotype" label="Disease Phenotype">
+                <b-table-column field="disease_phenotype" label="Disease Phenotype"
+                  :meta="availPhenotypes">
                   <b-tag
                     class="assay-phenotype is-capitalized"
                     v-for="phenotype in props.row.disease_phenotype"
@@ -86,13 +99,15 @@
 import Header from "@/components/Header.vue";
 import SearchFilter from "@/components/SearchFilter.vue";
 import ErrorView from "@/components/ErrorView.vue";
+import FilterView from "@/components/FilterView.vue";
 
 export default {
   name: "gene-summary",
   components: {
     Header,
     SearchFilter,
-    ErrorView
+    ErrorView,
+    FilterView
   },
   created() {
     this.setGenesFromQuery(this.$route.query);
@@ -146,7 +161,11 @@ export default {
         hasDiseasePhenotype: false
       },
       geneWOAssay: [],
-      geneWOPhenotype: []
+      geneWOPhenotype: [],
+      availAssays: ["genome_crispr", "genome_rnai", "orthology", 
+        "overexpression", "huri"],
+      availPhenotypes: ["clinvar", "omim", "cancer_census",
+        "orphanet", "invitae"]
     };
   },
   methods: {
@@ -290,6 +309,9 @@ export default {
         this.pagination.offset = (page - 1) * this.pagination.limit;
         this.listGenes();
       }
+    },
+    updateRes(val) {
+      console.log(val)
     },
     setSearchFilter(update = undefined) {
       // Capture changes on search filters

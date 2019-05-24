@@ -21,7 +21,7 @@
             <ErrorView v-if="showErrorComponent" :response="errorResponse"></ErrorView>
 
             <b-table
-              :data="geneInfo"
+              :data="filteredGeneInfo"
               :columns="columns"
               :loading="isLoading"
               :striped="true"
@@ -39,10 +39,31 @@
                 <div v-if="props.column.meta">
                   <span>{{ props.column.label }}&nbsp;</span>
                   <FilterView :filters="props.column.meta" :formatter="formatTag"
-                    @updateFilter="updateRes"></FilterView>
+                    @updateFilter="updateRes" :prevSelected="filterList"></FilterView>
                 </div>
 
                 <div v-else>{{ props.column.label }}</div>
+              </template>
+
+              <!-- Customize table bottom left -->
+              <template slot="bottom-left">
+                <div class="is-flex" v-if="filterList.length > 0">
+                  <b-taglist attached class="is-marginless">
+                    <b-tag class="is-marginless" type="is-dark" size="is-medium">
+                      <b-icon pack="fas" icon="exclamation-triangle" size="is-small" 
+                        style="margin-left: 0px; margin-right: 0px;"></b-icon>
+                    </b-tag>
+                    <b-tag class="is-marginless" type="is-link" size="is-medium">Filter(s) applied</b-tag>
+                  </b-taglist>
+
+                  <span>&nbsp;&nbsp;</span>
+
+                  <b-tag class="is-marginless" type="is-dark" size="is-medium"
+                    @click.native="filterList = []" style="cursor: pointer;">
+                      <b-icon pack="fas" icon="trash-alt" size="is-small" 
+                        style="margin-left: 0px; margin-right: 0px;"></b-icon>
+                  </b-tag>
+                </div>
               </template>
 
               <!-- Customize table columns -->
@@ -124,6 +145,15 @@ export default {
       this.setGeneInfo();
     }
   },
+  computed: {
+    filteredGeneInfo: function () {
+      return this.geneInfo.filter(e => 
+        this.filterList.length < 1 || 
+        this.filterList.every(r => e.disease_phenotype.includes(r) || 
+          e.potential_assay.includes(r))
+      );
+    }
+  },
   beforeRouteUpdate(to, from, next) {
     // Set gene names and query again when the page is about to be updated (when user tries to search again in the summary page)
     this.setGenesFromQuery(to.query);
@@ -160,6 +190,7 @@ export default {
         hasAssay: false,
         hasDiseasePhenotype: false
       },
+      filterList: [],
       geneWOAssay: [],
       geneWOPhenotype: [],
       availAssays: ["genome_crispr", "genome_rnai", "orthology", 
@@ -310,8 +341,10 @@ export default {
         this.listGenes();
       }
     },
-    updateRes(val) {
-      console.log(val)
+    updateRes(val, total) {
+      // Update the filter list accordingly
+      const left = this.filterList.filter(e => !total.includes(e));
+      this.filterList = val.concat(left);
     },
     setSearchFilter(update = undefined) {
       // Capture changes on search filters

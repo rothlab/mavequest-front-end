@@ -21,16 +21,20 @@ export default {
     name: "summary-filter",
     props: {
         filters: Array,
-        formatter: Function
+        formatter: Function,
+        prevSelected: Array
     },
     data() {
         return {
             selected: []
         }
     },
+    mounted() {
+        this.selected = this.prevSelected.filter(e => this.filters.includes(e));
+    },
     methods: {
         emitFiltersChanged() {
-            this.$emit('updateFilter', this.selected);
+            this.$emit('updateFilter', this.selected, this.filters);
         }
     }
 }

@@ -329,8 +329,9 @@
                       <b-table-column field="source" label="Pubmed Source" width="150">
                         <a
                           :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
-                          target="_blank"
+                          target="_blank" v-if="props.row.source && props.row.source !== '0'"
                         >{{props.row.source}}</a>
+                        <span v-else>NA</span>
                       </b-table-column>
 
                       <b-table-column

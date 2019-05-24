@@ -39,6 +39,7 @@
               size="is-small"
               icon="exclamation-triangle"
               class="margin-right"
+              style="cursor: pointer;"
               @click.native="showHitsDistroModal(props.row.source)"
               v-show="screenWithHighHits.includes(props.row.source)"
             ></b-icon>

@@ -5,7 +5,7 @@
         <h1 class="title">MaveQuest</h1>
         <h2 class="subtitle">Explore potential assays and phenotypes for human gene variants</h2>
         <div class="container is-marginless is-fullwidth">
-          <SearchBar showButton v-bind:hasAssay="filter.hasAssay" v-bind:hasDiseasePhenotype="filter.hasDiseasePhenotype"></SearchBar>
+          <SearchBar showButton :filters="filters"></SearchBar>
           <section class="section no-leftright-padding">
           <div class="columns">
             <div class="column is-half">
@@ -45,10 +45,7 @@ export default {
   },
   data () {
     return {
-      filter: {
-        hasAssay: false,
-        hasDiseasePhenotype: false
-      }
+      filters: []
     }
   },
   mounted () {
@@ -61,8 +58,7 @@ export default {
   methods: {
     setSearchFilter (update) {
       // Capture changes on search filters
-      this.filter.hasAssay = update.hasAssay;
-      this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
+      this.filters = update;
     }
   }
 };

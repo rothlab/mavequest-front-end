@@ -8,13 +8,13 @@
       <div class="container">
         <div class="columns">
           <!-- Filter -->
-          <div class="column is-narrow" v-if="!listAllGenes">
+          <!-- <div class="column is-narrow" v-if="!listAllGenes">
             <SearchFilter
               v-bind:hasAssay="this.filter.hasAssay"
               v-bind:hasDiseasePhenotype="this.filter.hasDiseasePhenotype"
               @updatedSearchFilter="setSearchFilter"
             ></SearchFilter>
-          </div>
+          </div> -->
 
           <!-- Table -->
           <div class="column">
@@ -38,7 +38,8 @@
               <template slot-scope="props" slot="header">
                 <div v-if="props.column.meta">
                   <span>{{ props.column.label }}&nbsp;</span>
-                  <FilterView :filters="props.column.meta" :formatter="formatTag"
+                  <FilterView :filters="props.column.meta" 
+                    :formatter="filterParams.formatTag"
                     @updateFilter="updateRes" :prevSelected="filterList"></FilterView>
                 </div>
 
@@ -84,26 +85,26 @@
                   </a>
                 </b-table-column>
                 <b-table-column field="potential_assay" label="Potential Assay"
-                  :meta="availAssays">
+                  :meta="filterParams.availAssays">
                   <b-tag
                     class="assay-phenotype is-capitalized"
                     v-for="assay in props.row.potential_assay"
                     :key="assay.id"
                   >
                     <a v-bind:href="'gene/' + props.row.gene_name + '#' + assay" target="_blank">
-                      {{ formatTag(assay) }}
+                      {{ filterParams.formatTag(assay) }}
                     </a>
                   </b-tag>
                 </b-table-column>
                 <b-table-column field="disease_phenotype" label="Disease Phenotype"
-                  :meta="availPhenotypes">
+                  :meta="filterParams.availPhenotypes">
                   <b-tag
                     class="assay-phenotype is-capitalized"
                     v-for="phenotype in props.row.disease_phenotype"
                     :key="phenotype.id"
                   >
                     <a v-bind:href="'gene/' + props.row.gene_name + '#' + phenotype" target="_blank">
-                      {{ formatTag(phenotype) }}
+                      {{ filterParams.formatTag(phenotype) }}
                     </a>
                   </b-tag>
                 </b-table-column>
@@ -118,15 +119,16 @@
 
 <script>
 import Header from "@/components/Header.vue";
-import SearchFilter from "@/components/SearchFilter.vue";
+// import SearchFilter from "@/components/SearchFilter.vue";
 import ErrorView from "@/components/ErrorView.vue";
 import FilterView from "@/components/FilterView.vue";
+import FilterParams from "@/assets/filterParams.js";
 
 export default {
   name: "gene-summary",
   components: {
     Header,
-    SearchFilter,
+    // SearchFilter,
     ErrorView,
     FilterView
   },
@@ -193,10 +195,7 @@ export default {
       filterList: [],
       geneWOAssay: [],
       geneWOPhenotype: [],
-      availAssays: ["genome_crispr", "genome_rnai", "orthology", 
-        "overexpression", "huri"],
-      availPhenotypes: ["clinvar", "omim", "cancer_census",
-        "orphanet", "invitae"]
+      filterParams: FilterParams
     };
   },
   methods: {
@@ -402,31 +401,10 @@ export default {
       }
 
       // Get advanced search status from the routher
-      this.filter.hasAssay =
-        typeof query.hasAssay == "string"
-          ? query.hasAssay.toLowerCase() == "true"
-          : query.hasAssay;
-      this.filter.hasDiseasePhenotype =
-        typeof query.hasDiseasePhenotype == "string"
-          ? query.hasDiseasePhenotype.toLowerCase() == "true"
-          : query.hasDiseasePhenotype;
-    },
-    formatTag(tag) {
-      switch (tag) {
-        case "genome_rnai":
-          return "RNAi"
-        case "genome_crispr":
-          return "CRISPR KO"
-        case "huri":
-          return "Interactome"
-        case "overexpression":
-          return "Over Expression"
-        case "omim":
-          return "OMIM"
-        case "cancer_census":
-          return "Cancer Census"
-        default:
-          return tag;
+      if (query.filters) {
+        const filters = query.filters.split(",");
+        this.filterList = filters.filter(e => this.filterParams.availAssays.includes(e) || 
+          this.filterParams.availPhenotypes.includes(e))
       }
     }
   }

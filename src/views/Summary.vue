@@ -111,7 +111,6 @@
 
 <script>
 import Header from "@/components/Header.vue";
-// import SearchFilter from "@/components/SearchFilter.vue";
 import ErrorView from "@/components/ErrorView.vue";
 import FilterView from "@/components/FilterView.vue";
 import FilterParams from "@/assets/filterParams.js";
@@ -120,7 +119,6 @@ export default {
   name: "gene-summary",
   components: {
     Header,
-    // SearchFilter,
     ErrorView,
     FilterView
   },
@@ -178,15 +176,8 @@ export default {
         { label: "Potential Assay" },
         { label: "Disease Phenotype" }
       ],
-      completeGeneInfo: [],
       isLoading: false,
-      filter: {
-        hasAssay: false,
-        hasDiseasePhenotype: false
-      },
       filterList: [],
-      geneWOAssay: [],
-      geneWOPhenotype: [],
       filterParams: FilterParams
     };
   },
@@ -215,23 +206,7 @@ export default {
             // Make sure the response contains gene info
             // TODO: validate response fingerprint
             if (json.hasOwnProperty("found")) {
-              this.completeGeneInfo = json.found;
-              this.geneInfo = this.completeGeneInfo;
-
-              // Find genes that don't have potential assay or disease phenotype
-              this.geneInfo.forEach(element => {
-                if (!element.potential_assay || 
-                  element.potential_assay.length < 1) {
-                  this.geneWOAssay.push(element.gene_name);
-                }
-
-                if (!element.disease_phenotype || 
-                  element.disease_phenotype.length < 1) {
-                  this.geneWOPhenotype.push(element.gene_name);
-                }
-              });
-
-              this.setSearchFilter();
+              this.geneInfo = json.found;
             }
 
             // Give a warning if some genes are missing
@@ -329,42 +304,6 @@ export default {
       // Update the filter list accordingly
       const left = this.filterList.filter(e => !total.includes(e));
       this.filterList = val.concat(left);
-    },
-    setSearchFilter(update = undefined) {
-      // Capture changes on search filters
-      if (update) {
-        this.filter.hasAssay = update.hasAssay;
-        this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
-      }
-
-      // Call the API directly if we are listing all genes
-      if (this.listAllGenes) {
-        this.listGenes();
-      } else {
-        if (!this.filter.hasAssay && !this.filter.hasDiseasePhenotype) {
-          this.geneInfo = this.completeGeneInfo;
-          return;
-        }
-
-        // Update the table data based on search filter changes
-        this.geneInfo = this.geneInfo.filter(element => {
-          if (
-            this.filter.hasAssay &&
-            this.geneWOAssay.includes(element.gene_name)
-          ) {
-            return false;
-          }
-
-          if (
-            this.filter.hasDiseasePhenotype &&
-            this.geneWOPhenotype.includes(element.gene_name)
-          ) {
-            return false;
-          }
-
-          return true;
-        });
-      }
     },
     setGenesFromQuery(query) {
       // Set the mode of the page based on the existance of gene param.

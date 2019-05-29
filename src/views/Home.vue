@@ -5,7 +5,25 @@
         <h1 class="title">MaveQuest</h1>
         <h2 class="subtitle">Explore potential assays and phenotypes for human gene variants</h2>
         <div class="container is-marginless is-fullwidth">
-          <SearchBar showButton :filters="filters"></SearchBar>
+          <div class="columns">
+            <div class="column">
+              <SearchBar showButton :filters="filters"></SearchBar>
+            </div>
+            <div class="column is-narrow">
+              <b-dropdown hoverable class="is-fullwidth" @change="jumpToSummaryWithParam">
+                <button slot="trigger" 
+                  class="button is-medium is-white has-text-info 
+                    is-fullwidth is-fullheight">
+                  <span>Summary</span>
+                  <b-icon pack="fas" icon="sort-down"></b-icon>
+                </button>
+
+                <b-dropdown-item value="all">All Genes</b-dropdown-item>
+                <b-dropdown-item value="assays">Genes with Potential Assays</b-dropdown-item>
+                <b-dropdown-item value="phenotypes">Genes with Disease Phenotypes</b-dropdown-item>
+              </b-dropdown>
+            </div>
+          </div>
           <section class="section no-leftright-padding">
           <div class="columns">
             <div class="column is-half">
@@ -14,13 +32,11 @@
             <div class="column is-half">
               <div class="card below-search">
                 <header class="card-header">
-                  <p class="card-header-title">Database Summary</p>
+                  <p class="card-header-title">Updates and News</p>
                 </header>
                 <div class="card-content">
                   <div class="content has-text-left is-medium">
-                    <a class="has-text-link" href="summary?hasAssay=true">Genes with potential assays</a>
-                    <br>
-                    <a class="has-text-link" href="summary?hasDiseasePhenotype=true">Genes with phenotypes</a>
+                    <span>No updates available</span>
                   </div>
                 </div>
               </div>
@@ -45,7 +61,8 @@ export default {
   },
   data () {
     return {
-      filters: []
+      filters: [],
+      summaryParams: ""
     }
   },
   mounted () {
@@ -59,6 +76,14 @@ export default {
     setSearchFilter (update) {
       // Capture changes on search filters
       this.filters = update;
+    },
+    jumpToSummaryWithParam (param) {
+      // Call router
+      const dest = {
+        path: "/summary",
+        query: { show: param }
+      };
+      this.$router.push(dest);
     }
   }
 };
@@ -95,5 +120,9 @@ export default {
 }
 .fill-screen-withoutheader {
   min-height: calc(100vh - 7.75rem);
+}
+.is-fullwidth > .dropdown-trigger {
+  max-width: 100% !important;
+  width: 100% !important;
 }
 </style>

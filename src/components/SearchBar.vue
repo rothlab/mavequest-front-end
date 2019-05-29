@@ -116,7 +116,7 @@ export default {
         path: "/summary",
         query: {
           gene: this.geneNames.join(","),
-          filters: this.filters.join(","),
+          filters: this.filters.length > 0 ? this.filters.join(",") : undefined,
         }
       };
       this.$router.push(dest);

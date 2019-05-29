@@ -7,14 +7,6 @@
     <section class="section fill-screen-withheader">
       <div class="container">
         <div class="columns">
-          <!-- Filter -->
-          <!-- <div class="column is-narrow" v-if="!listAllGenes">
-            <SearchFilter
-              v-bind:hasAssay="this.filter.hasAssay"
-              v-bind:hasDiseasePhenotype="this.filter.hasDiseasePhenotype"
-              @updatedSearchFilter="setSearchFilter"
-            ></SearchFilter>
-          </div> -->
 
           <!-- Table -->
           <div class="column">
@@ -51,7 +43,7 @@
                 <div class="is-flex" v-if="filterList.length > 0">
                   <b-taglist attached class="is-marginless">
                     <b-tag class="is-marginless" type="is-dark" size="is-medium">
-                      <b-icon pack="fas" icon="exclamation-triangle" size="is-small" 
+                      <b-icon pack="fas" icon="filter" size="is-small" 
                         style="margin-left: 0px; margin-right: 0px;"></b-icon>
                     </b-tag>
                     <b-tag class="is-marginless" type="is-link" size="is-medium">Filter(s) applied</b-tag>
@@ -59,7 +51,7 @@
 
                   <span>&nbsp;&nbsp;</span>
 
-                  <b-tag class="is-marginless" type="is-dark" size="is-medium"
+                  <b-tag class="is-marginless" type="is-light" size="is-medium"
                     @click.native="filterList = []" style="cursor: pointer;">
                       <b-icon pack="fas" icon="trash-alt" size="is-small" 
                         style="margin-left: 0px; margin-right: 0px;"></b-icon>
@@ -274,34 +266,27 @@ export default {
     listGenes() {
       // Set the table to loading status
       this.isLoading = true;
+      this.title = "Database Summary"
 
-      // Check for a valid filter
-      if (!(this.filter.hasAssay || this.filter.hasDiseasePhenotype)) {
-        this.title = "Gene Summary"
-        this.showErrorComponent = true;
-        this.errorResponse = "No filters were specified.";
-        return;
+      // If invalid show param, just return everything
+      let show = this.$route.query.show;
+      const validParams = ["all", "assays", "phenotypes"];
+      if (!(show && validParams.includes(show))) {
+        show = "all";
       }
 
-      // Set filter status
-      const filter = this.filter.hasAssay
-        ? "has_assay"
-        : "has_disease_phenotype";
-
-      // Set page title
-      this.title = (filter == "has_assay" ? "Potential Assay" : "Phenotype");
-
-      // Set pagination parameters
-      const offset = this.pagination.offset;
-      const limit = this.pagination.limit;
+      // Set request config
+      const config = {
+        params: {
+          filter: show,
+          offset: this.pagination.offset,
+          limit: this.pagination.limit
+        }
+      };
 
       // Get gene info
       this.$http
-        .get(
-          `${
-            this.$apiEntryPoint
-          }/genes/?filter=${filter}&offset=${offset}&limit=${limit}`
-        )
+        .get(`${this.$apiEntryPoint}/genes/`, config)
         .then(
           response => {
             // Make sure the response has a non-empty body

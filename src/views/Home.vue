@@ -10,7 +10,7 @@
               <SearchBar showButton :filters="filters"></SearchBar>
             </div>
             <div class="column is-narrow">
-              <b-dropdown hoverable class="is-fullwidth" @change="jumpToSummaryWithParam">
+              <b-dropdown hoverable class="is-fullwidth is-fullheight" @change="jumpToSummaryWithParam">
                 <button slot="trigger" 
                   class="button is-medium is-white has-text-info 
                     is-fullwidth is-fullheight">
@@ -24,7 +24,7 @@
               </b-dropdown>
             </div>
           </div>
-          <section class="section no-leftright-padding">
+          <!-- <section class="section no-leftright-padding">
           <div class="columns">
             <div class="column is-half">
               <SearchFilter @updatedSearchFilter="setSearchFilter" class="is-fullheight"></SearchFilter>
@@ -42,7 +42,7 @@
               </div>
             </div>
           </div>
-          </section>
+          </section> -->
         </div>
       </div>
     </div>
@@ -51,13 +51,13 @@
 
 <script>
 import SearchBar from "@/components/SearchBar.vue";
-import SearchFilter from "@/components/SearchFilter.vue"
+// import SearchFilter from "@/components/SearchFilter.vue"
 
 export default {
   name: "home",
   components: {
     SearchBar,
-    SearchFilter
+    // SearchFilter
   },
   data () {
     return {

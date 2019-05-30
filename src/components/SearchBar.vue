@@ -113,7 +113,7 @@ export default {
 
       // Call router
       const dest = {
-        path: "/summary",
+        path: "/query",
         query: {
           gene: this.geneNames.join(","),
           filters: this.filters.length > 0 ? this.filters.join(",") : undefined,

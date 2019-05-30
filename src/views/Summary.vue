@@ -222,7 +222,7 @@ export default {
             }
 
             // If nothing found, show an error panel
-            if (this.completeGeneInfo.length < 1) {
+            if (this.geneInfo.length < 1) {
               this.errorResponse = { status: 404 };
               this.showErrorComponent = true;
             }

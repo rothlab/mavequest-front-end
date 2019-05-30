@@ -78,14 +78,7 @@ export default {
       default: () => [],
       type: Array
     },
-    hasAssay: {
-      default: false,
-      type: Boolean
-    },
-    hasDiseasePhenotype: {
-      default: false,
-      type: Boolean
-    }
+    filters: Array
   },
   data() {
     return {
@@ -120,11 +113,10 @@ export default {
 
       // Call router
       const dest = {
-        path: "/summary",
+        path: "/query",
         query: {
           gene: this.geneNames.join(","),
-          hasAssay: this.hasAssay,
-          hasDiseasePhenotype: this.hasDiseasePhenotype
+          filters: this.filters.length > 0 ? this.filters.join(",") : undefined,
         }
       };
       this.$router.push(dest);

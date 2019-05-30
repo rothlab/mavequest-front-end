@@ -15,7 +15,13 @@ export default new Router({
     },
     {
       path: '/summary',
-      name: 'gene-summary',
+      name: 'database-summary',
+      component: () => import('./views/Summary.vue'),
+      props: true
+    },
+    {
+      path: '/query',
+      name: 'gene-query',
       component: () => import('./views/Summary.vue'),
       props: true
     },

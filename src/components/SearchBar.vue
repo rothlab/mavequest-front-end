@@ -78,7 +78,10 @@ export default {
       default: () => [],
       type: Array
     },
-    filters: Array
+    filters: {
+      default: () => [],
+      type: Array
+    }
   },
   data() {
     return {

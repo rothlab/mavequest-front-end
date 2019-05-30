@@ -1012,7 +1012,7 @@ export default {
                     this.transcriptList.push(newEntry);
                   }
 
-                  // Update length range
+                  // Update amino acid length range
                   if (!this.lengthRange.hasOwnProperty("upper")) {
                     this.lengthRange.upper = newEntry.peptide_length;
                     continue;

@@ -7,21 +7,13 @@
     <section class="section fill-screen-withheader">
       <div class="container">
         <div class="columns">
-          <!-- Filter -->
-          <div class="column is-narrow" v-if="!listAllGenes">
-            <SearchFilter
-              v-bind:hasAssay="this.filter.hasAssay"
-              v-bind:hasDiseasePhenotype="this.filter.hasDiseasePhenotype"
-              @updatedSearchFilter="setSearchFilter"
-            ></SearchFilter>
-          </div>
 
           <!-- Table -->
           <div class="column">
             <ErrorView v-if="showErrorComponent" :response="errorResponse"></ErrorView>
 
             <b-table
-              :data="geneInfo"
+              :data="filteredGeneInfo"
               :columns="columns"
               :loading="isLoading"
               :striped="true"
@@ -34,7 +26,40 @@
               v-if="!showErrorComponent"
               @page-change="onPageChange"
             >
-              <!-- Customized table columns -->
+              <!-- Customize table headers  -->
+              <template slot-scope="props" slot="header">
+                <div v-if="props.column.meta">
+                  <span>{{ props.column.label }}&nbsp;</span>
+                  <FilterView :filters="props.column.meta" 
+                    :formatter="filterParams.formatTag"
+                    @updateFilter="updateRes" :prevSelected="filterList"></FilterView>
+                </div>
+
+                <div v-else>{{ props.column.label }}</div>
+              </template>
+
+              <!-- Customize table bottom left -->
+              <template slot="bottom-left">
+                <div class="is-flex" v-if="filterList.length > 0">
+                  <b-taglist attached class="is-marginless">
+                    <b-tag class="is-marginless" type="is-dark" size="is-medium">
+                      <b-icon pack="fas" icon="filter" size="is-small" 
+                        style="margin-left: 0px; margin-right: 0px;"></b-icon>
+                    </b-tag>
+                    <b-tag class="is-marginless" type="is-link" size="is-medium">Filter(s) applied</b-tag>
+                  </b-taglist>
+
+                  <span>&nbsp;&nbsp;</span>
+
+                  <b-tag class="is-marginless" type="is-light" size="is-medium"
+                    @click.native="filterList = []" style="cursor: pointer;">
+                      <b-icon pack="fas" icon="trash-alt" size="is-small" 
+                        style="margin-left: 0px; margin-right: 0px;"></b-icon>
+                  </b-tag>
+                </div>
+              </template>
+
+              <!-- Customize table columns -->
               <template slot-scope="props">
                 <b-table-column field="gene_name" label="Gene Name">
                   <a
@@ -51,25 +76,27 @@
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
                   </a>
                 </b-table-column>
-                <b-table-column field="potential_assay" label="Potential Assay">
+                <b-table-column field="potential_assay" label="Potential Assay"
+                  :meta="filterParams.availAssays">
                   <b-tag
                     class="assay-phenotype is-capitalized"
                     v-for="assay in props.row.potential_assay"
                     :key="assay.id"
                   >
                     <a v-bind:href="'gene/' + props.row.gene_name + '#' + assay" target="_blank">
-                      {{ formatTag(assay) }}
+                      {{ filterParams.formatTag(assay) }}
                     </a>
                   </b-tag>
                 </b-table-column>
-                <b-table-column field="disease_phenotype" label="Disease Phenotype">
+                <b-table-column field="disease_phenotype" label="Disease Phenotype"
+                  :meta="filterParams.availPhenotypes">
                   <b-tag
                     class="assay-phenotype is-capitalized"
                     v-for="phenotype in props.row.disease_phenotype"
                     :key="phenotype.id"
                   >
                     <a v-bind:href="'gene/' + props.row.gene_name + '#' + phenotype" target="_blank">
-                      {{ formatTag(phenotype) }}
+                      {{ filterParams.formatTag(phenotype) }}
                     </a>
                   </b-tag>
                 </b-table-column>
@@ -84,15 +111,16 @@
 
 <script>
 import Header from "@/components/Header.vue";
-import SearchFilter from "@/components/SearchFilter.vue";
 import ErrorView from "@/components/ErrorView.vue";
+import FilterView from "@/components/FilterView.vue";
+import FilterParams from "@/assets/filterParams.js";
 
 export default {
   name: "gene-summary",
   components: {
     Header,
-    SearchFilter,
-    ErrorView
+    ErrorView,
+    FilterView
   },
   created() {
     this.setGenesFromQuery(this.$route.query);
@@ -107,6 +135,15 @@ export default {
     } else {
       // Query gene info from the API
       this.setGeneInfo();
+    }
+  },
+  computed: {
+    filteredGeneInfo: function () {
+      return this.geneInfo.filter(e => 
+        this.filterList.length < 1 || 
+        this.filterList.every(r => e.disease_phenotype.includes(r) || 
+          e.potential_assay.includes(r))
+      );
     }
   },
   beforeRouteUpdate(to, from, next) {
@@ -139,14 +176,9 @@ export default {
         { label: "Potential Assay" },
         { label: "Disease Phenotype" }
       ],
-      completeGeneInfo: [],
       isLoading: false,
-      filter: {
-        hasAssay: false,
-        hasDiseasePhenotype: false
-      },
-      geneWOAssay: [],
-      geneWOPhenotype: []
+      filterList: [],
+      filterParams: FilterParams
     };
   },
   methods: {
@@ -174,23 +206,7 @@ export default {
             // Make sure the response contains gene info
             // TODO: validate response fingerprint
             if (json.hasOwnProperty("found")) {
-              this.completeGeneInfo = json.found;
-              this.geneInfo = this.completeGeneInfo;
-
-              // Find genes that don't have potential assay or disease phenotype
-              this.geneInfo.forEach(element => {
-                if (!element.potential_assay || 
-                  element.potential_assay.length < 1) {
-                  this.geneWOAssay.push(element.gene_name);
-                }
-
-                if (!element.disease_phenotype || 
-                  element.disease_phenotype.length < 1) {
-                  this.geneWOPhenotype.push(element.gene_name);
-                }
-              });
-
-              this.setSearchFilter();
+              this.geneInfo = json.found;
             }
 
             // Give a warning if some genes are missing
@@ -206,7 +222,7 @@ export default {
             }
 
             // If nothing found, show an error panel
-            if (this.completeGeneInfo.length < 1) {
+            if (this.geneInfo.length < 1) {
               this.errorResponse = { status: 404 };
               this.showErrorComponent = true;
             }
@@ -225,34 +241,27 @@ export default {
     listGenes() {
       // Set the table to loading status
       this.isLoading = true;
+      this.title = "Database Summary"
 
-      // Check for a valid filter
-      if (!(this.filter.hasAssay || this.filter.hasDiseasePhenotype)) {
-        this.title = "Gene Summary"
-        this.showErrorComponent = true;
-        this.errorResponse = "No filters were specified.";
-        return;
+      // If invalid show param, just return everything
+      let show = this.$route.query.show;
+      const validParams = ["all", "assays", "phenotypes"];
+      if (!(show && validParams.includes(show))) {
+        show = "all";
       }
 
-      // Set filter status
-      const filter = this.filter.hasAssay
-        ? "has_assay"
-        : "has_disease_phenotype";
-
-      // Set page title
-      this.title = (filter == "has_assay" ? "Potential Assay" : "Phenotype");
-
-      // Set pagination parameters
-      const offset = this.pagination.offset;
-      const limit = this.pagination.limit;
+      // Set request config
+      const config = {
+        params: {
+          filter: show,
+          offset: this.pagination.offset,
+          limit: this.pagination.limit
+        }
+      };
 
       // Get gene info
       this.$http
-        .get(
-          `${
-            this.$apiEntryPoint
-          }/genes/?filter=${filter}&offset=${offset}&limit=${limit}`
-        )
+        .get(`${this.$apiEntryPoint}/genes/`, config)
         .then(
           response => {
             // Make sure the response has a non-empty body
@@ -291,41 +300,10 @@ export default {
         this.listGenes();
       }
     },
-    setSearchFilter(update = undefined) {
-      // Capture changes on search filters
-      if (update) {
-        this.filter.hasAssay = update.hasAssay;
-        this.filter.hasDiseasePhenotype = update.hasDiseasePhenotype;
-      }
-
-      // Call the API directly if we are listing all genes
-      if (this.listAllGenes) {
-        this.listGenes();
-      } else {
-        if (!this.filter.hasAssay && !this.filter.hasDiseasePhenotype) {
-          this.geneInfo = this.completeGeneInfo;
-          return;
-        }
-
-        // Update the table data based on search filter changes
-        this.geneInfo = this.geneInfo.filter(element => {
-          if (
-            this.filter.hasAssay &&
-            this.geneWOAssay.includes(element.gene_name)
-          ) {
-            return false;
-          }
-
-          if (
-            this.filter.hasDiseasePhenotype &&
-            this.geneWOPhenotype.includes(element.gene_name)
-          ) {
-            return false;
-          }
-
-          return true;
-        });
-      }
+    updateRes(val, total) {
+      // Update the filter list accordingly
+      const left = this.filterList.filter(e => !total.includes(e));
+      this.filterList = val.concat(left);
     },
     setGenesFromQuery(query) {
       // Set the mode of the page based on the existance of gene param.
@@ -347,31 +325,10 @@ export default {
       }
 
       // Get advanced search status from the routher
-      this.filter.hasAssay =
-        typeof query.hasAssay == "string"
-          ? query.hasAssay.toLowerCase() == "true"
-          : query.hasAssay;
-      this.filter.hasDiseasePhenotype =
-        typeof query.hasDiseasePhenotype == "string"
-          ? query.hasDiseasePhenotype.toLowerCase() == "true"
-          : query.hasDiseasePhenotype;
-    },
-    formatTag(tag) {
-      switch (tag) {
-        case "genome_rnai":
-          return "RNAi"
-        case "genome_crispr":
-          return "CRISPR KO"
-        case "huri":
-          return "Interactome"
-        case "overexpression":
-          return "Over Expression"
-        case "omim":
-          return "OMIM"
-        case "cancer_census":
-          return "Cancer Census"
-        default:
-          return tag;
+      if (query.filters) {
+        const filters = query.filters.split(",");
+        this.filterList = filters.filter(e => this.filterParams.availAssays.includes(e) || 
+          this.filterParams.availPhenotypes.includes(e))
       }
     }
   }

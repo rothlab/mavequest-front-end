@@ -10,7 +10,7 @@
 
 <script>
 const validStates = ["scerevisiae", "spombe", "mmusculus", "dmelanogaster", 
-  "rnorvegicus", "drerio"];
+  "rnorvegicus", "drerio", "celegans"];
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -26,28 +26,6 @@ export default {
       params: [],
       redirect_link: "",
       canRedirect: false,
-      taxonInfo: {
-        'mmusculus': {
-          id: 10090,
-          name: 'M. musculus',
-          link: 'http://www.informatics.jax.org/marker/'
-        },
-        'dmelanogaster': {
-          id: 7227,
-          name: 'D. melanogaster',
-          link: 'https://flybase.org/reports/'
-        },
-        'rnorvegicus': {
-          id: 10116,
-          name: 'R. norvegicus',
-          link: 'https://rgd.mcw.edu/rgdweb/report/gene/main.html?id='
-        },
-        'drerio': {
-          id: 7955,
-          name: 'D. rerio',
-          link: 'https://zfin.org/'
-        },
-      }
     };
   },
   mounted() {
@@ -90,72 +68,27 @@ export default {
     redirectLink(params) {
       const species = params[0];
       const query = params[1].toLowerCase();
-
-      switch (species) {
-        case "scerevisiae":
-          {
-            this.isLegit = true;
-            this.redirect_link = "https://www.yeastgenome.org/locus/" + query;
-            this.isLoading = false;
-            this.canRedirect = true;
+      
+      // Look up gene name and species
+      const config = { params: { species: species } }
+      this.$http.get(`${this.$apiEntryPoint}/lookup/${query}`, config)
+        .then(res => {
+          const lookup = res.body;
+          if (Object.keys(lookup).length === 0 
+                && lookup.constructor === Object) {
+              this.isLegit = false;
+              this.redirect_link = query.toUpperCase() + " is not a valid gene.";
+              this.canRedirect = false;
+              return;
           }
-          break;
-        case "spombe":
-          {
-            // Get gene id from pombase
-            const api =
-              "https://www.pombase.org/api/v1/dataset/latest/data/gene_summaries";
 
-            this.$http.get(api).then(res => {
-              const geneSummary = res.body;
-              const gene = geneSummary.filter(e => e.name == query)
-                .map(e => e.uniquename);
-
-              // Check if anything returned
-              if (gene.length < 1) {
-                this.isLegit = false;
-                this.redirect_link = query.toUpperCase()
-                  + " is not a valid gene for" + this.taxonName[species] + ".";
-              } else {
-                this.isLegit = true;
-                this.redirect_link = "https://www.pombase.org/gene/" + gene;
-                this.canRedirect = true;
-              }
-            }).then(() => { 
-              this.isLoading = false;
-            });
-          }
-          break;
-        case "mmusculus": case "dmelanogaster": case "rnorvegicus": case "drerio":
-          {
-            // Get gene id from mousemine
-            const xml = '<query model="genomic" view="Gene.primaryIdentifier"' +
-            ' sortOrder="Gene.symbol ASC" constraintLogic="A and B" name="Gene_strain_genes">' +
-            '<constraint path="Gene.organism.taxonId" op="=" value="' + this.taxonInfo[species].id + '" code="B" />' +
-            '<constraint path="Gene" op="LOOKUP" value="' + query + '" code="A" /></query>';
-            const api = 'http://www.mousemine.org/mousemine/service/query/results?query='
-
-            this.$http.get(api + xml).then(res => {
-              const gene = res.body.results;
-
-              // Check if anything returned
-              if (gene.length < 1) {
-                this.isLegit = false;
-                this.redirect_link = query.toUpperCase()
-                  + " is not a valid gene for " + this.taxonInfo[species].name + ".";
-              } else {
-                this.isLegit = true;
-                this.redirect_link = this.taxonInfo[species].link + gene[0];
-                this.canRedirect = true;
-              }
-            }).then(() => { 
-              this.isLoading = false;
-            });
-          }
-          break;
-        default:
-          break;
-      }
+          this.isLegit = true;
+          this.redirect_link = lookup.destDbLink;
+          this.canRedirect = true;
+        })
+        .then(() => {
+          this.isLoading = false;
+        });
     }
   }
 };

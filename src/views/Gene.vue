@@ -392,7 +392,7 @@
                         width="300"
                       >{{parseComplementation(props.row.complementation)}}</b-table-column>
 
-                      <b-table-column field="gene" label="Gene">
+                      <b-table-column field="gene" label="Orthologous Genes">
                         <!-- Use different source for S. cerevisiae and S. pombe -->
 
                         <div v-if="orthologDbAvailable.includes(props.row.species)">

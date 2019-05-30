@@ -24,7 +24,7 @@
       <p class="card-header-title">(Likely) Pathogenic Variants</p>
     </header>
     <div class="card-content">
-      <div class="pathogenic-stats pathogenic-stats-adaptive">
+      <div v-if="pathoVariants.length > 0" class="pathogenic-stats pathogenic-stats-adaptive">
         <apexchart
           type="area"
           height="200px"
@@ -43,7 +43,7 @@
         </span>
       </div>
 
-      <div v-if="pathoVariants" class="clinvar-table">
+      <div v-if="pathoVariants.length > 0" class="clinvar-table">
         <b-table
           :data="pathoVariants"
           narrowed

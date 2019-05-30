@@ -70,12 +70,15 @@
 
                   <div class="is-divider-vertical is-paddingless is-hidden-mobile"></div>
 
-                  <div class="column gene-summary">
+                  <div class="column gene-summary gene-card-description-adaptive">
                     <p class="is-capitalized is-italic" style="margin-bottom:0.5rem">
                       {{description}}
                       <span
                         v-if="alias || alias_description"
                       >(Alias: {{flatten([alias, alias_description]).join(", ")}})</span>
+                    </p>
+                    <p style="margin-bottom:0.5rem" v-if="lengthRange.lower && lengthRange.upper">
+                      Amino acid length: {{lengthRange.lower}} - {{lengthRange.upper}} a.a.
                     </p>
 
                     <b-field grouped group-multiline class="gene-summary">
@@ -392,7 +395,7 @@
                         width="300"
                       >{{parseComplementation(props.row.complementation)}}</b-table-column>
 
-                      <b-table-column field="gene" label="Gene">
+                      <b-table-column field="gene" label="Orthologous Genes">
                         <!-- Use different source for S. cerevisiae and S. pombe -->
 
                         <div v-if="orthologDbAvailable.includes(props.row.species)">
@@ -1008,6 +1011,24 @@ export default {
                   } else {
                     this.transcriptList.push(newEntry);
                   }
+
+                  // Update amino acid length range
+                  if (!this.lengthRange.hasOwnProperty("upper")) {
+                    this.lengthRange.upper = newEntry.peptide_length;
+                    continue;
+                  }
+
+
+                  if (!this.lengthRange.hasOwnProperty("lower")) {
+                    this.lengthRange.lower = newEntry.peptide_length;
+                    continue;
+                  }
+
+                  if (newEntry.peptide_length > this.lengthRange.upper) {
+                    this.lengthRange.upper = newEntry.peptide_length
+                  } else if (newEntry.peptide_length < this.lengthRange.lower) {
+                    this.lengthRange.lower = newEntry.peptide_length;
+                  }
                 }
               }
             },
@@ -1045,6 +1066,7 @@ export default {
       entrezID: "",
       ensemblID: "",
       omimID: "",
+      lengthRange: {},
       lastUpdate: "",
       transcriptList: [],
       alias: [],
@@ -1178,10 +1200,16 @@ export default {
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
 }
+.gene-card-description-adaptive {
+  margin-left: 1rem;
+}
 /* Adaptive styling */
 @media all and (max-width: 768px) {
   .gene-card-adaptive {
     padding-bottom: 0px;
+  }
+  .gene-card-description-adaptive {
+    margin-left: 0rem;
   }
   .gene-summary {
     text-align: center;

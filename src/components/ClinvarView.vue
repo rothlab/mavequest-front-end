@@ -24,9 +24,10 @@
       <p class="card-header-title">(Likely) Pathogenic Variants</p>
     </header>
     <div class="card-content">
-      <div class="pathogenic-stats pathogenic-stats-adaptive">
+      <div v-if="pathoVariants.length > 0" class="pathogenic-stats pathogenic-stats-adaptive">
         <apexchart
-          type="area"
+          ref="pathoChart"
+          type="scatter"
           height="200px"
           :options="pathogenicDistriChartOptions"
           :series="pathogenicDistriData"
@@ -43,7 +44,7 @@
         </span>
       </div>
 
-      <div v-if="pathoVariants" class="clinvar-table">
+      <div v-if="pathoVariants.length > 0" class="clinvar-table">
         <b-table
           :data="pathoVariants"
           narrowed
@@ -248,7 +249,12 @@ export default {
         },
         dataLabels: { enabled: false },
         stroke: { curve: 'straight' },
-        markers: { size: 0 },
+        markers: {
+          size: 5,
+          hover: {
+            size: 9
+          }
+        },
         responsive: [
           {
             breakpoint: 768,
@@ -290,7 +296,7 @@ export default {
           }
         }
       },
-      pathoVariants: []
+      pathoVariants: [],
     }
   },
   computed: {
@@ -353,6 +359,7 @@ export default {
           acc[val] = acc[val] == undefined ? 1 : (acc[val] += 1);
           return acc;
         }, {});
+
         return Object.entries(count).map(([key, value]) => [
           parseInt(key),
           value
@@ -367,11 +374,12 @@ export default {
           data: this.pathoVariantStats
         }
       ];
-    }
+    },
+
   },
   mounted() {
     if (this.clinvarData.hasOwnProperty("pathogenic_variants")) {
-      return this.pathoVariants = this.clinvarData.pathogenic_variants;
+      this.pathoVariants = this.clinvarData.pathogenic_variants;
     }
   },
   methods: {
@@ -386,9 +394,6 @@ export default {
       // If zoomed out completely
       if (!xaxis.min || !xaxis.max) {
         this.pathoVariants = this.clinvarData.pathogenic_variants;
-        chartContext.updateOptions({
-          markers: { size: 0 }
-        });
         this.hasZoomedIn = false;
         return;
       }
@@ -400,18 +405,6 @@ export default {
         return pos >= xaxis.min && pos <= xaxis.max
       });
       this.hasZoomedIn = true;
-
-      // If zoomed in enough, add dots
-      if (!chartContext.options.markers) {
-        chartContext.updateOptions({
-          markers: {
-            size: 5,
-            hover: {
-              size: 9
-            }
-          }
-        });
-      }
     }
   }
 }

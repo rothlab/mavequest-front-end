@@ -701,9 +701,9 @@
               </div>
             </section>
 
-            <div class="is-divider" v-if="hasPhenotype.any"></div>
+            <div class="is-divider" v-if="hasClinicalInterest.any"></div>
 
-            <section class="section is-paddingless" v-if="hasPhenotype.any">
+            <section class="section is-paddingless" v-if="hasClinicalInterest.any">
               <h1 class="title">Clinical Interest</h1>
 
               <div v-if="hasClinicalInterest.invitae">

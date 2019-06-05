@@ -89,6 +89,12 @@
                       <p class="title">{{stats.phenotype.toLocaleString()}}</p>
                     </div>
                   </div>
+                  <div class="level-item has-text-centered">
+                    <div>
+                      <p class="heading">Genes With<br>Clinical Interests</p>
+                      <p class="title">{{stats.clinical_interest.toLocaleString()}}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

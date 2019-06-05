@@ -1,5 +1,5 @@
 <template>
-  <section class="section is-medium has-text-centered">
+  <section v-if="size == 'is-medium'" class="section is-medium has-text-centered">
     <h1 class="title has-text-grey">
       <b-icon :icon="errorIcon"></b-icon>
     </h1>
@@ -15,6 +15,21 @@
       Please slow down and try again in {{rateLimitRetry}} minute(s).
     </h1>
   </section>
+  <div v-else class="in-list">
+    <b-notification type="is-warning" has-icon role="alert">
+      <p v-html="errorMessage" v-if="!isRateLimitError"></p>
+      <p v-else>
+        <b-tooltip 
+          type="is-dark" 
+          label="Each user can query up to 100 times per 15 minutes." 
+          dashed>
+          Query rate limit
+        </b-tooltip> reached. <br />
+        Please slow down and try again in {{rateLimitRetry}} minute(s).
+      </p>
+    </b-notification>
+
+  </div>
 </template>
 
 <script>
@@ -26,6 +41,10 @@ export default {
       },
       response: {
         type: [String, Object]
+      },
+      size: {
+        type: String,
+        default: "is-medium"
       }
     },
     data: function() {

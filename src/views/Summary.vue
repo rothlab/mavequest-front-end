@@ -297,7 +297,7 @@ export default {
           response => {
             // Error handling
             this.showErrorComponent = true;
-            this.errorResponse = { response: response };
+            this.errorResponse = response;
           }
         )
         .then(() => {

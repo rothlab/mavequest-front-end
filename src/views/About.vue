@@ -70,7 +70,11 @@
                   <p>A breakdown of human genes in MaveQuest database is the following.</p>
                 </span>
 
-                <div class="level in-list">
+                <div v-if="showStatsErrorPanel">
+                  <ErrorView :response="errorResponse" size="is-small"></ErrorView>
+                </div>
+
+                <div v-else class="level in-list">
                   <div class="level-item has-text-centered">
                     <div>
                       <p class="heading">Total<br>Genes</p>
@@ -357,11 +361,13 @@
 
 <script>
 import Header from "@/components/Header.vue";
+import ErrorView from "@/components/ErrorView.vue";
 
 export default {
   name: "about",
   components: {
-    Header
+    Header,
+    ErrorView
   },
   data() {
     return {
@@ -369,8 +375,11 @@ export default {
       stats: {
         total: 0,
         assay: 0,
-        phenotype: 0
-      }
+        phenotype: 0,
+        clinical_interest: 0
+      },
+      showStatsErrorPanel: false,
+      errorResponse: {}
     };
   },
   beforeMount() {
@@ -407,6 +416,11 @@ export default {
         .get(this.$apiEntryPoint + "/stats")
         .then(response => {
           this.stats = response.body;
+        },
+        response => {
+          // Error handling
+          this.showStatsErrorPanel = true;
+          this.errorResponse = response;
         });
     }
   }

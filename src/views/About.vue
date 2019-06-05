@@ -326,6 +326,40 @@
                   Copyright, Invitae Corporation.
                 </p>
               </div>
+
+            <!-- Ambry Panel -->
+              <div ref="ambry" class="in-paragraph">
+                <h4 class="in-list" id="invitae">
+                  Ambry &nbsp;
+                  <a
+                    href="https://www.ambrygen.com/clinician"
+                    target="_blank"
+                  >
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  <strong>Ambry.</strong>
+                  Copyright, Ambry Genetics.
+                </p>
+              </div>
+
+              <!-- GeneDx Panel -->
+              <div ref="genedx" class="in-paragraph">
+                <h4 class="in-list" id="invitae">
+                  GeneDx &nbsp;
+                  <a
+                    href="https://www.genedx.com/test-catalog/testing-directory/#!/by-test/"
+                    target="_blank"
+                  >
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  <strong>GeneDx.</strong>
+                  Copyright, GeneDx.
+                </p>
+              </div>
             </div>
 
             <div class="content">

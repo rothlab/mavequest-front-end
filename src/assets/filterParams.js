@@ -11,7 +11,11 @@ export default {
         "omim",
         "cancer_census",
         "orphanet",
-        "invitae"
+    ],
+    availClinicalInterests: [
+        "ambry",
+        "invitae",
+        "genedx"
     ],
     formatTag(tag) {
         switch (tag) {
@@ -27,6 +31,8 @@ export default {
                 return "OMIM";
             case "cancer_census":
                 return "Cancer Census";
+            case "genedx":
+                return "GeneDx";
             default:
                 return tag;
         }

@@ -14,7 +14,6 @@
 
             <b-table
               :data="filteredGeneInfo"
-              :columns="columns"
               :loading="isLoading"
               :striped="true"
               :hoverable="true"
@@ -100,6 +99,18 @@
                     </a>
                   </b-tag>
                 </b-table-column>
+                <b-table-column field="clinical_interest" label="Clinical Interest"
+                  :meta="filterParams.availClinicalInterests">
+                  <b-tag
+                    class="assay-phenotype is-capitalized"
+                    v-for="interests in props.row.clinical_interest"
+                    :key="interests.id"
+                  >
+                    <a v-bind:href="'gene/' + props.row.gene_name + '#' + interests" target="_blank">
+                      {{ filterParams.formatTag(interests) }}
+                    </a>
+                  </b-tag>
+                </b-table-column>
               </template>
             </b-table>
           </div>
@@ -142,7 +153,7 @@ export default {
       return this.geneInfo.filter(e => 
         this.filterList.length < 1 || 
         this.filterList.every(r => e.disease_phenotype.includes(r) || 
-          e.potential_assay.includes(r))
+          e.potential_assay.includes(r) || e.clinical_interest.includes(r))
       );
     }
   },
@@ -170,12 +181,6 @@ export default {
         limit: 20
       },
       geneInfo: [],
-      columns: [
-        { label: "Gene Name" },
-        { label: "Entrez ID" },
-        { label: "Potential Assay" },
-        { label: "Disease Phenotype" }
-      ],
       isLoading: false,
       filterList: [],
       filterParams: FilterParams
@@ -245,7 +250,7 @@ export default {
 
       // If invalid show param, just return everything
       let show = this.$route.query.show;
-      const validParams = ["all", "assays", "phenotypes"];
+      const validParams = ["all", "assays", "phenotypes", "clinical_interests"];
       if (!(show && validParams.includes(show))) {
         show = "all";
       }
@@ -285,7 +290,7 @@ export default {
           response => {
             // Error handling
             this.showErrorComponent = true;
-            this.errorResponse = { response: response };
+            this.errorResponse = response;
           }
         )
         .then(() => {
@@ -327,8 +332,10 @@ export default {
       // Get advanced search status from the routher
       if (query.filters) {
         const filters = query.filters.split(",");
-        this.filterList = filters.filter(e => this.filterParams.availAssays.includes(e) || 
-          this.filterParams.availPhenotypes.includes(e))
+        this.filterList = filters.filter(e => 
+          this.filterParams.availAssays.includes(e) || 
+          this.filterParams.availPhenotypes.includes(e) || 
+          this.filterParams.availClinicalInterests.includes(e))
       }
     }
   }

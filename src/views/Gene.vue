@@ -1109,6 +1109,8 @@ export default {
                   }
 
                   // Update amino acid length range
+                  if (!Number.isInteger(newEntry.peptide_length)) continue;
+
                   if (!this.lengthRange.hasOwnProperty("upper")) {
                     this.lengthRange.upper = newEntry.peptide_length;
                     continue;

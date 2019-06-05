@@ -14,7 +14,6 @@
 
             <b-table
               :data="filteredGeneInfo"
-              :columns="columns"
               :loading="isLoading"
               :striped="true"
               :hoverable="true"
@@ -154,7 +153,7 @@ export default {
       return this.geneInfo.filter(e => 
         this.filterList.length < 1 || 
         this.filterList.every(r => e.disease_phenotype.includes(r) || 
-          e.potential_assay.includes(r))
+          e.potential_assay.includes(r) || e.clinical_interest.includes(r))
       );
     }
   },
@@ -182,12 +181,6 @@ export default {
         limit: 20
       },
       geneInfo: [],
-      columns: [
-        { label: "Gene Name" },
-        { label: "Entrez ID" },
-        { label: "Potential Assay" },
-        { label: "Disease Phenotype" }
-      ],
       isLoading: false,
       filterList: [],
       filterParams: FilterParams
@@ -257,7 +250,7 @@ export default {
 
       // If invalid show param, just return everything
       let show = this.$route.query.show;
-      const validParams = ["all", "assays", "phenotypes"];
+      const validParams = ["all", "assays", "phenotypes", "clinical_interests"];
       if (!(show && validParams.includes(show))) {
         show = "all";
       }
@@ -339,8 +332,10 @@ export default {
       // Get advanced search status from the routher
       if (query.filters) {
         const filters = query.filters.split(",");
-        this.filterList = filters.filter(e => this.filterParams.availAssays.includes(e) || 
-          this.filterParams.availPhenotypes.includes(e))
+        this.filterList = filters.filter(e => 
+          this.filterParams.availAssays.includes(e) || 
+          this.filterParams.availPhenotypes.includes(e) || 
+          this.filterParams.availClinicalInterests.includes(e))
       }
     }
   }

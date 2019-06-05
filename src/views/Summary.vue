@@ -100,6 +100,18 @@
                     </a>
                   </b-tag>
                 </b-table-column>
+                <b-table-column field="clinical_interest" label="Clinical Interest"
+                  :meta="filterParams.availClinicalInterests">
+                  <b-tag
+                    class="assay-phenotype is-capitalized"
+                    v-for="interests in props.row.clinical_interest"
+                    :key="interests.id"
+                  >
+                    <a v-bind:href="'gene/' + props.row.gene_name + '#' + interests" target="_blank">
+                      {{ filterParams.formatTag(interests) }}
+                    </a>
+                  </b-tag>
+                </b-table-column>
               </template>
             </b-table>
           </div>

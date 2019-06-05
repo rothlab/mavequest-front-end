@@ -46,8 +46,17 @@
                   <li v-if="hasPhenotype.orphanet">
                     <a href="#orpha" class="scrollactive-item">Orphanet</a>
                   </li>
-                  <li v-if="hasPhenotype.invitae">
+                </ul>
+                <p class="menu-label" v-if="hasClinicalInterest.any">Clinical Interest</p>
+                <ul class="menu-list" v-if="hasClinicalInterest.any">
+                  <li v-if="hasClinicalInterest.invitae">
                     <a href="#invitae" class="scrollactive-item">Invitae</a>
+                  </li>
+                  <li v-if="hasClinicalInterest.ambry">
+                    <a href="#ambry" class="scrollactive-item">Ambry</a>
+                  </li>
+                  <li v-if="hasClinicalInterest.genedx">
+                    <a href="#genedx" class="scrollactive-item">GeneDx</a>
                   </li>
                 </ul>
                 <p class="menu-label" v-if="lastUpdate">Last Update: {{lastUpdate}}</p>
@@ -77,9 +86,10 @@
                         v-if="alias || alias_description"
                       >(Alias: {{flatten([alias, alias_description]).join(", ")}})</span>
                     </p>
-                    <p style="margin-bottom:0.5rem" v-if="lengthRange.lower && lengthRange.upper">
-                      Amino acid length: {{lengthRange.lower}} - {{lengthRange.upper}} a.a.
-                    </p>
+                    <p
+                      style="margin-bottom:0.5rem"
+                      v-if="lengthRange.lower && lengthRange.upper"
+                    >Amino acid length: {{lengthRange.lower}} - {{lengthRange.upper}} a.a.</p>
 
                     <b-field grouped group-multiline class="gene-summary">
                       <div class="control" v-if="entrezID">
@@ -332,7 +342,8 @@
                       <b-table-column field="source" label="Pubmed Source" width="150">
                         <a
                           :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
-                          target="_blank" v-if="props.row.source && props.row.source !== '0'"
+                          target="_blank"
+                          v-if="props.row.source && props.row.source !== '0'"
                         >{{props.row.source}}</a>
                         <span v-else>NA</span>
                       </b-table-column>
@@ -380,7 +391,8 @@
                       <b-table-column field="source" label="Pubmed Source" width="150">
                         <a
                           :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
-                          target="_blank" v-if="props.row.source != 'NA'"
+                          target="_blank"
+                          v-if="props.row.source != 'NA'"
                         >{{props.row.source}}</a>
                         <span v-else>{{props.row.source}}</span>
                       </b-table-column>
@@ -687,8 +699,14 @@
                   </div>
                 </div>
               </div>
+            </section>
 
-              <div v-if="hasPhenotype.invitae">
+            <div class="is-divider" v-if="hasPhenotype.any"></div>
+
+            <section class="section is-paddingless" v-if="hasPhenotype.any">
+              <h1 class="title">Clinical Interest</h1>
+
+              <div v-if="hasClinicalInterest.invitae">
                 <AssayTitle
                   anchor="invitae"
                   title="Invitae Panels"
@@ -716,6 +734,72 @@
 
                         <b-table-column field="panel" label="Panel">
                           <ExpandableRow :elements="props.row.panel" preview_items="3"></ExpandableRow>
+                        </b-table-column>
+
+                        <b-table-column field="name" label="Test Name">{{props.row.name}}</b-table-column>
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="hasClinicalInterest.ambry">
+                <AssayTitle
+                  anchor="ambry"
+                  title="Ambry Panels"
+                  icon="fas fa-bars"
+                  :dblink="'https://www.ambrygen.com/#search/'+ geneName"
+                  reflink="/about#ambry"
+                ></AssayTitle>
+                <div class="content">
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table
+                      :data="ambryData"
+                      narrowed
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                    >
+                      <template slot-scope="props">
+                        <b-table-column field="id" label="Test ID">
+                          <a
+                            :href="'https://www.ambrygen.com' + props.row.link"
+                            target="_blank"
+                          >{{props.row.id}}</a>
+                        </b-table-column>
+
+                        <b-table-column field="name" label="Test Name">{{props.row.name}}</b-table-column>
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="hasClinicalInterest.genedx">
+                <AssayTitle
+                  anchor="genedx"
+                  title="GeneDx Panels"
+                  icon="fas fa-bars"
+                  :dblink="'https://www.genedx.com/?s=' + geneName + '&t=all'"
+                  reflink="/about#genedx"
+                ></AssayTitle>
+                <div class="content">
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table
+                      :data="genedxData"
+                      narrowed
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                    >
+                      <template slot-scope="props">
+                        <b-table-column field="id" label="Test ID">
+                          <a
+                            :href="props.row.link"
+                            target="_blank"
+                          >{{props.row.id}}</a>
                         </b-table-column>
 
                         <b-table-column field="name" label="Test Name">{{props.row.name}}</b-table-column>
@@ -779,18 +863,16 @@ const LinkBadge = {
       const inner = reflink.map((e, i) => {
         const icon = [
           createElement("b-icon", { props: { icon: "fas fa-database" } })
-          ];
-        
+        ];
+
         if (label[i]) icon.push(createElement("span", label[i]));
 
         return createElement(
           "a",
           { attrs: { href: e, target: "_blank", style: "margin-right: 5px;" } },
-          [
-            createElement("b-tag", icon)
-          ]
-        )}
-      );
+          [createElement("b-tag", icon)]
+        );
+      });
       return createElement(
         "div",
         { attrs: { style: "display: inline" } },
@@ -962,9 +1044,23 @@ export default {
 
           if (json.hasOwnProperty("invitae")) {
             // Invitiae Panel
-            this.hasPhenotype.any = true;
-            this.hasPhenotype.invitae = true;
+            this.hasClinicalInterest.any = true;
+            this.hasClinicalInterest.invitae = true;
             this.invitaeData = json.invitae;
+          }
+
+          if (json.hasOwnProperty("ambry")) {
+            // Ambry Panel
+            this.hasClinicalInterest.any = true;
+            this.hasClinicalInterest.ambry = true;
+            this.ambryData = json.ambry;
+          }
+
+          if (json.hasOwnProperty("genedx")) {
+            // GeneDx Panel
+            this.hasClinicalInterest.any = true;
+            this.hasClinicalInterest.genedx = true;
+            this.genedxData = json.genedx;
           }
         },
         response => {
@@ -975,7 +1071,7 @@ export default {
       )
       .then(() => {
         if (this.showErrorComponent) return;
-        
+
         this.loadingTranscriptsStatus = 1;
 
         // Get Ensembl Data
@@ -1018,14 +1114,13 @@ export default {
                     continue;
                   }
 
-
                   if (!this.lengthRange.hasOwnProperty("lower")) {
                     this.lengthRange.lower = newEntry.peptide_length;
                     continue;
                   }
 
                   if (newEntry.peptide_length > this.lengthRange.upper) {
-                    this.lengthRange.upper = newEntry.peptide_length
+                    this.lengthRange.upper = newEntry.peptide_length;
                   } else if (newEntry.peptide_length < this.lengthRange.lower) {
                     this.lengthRange.lower = newEntry.peptide_length;
                   }
@@ -1073,9 +1168,17 @@ export default {
       alias_description: [],
       hasAssay: {},
       hasPhenotype: {},
+      hasClinicalInterest: {},
       orthologyData: [],
-      orthologDbAvailable: ['S. cerevisiae', 'S. pombe', 'M. musculus',
-        'D. melanogaster', 'C. elegans', 'R. norvegicus', 'D. rerio'],
+      orthologDbAvailable: [
+        "S. cerevisiae",
+        "S. pombe",
+        "M. musculus",
+        "D. melanogaster",
+        "C. elegans",
+        "R. norvegicus",
+        "D. rerio"
+      ],
       huri: [],
       showCytoscapeView: false,
       genomeRNAiTotalEntries: 0,
@@ -1088,7 +1191,9 @@ export default {
       omimPhenotype: [],
       cancerGeneCensusPhenotype: [],
       orphanetData: [],
-      invitaeData: []
+      invitaeData: [],
+      ambryData: [],
+      genedxData: []
     };
   },
   methods: {

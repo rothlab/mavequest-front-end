@@ -356,7 +356,7 @@
 
                       <b-table-column field="cellline" label="Cell Line">
                         <ExpandableRow
-                          :elements="props.row.cellline.split(',')"
+                          :elements="props.row.cellline"
                           preview_items="5"
                           bold
                         ></ExpandableRow>

@@ -24,9 +24,8 @@
       <p class="card-header-title">(Likely) Pathogenic Variants</p>
     </header>
     <div class="card-content">
-      <div v-if="pathoVariants.length > 0" class="pathogenic-stats pathogenic-stats-adaptive">
+      <div v-if="pathoVariants.length > 0 || hasZoomedIn" class="pathogenic-stats pathogenic-stats-adaptive">
         <apexchart
-          ref="pathoChart"
           type="scatter"
           height="200px"
           :options="pathogenicDistriChartOptions"
@@ -44,7 +43,7 @@
         </span>
       </div>
 
-      <div v-if="pathoVariants.length > 0" class="clinvar-table">
+      <div v-if="pathoVariants.length > 0 || hasZoomedIn" class="clinvar-table">
         <b-table
           :data="pathoVariants"
           narrowed
@@ -132,7 +131,7 @@
           </template>
         </b-table>
       </div>
-      <div v-else class="has-text-centered">No pathogenic variants available.</div>
+      <div v-else class="has-text-centered">No (Likely) pathogenic variants available.</div>
     </div>
   </div>
 </template>
@@ -360,6 +359,9 @@ export default {
           return acc;
         }, {});
 
+        // Update tick Amount
+        this.updateYTickAmount(Math.max(...Object.values(count)));
+
         return Object.entries(count).map(([key, value]) => [
           parseInt(key),
           value
@@ -375,7 +377,6 @@ export default {
         }
       ];
     },
-
   },
   mounted() {
     if (this.clinvarData.hasOwnProperty("pathogenic_variants")) {
@@ -405,6 +406,9 @@ export default {
         return pos >= xaxis.min && pos <= xaxis.max
       });
       this.hasZoomedIn = true;
+    },
+    updateYTickAmount(maxSnv) {
+      this.pathogenicDistriChartOptions.yaxis['tickAmount'] = maxSnv;
     }
   }
 }

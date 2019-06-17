@@ -966,7 +966,6 @@ export default {
           this.description = json.description;
           this.entrezID = json.entrez_id;
           this.ensemblID = json.ensembl_id;
-          this.omimID = json.omim_id;
           this.alias = json.alias;
           this.alias_description = json.alias_description;
 
@@ -1018,11 +1017,12 @@ export default {
             // OMIM Phenotype
             this.hasPhenotype.any = true;
             this.hasPhenotype.omim = true;
-            this.omimPhenotype = json.omim;
+            this.omimPhenotype = json.omim.records;
+            this.omimID = json.omim.omim_id;
           }
 
           if (json.hasOwnProperty("clinvar")) {
-            // OMIM Phenotype
+            // Clinvar Phenotype
             this.hasPhenotype.any = true;
             this.hasPhenotype.clinvar = true;
             this.clinvarData = json.clinvar;
@@ -1162,7 +1162,7 @@ export default {
       description: "",
       entrezID: "",
       ensemblID: "",
-      omimID: "",
+      omimID: undefined,
       lengthRange: {},
       lastUpdate: "",
       transcriptList: [],

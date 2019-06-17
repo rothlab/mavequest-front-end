@@ -687,10 +687,7 @@
                         </b-table-column>
 
                         <b-table-column field="type" label="Type" width="300">
-                          <ExpandableRow
-                            :elements="props.row.prev_type.split('|')"
-                            preview_items="3"
-                          ></ExpandableRow>
+                          <ExpandableRow :elements="props.row.prev_type" preview_items="3"></ExpandableRow>
                         </b-table-column>
 
                         <b-table-column field="disorder" label="Disorder">{{props.row.disorder}}</b-table-column>

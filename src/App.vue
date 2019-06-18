@@ -14,7 +14,7 @@
         <div class="navbar-end">
           <router-link to="/" class="navbar-item" v-bind:class="{ 'is-active': isActive == 'search' }">Search</router-link>
           <router-link to="/about" class="navbar-item" v-bind:class="{ 'is-active': isActive == 'about' }">About</router-link>
-          <router-link to="/api" class="navbar-item" v-bind:class="{ 'is-active': isActive == 'api' }">API</router-link>
+          <router-link to="/docs/api" class="navbar-item" v-bind:class="{ 'is-active': isActive == 'api' }">API</router-link>
         </div>
       </div>
     </nav>

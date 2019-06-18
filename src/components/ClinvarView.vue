@@ -116,14 +116,14 @@
               <div class="column">
                 <p
                   class="is-marginless is-capitalized"
-                  v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 1)"
+                  v-for="p in splitInChunk(props.row.phenotype, 2, 1)"
                   v-bind:key="p"
                 >{{p}}</p>
               </div>
               <div class="column">
                 <p
                   class="is-marginless is-capitalized"
-                  v-for="p in splitInChunk(props.row.phenotype.split(';'), 2, 2)"
+                  v-for="p in splitInChunk(props.row.phenotype, 2, 2)"
                   v-bind:key="p"
                 >{{p}}</p>
               </div>

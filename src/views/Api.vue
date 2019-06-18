@@ -3,20 +3,34 @@
     <!-- Header -->
     <Header title="MaveQuest API"></Header>
 
-    <!-- Main -->
-    <UnderConstructionView />
+    <!-- RapiDoc -->
+    <section class="section fill-screen-withheader">
+      <div class="container">
+        <rapi-doc
+          :spec-url = "this.$apiEntryPoint + '/public/swagger.yaml'"
+          allow-spec-url-load	= "false"
+          allow-spec-file-load = "false"
+          show-header = "false"
+          primary-color = "#209CEE"
+          regular-font="BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 
+          'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 
+          'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
+          ref="apidoc"
+        >
+        </rapi-doc>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
-import Header from "@/components/Header.vue";
-import UnderConstructionView from "@/components/UnderConstructionView.vue";
+import Header from "@/components/Header.vue"
+import "rapidoc/dist/rapidoc-min";
 
 export default {
   name: "api",
   components: {
-    Header,
-    UnderConstructionView
+    Header
   },
   mounted() {
     // Update highlighted navbar item

@@ -32,7 +32,7 @@
           :series="pathogenicDistriData"
         ></apexchart>
         <span 
-          class="has-text-grey-light" 
+          class="has-text-grey-light is-hidden-mobile" 
           style="position:relative; top:-2rem; float:right"
         >
           <b-icon pack="fas" icon="lightbulb" size="is-small"></b-icon>

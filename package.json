@@ -19,7 +19,7 @@
     "buefy": "github:kvnkuang/buefy#mod",
     "bulma-divider": "^2.0.1",
     "cytoscape-navigator": "github:kvnkuang/cytoscape.js-navigator#master",
-    "cytoscape-panzoom": "^2.5.3",
+    "cytoscape-panzoom": "^2.6.0",
     "lodash": "^4.17.11",
     "rapidoc": "^5.0.4",
     "vue": "^2.6.10",

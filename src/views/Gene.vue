@@ -86,10 +86,17 @@
                         v-if="alias || alias_description"
                       >(Alias: {{flatten([alias, alias_description]).join(", ")}})</span>
                     </p>
-                    <p
-                      style="margin-bottom:0.5rem"
-                      v-if="lengthRange.lower && lengthRange.upper"
-                    >Amino acid length: {{lengthRange.lower}} - {{lengthRange.upper}} a.a.</p>
+                    <div style="margin-bottom:0.5rem">
+                      <p v-if="lengthRange.lower && lengthRange.upper">
+                        Amino acid length: {{lengthRange.lower}} - {{lengthRange.upper}} a.a.
+                      </p>
+                      <p v-else-if="lengthRange.lower && !lengthRange.upper">
+                        Amino acid length: {{lengthRange.lower}} a.a.
+                      </p>
+                      <p v-else-if="!lengthRange.lower && lengthRange.upper">
+                        Amino acid length: {{lengthRange.upper}} a.a.
+                      </p>
+                    </div>
 
                     <b-field grouped group-multiline class="gene-summary">
                       <div class="control" v-if="entrezID">

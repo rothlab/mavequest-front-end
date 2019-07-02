@@ -1,11 +1,12 @@
 // Import Vue basics
 import Vue from 'vue'
 import router from './router'
-import * as Sentry from '@sentry/browser'
-import * as Integrations from '@sentry/integrations'
 
 // Register error handler
 if (process.env.NODE_ENV != 'development') {
+  const Sentry = require('@sentry/browser');
+  const Integrations = require('@sentry/integrations');
+
   Sentry.init({
     dsn: 'https://2fca57c8cda5499086923120812e3b9f@sentry.io/1410585',
     release: process.env.GIT_VERSION,
@@ -40,6 +41,13 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 Vue.config.productionTip = false;
+Vue.config.errorHandler = (err, vm, info) => {
+  if (process.env.NODE_ENV !== 'production') {
+    Vue.util.warn(`Error in ${info}: "${err.toString()}"`, vm)
+  }
+  // eslint-disable-next-line
+  console.error(err)
+}
 
 Vue.use(Buefy, {
   defaultIconPack: 'fas'

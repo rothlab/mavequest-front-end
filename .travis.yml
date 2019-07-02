@@ -5,6 +5,8 @@ cache:
   directories:
   - node_modules
   - "$HOME/google-cloud-sdk"
+git:
+  depth: false  
 env:
   global:
   - CLOUDSDK_CORE_DISABLE_PROMPTS=1

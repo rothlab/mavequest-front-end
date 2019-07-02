@@ -19,7 +19,7 @@
     <b-tag
       v-if="elements.length > parseInt(preview_items)"
       class="has-background-grey"
-      @click.native="expandShrinkElements"
+      @click.native="isExpandDetail = !isExpandDetail"
     >
       <b-icon
         type="is-white"
@@ -43,25 +43,15 @@ export default {
   data() {
     return {
       isExpandDetail: false,
-      total_elements: []
     };
   },
-  mounted() {
-    // Init a preview list of elements
-    this.total_elements = this.elements.slice(0, parseInt(this.preview_items));
-  },
-  methods: {
-    expandShrinkElements() {
-      if (this.isExpandDetail) {
-        this.total_elements = this.elements.slice(
-          0,
-          parseInt(this.preview_items)
-        );
+  computed: {
+    total_elements: function() {
+      if (!this.isExpandDetail) {
+        return this.elements.slice(0, parseInt(this.preview_items));
       } else {
-        this.total_elements = this.elements;
+        return this.elements
       }
-
-      this.isExpandDetail = !this.isExpandDetail;
     }
   }
 };

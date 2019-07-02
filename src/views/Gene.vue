@@ -87,14 +87,11 @@
                       >(Alias: {{flatten([alias, alias_description]).join(", ")}})</span>
                     </p>
                     <div style="margin-bottom:0.5rem">
-                      <p v-if="lengthRange.lower && lengthRange.upper">
+                      <p v-if="lengthRange.lower && lengthRange.upper && lengthRange.lower != lengthRange.upper">
                         Amino acid length: {{lengthRange.lower}} - {{lengthRange.upper}} a.a.
                       </p>
-                      <p v-else-if="lengthRange.lower && !lengthRange.upper">
+                      <p v-else-if="lengthRange.lower && lengthRange.upper">
                         Amino acid length: {{lengthRange.lower}} a.a.
-                      </p>
-                      <p v-else-if="!lengthRange.lower && lengthRange.upper">
-                        Amino acid length: {{lengthRange.upper}} a.a.
                       </p>
                     </div>
 
@@ -1115,12 +1112,9 @@ export default {
                   // Update amino acid length range
                   if (!Number.isInteger(newEntry.peptide_length)) continue;
 
-                  if (!this.lengthRange.hasOwnProperty("upper")) {
+                  if (!this.lengthRange.hasOwnProperty("upper") && 
+                    !this.lengthRange.hasOwnProperty("lower")) {
                     this.lengthRange.upper = newEntry.peptide_length;
-                    continue;
-                  }
-
-                  if (!this.lengthRange.hasOwnProperty("lower")) {
                     this.lengthRange.lower = newEntry.peptide_length;
                     continue;
                   }

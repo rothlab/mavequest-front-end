@@ -499,7 +499,7 @@
                       <div class="level-right">
                         <button
                           class="button is-outlined is-info is-fullwidth"
-                          @click="showCytoscapeView = !showCytoscapeView"
+                          @click="showCytoscape()"
                         >Visualize with CytoScape.js</button>
                       </div>
                     </div>
@@ -1196,6 +1196,9 @@ export default {
     };
   },
   methods: {
+    showCytoscape() {
+      this.showCytoscapeView = true;
+    },
     getSpeciesName(taxonomy) {
       let name = String;
       switch (taxonomy) {

@@ -1,7 +1,7 @@
 <template>
   <div class="card cytoscape-container">
     <div class="cytoscape-display">
-      <cytoscape :config="config" :preConfig="preConfig"/>
+      <cytoscape :config="config" :preConfig="preConfig" :afterCreated="cyUpdate"/>
       <resize-observer @notify="handleResize"/>
       <b-loading :active.sync="isLoading" :is-full-page="false" :can-cancel="true"></b-loading>
       <div class="cy-navigator"></div>
@@ -25,10 +25,10 @@
       <b-message type="is-info">
         <p class="is-flex is-vcentered">
           <span class="title is-4 is-marginless">{{selectedEdge.name}}</span>
-          <b-tag
-            type="is-dark" class="cy-badge"
-          >{{selectedEdge.entries.length}} interations, 
-          {{selectedEdge.entries.map(e => e.method_id).filter(uniq).length}} methods</b-tag>
+          <b-tag type="is-dark" class="cy-badge">
+            {{selectedEdge.entries.length}} interations,
+            {{selectedEdge.entries.map(e => e.method_id).filter(uniq).length}} methods
+          </b-tag>
         </p>
 
         <div
@@ -132,7 +132,8 @@ export default {
     };
   },
   mounted() {
-    this.cyUpdate();
+    this.isLoading = true;
+    // this.cyUpdate();
   },
   methods: {
     parseElement() {
@@ -182,97 +183,89 @@ export default {
         Navitagor(cytoscape);
       }
     },
-    cyUpdate() {
-      this.isLoading = true;
+    async cyUpdate(cy) {
+      // Remove all elements
+      cy.remove(cy.elements());
 
-      // Update the cytoscape instance
-      this.$cytoscape.instance
-        .then(async cy => {
-          // Remove all elements
-          cy.remove(cy.elements());
+      // Add the panzoom control
+      cy.panzoom({
+        sliderHandleIcon: "fas fa-minus",
+        zoomInIcon: "fas fa-plus",
+        zoomOutIcon: "fas fa-minus",
+        resetIcon: "fas fa-expand"
+      });
 
-          // Add the panzoom control
-          cy.panzoom({
-            sliderHandleIcon: "fas fa-minus",
-            zoomInIcon: "fas fa-plus",
-            zoomOutIcon: "fas fa-minus",
-            resetIcon: "fas fa-expand"
+      // Add navigator
+      cy.navigator({
+        container: ".cy-navigator",
+        viewLiveFramerate: 0,
+        thumbnailEventFramerate: 30,
+        thumbnailLiveFramerate: false,
+        dblClickDelay: 200,
+        removeCustomContainer: true,
+        rerenderDelay: 100
+      });
+
+      // Add nodes and edges
+      await this.parseElement();
+      cy.add(this.nodes.concat(this.edges));
+
+      // Draw the graph and fit to the page
+      cy.layout({
+        name: "cose",
+        animate: true,
+        padding: 50,
+        nodeOverlap: 60
+      }).run();
+      cy.reset();
+      cy.center();
+      cy.fit(80);
+
+      // Register click event
+      cy.unbind("tap");
+      cy.on("tap", evt => {
+        const evtTarget = evt.target;
+        if (evtTarget === cy) {
+          cy.nodes().removeClass("highlighted");
+          cy.edges().removeClass("highlighted");
+          this.showMessage = false;
+          this.selectedEdge = [];
+
+          return;
+        }
+
+        if (evtTarget.group() === "nodes" && evtTarget.hasClass("head")) return;
+
+        // Extract tapped edge and node
+        let node, edge;
+        if (evtTarget.group() === "nodes") {
+          node = evtTarget;
+          edge = cy.edges("[target='" + evtTarget.id() + "']");
+        } else {
+          node = cy.nodes("[id='" + evtTarget.data().target + "']");
+          edge = evtTarget;
+        }
+
+        // Highlight the tapped edge and node
+        cy.nodes().removeClass("highlighted");
+        cy.edges().removeClass("highlighted");
+        node.addClass("highlighted");
+        edge.addClass("highlighted");
+
+        if (window.innerWidth < 768) {
+          this.$toast.open({
+            message: "Cannot show interactions on mobile devices.",
+            type: "is-warning",
+            queue: false
           });
+        } else {
+          // Store tapped edge
+          this.showMessage = true;
+          this.selectedEdge = edge.data();
+        }
+      });
 
-          // Add navigator
-          cy.navigator({
-            container: ".cy-navigator",
-            viewLiveFramerate: 0,
-            thumbnailEventFramerate: 30,
-            thumbnailLiveFramerate: false,
-            dblClickDelay: 200,
-            removeCustomContainer: true,
-            rerenderDelay: 100
-          });
-
-          // Add nodes and edges
-          await this.parseElement();
-          cy.add(this.nodes.concat(this.edges));
-
-          // Draw the graph and fit to the page
-          cy.layout({
-            name: "cose",
-            animate: true,
-            padding: 50,
-            nodeOverlap: 60
-          }).run();
-          cy.reset();
-          cy.center();
-          cy.fit(80);
-
-          // Register click event
-          cy.unbind("tap");
-          cy.on("tap", evt => {
-            const evtTarget = evt.target;
-            if (evtTarget === cy) {
-              cy.nodes().removeClass("highlighted");
-              cy.edges().removeClass("highlighted");
-              this.showMessage = false;
-              this.selectedEdge = [];
-
-              return;
-            }
-
-            if (evtTarget.group() === "nodes" && evtTarget.hasClass("head"))
-              return;
-
-            // Extract tapped edge and node
-            let node, edge;
-            if (evtTarget.group() === "nodes") {
-              node = evtTarget;
-              edge = cy.edges("[target='" + evtTarget.id() + "']");
-            } else {
-              node = cy.nodes("[id='" + evtTarget.data().target + "']");
-              edge = evtTarget;
-            }
-
-            // Highlight the tapped edge and node
-            cy.nodes().removeClass("highlighted");
-            cy.edges().removeClass("highlighted");
-            node.addClass("highlighted");
-            edge.addClass("highlighted");
-
-            if (window.innerWidth < 768) {
-              this.$toast.open({ 
-                message: "Cannot show interactions on mobile devices.",
-                type: "is-warning",
-                queue: false,
-              });
-            } else {
-              // Store tapped edge
-              this.showMessage = true;
-              this.selectedEdge = edge.data();
-            }
-          });
-        })
-        .then(() => {
-          this.isLoading = false;
-        });
+      this.isLoading = false;
     },
     uniq(value, index, self) {
       return self.indexOf(value) === index;

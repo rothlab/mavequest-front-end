@@ -77,10 +77,6 @@ export default {
     genes: {
       default: () => [],
       type: Array
-    },
-    filters: {
-      default: () => [],
-      type: Array
     }
   },
   data() {
@@ -89,12 +85,12 @@ export default {
       isFetching: false,
       emptyMessage: "No genes found.",
       isFullView: true,
+      geneNames: []
     };
   },
   methods: {
     searchGenes() {
       // Extract gene names
-      this.geneNames = [];
       for (let gene of this.genes) {
         if (typeof gene === "object") {
           this.geneNames.push(gene.gene_symbol);
@@ -117,10 +113,7 @@ export default {
       // Call router
       const dest = {
         path: "/query",
-        query: {
-          gene: this.geneNames.join(","),
-          filters: this.filters.length > 0 ? this.filters.join(",") : undefined,
-        }
+        query: { gene: this.geneNames.join(",") }
       };
       this.$router.push(dest);
     },

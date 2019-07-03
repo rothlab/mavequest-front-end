@@ -1,7 +1,7 @@
 <template>
   <div class="summary">
     <!-- Header -->
-    <Header :title="title"></Header>
+    <Header :title="title" :genes="genes"></Header>
 
     <!-- Main -->
     <section class="section fill-screen-withheader">
@@ -133,20 +133,10 @@ export default {
     ErrorView,
     FilterView
   },
-  created() {
-    this.setGenesFromQuery(this.$route.query);
-  },
   mounted() {
     // Update highlighted navbar item
     this.$emit('updateNav', 'search');
-
-    if (this.listAllGenes) {
-      // List all genes from the API
-      this.listGenes();
-    } else {
-      // Query gene info from the API
-      this.setGeneInfo();
-    }
+    this.handleRouter(this.$route.query);
   },
   computed: {
     filteredGeneInfo: function () {
@@ -158,14 +148,11 @@ export default {
     }
   },
   beforeRouteUpdate(to, from, next) {
-    // Set gene names and query again when the page is about to be updated (when user tries to search again in the summary page)
-    this.setGenesFromQuery(to.query);
-    this.setGeneInfo();
-
-    // Reset display parameters
-    this.showErrorComponent = false;
-    this.errorResponse = undefined;
-
+    this.handleRouter(to.query);
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    this.handleRouter(to.query);
     next();
   },
   data() {
@@ -174,7 +161,6 @@ export default {
       showErrorComponent: false,
       listAllGenes: false,
       title: "",
-      showLeftPanel: true,
       totalGenes: 0,
       pagination: {
         offset: 0,
@@ -183,10 +169,27 @@ export default {
       geneInfo: [],
       isLoading: false,
       filterList: [],
-      filterParams: FilterParams
+      filterParams: FilterParams,
+      componentKey: 0
     };
   },
   methods: {
+    handleRouter(query) {
+      this.setGenesFromQuery(query);
+
+      if (this.listAllGenes) {
+        // List all genes from the API
+        this.listGenes();
+        this.genes = undefined;
+      } else {
+        // Query gene info from the API
+        this.setGeneInfo();
+      }
+
+      // Reset display parameters
+      this.showErrorComponent = false;
+      this.errorResponse = undefined;
+    },
     setGeneInfo() {
       this.title = "Search Results";
 

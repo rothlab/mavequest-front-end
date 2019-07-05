@@ -11,6 +11,7 @@
           allow-spec-url-load	= "false"
           allow-spec-file-load = "false"
           show-header = "false"
+          show-info = "false"
           primary-color = "#209CEE"
           regular-font="BlinkMacSystemFont, -apple-system, 'Segoe UI', 'Roboto', 
           'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 

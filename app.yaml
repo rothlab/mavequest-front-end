@@ -2,10 +2,10 @@ runtime: python27
 api_version: 1
 threadsafe: true
 handlers:
-- url: /(.*\.(js|css|png|jpg|ico|ttf|woff|woff2|html|xml))$
+- url: /(.*\.(js|css|png|jpg|ico|ttf|woff|woff2|html|xml|txt))$
   secure: always
   static_files: dist/\1
-  upload: dist/.*\.(js|css|png|jpg|ico|ttf|woff|woff2|html|xml)$
+  upload: dist/.*\.(js|css|png|jpg|ico|ttf|woff|woff2|html|xml|txt)$
   # catch all handler to index.html
 - url: /.*
   secure: always

@@ -438,6 +438,7 @@ export default {
     if (handleScrolling) {
       // Highlight data source if given as part of the url
       const elementID = this.hash.replace("#", "");
+      // eslint-disable-next-line no-prototype-builtins
       if (this.$refs.hasOwnProperty(elementID)) {
         this.$refs[elementID].className += " highlight";
         this.$refs.scrollactive.scrollTo(this.$refs[elementID]);

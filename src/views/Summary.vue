@@ -203,7 +203,7 @@ export default {
           response => {
             // Make sure the response has a non-empty body
             if (
-              !response.hasOwnProperty("body") ||
+              !Object.prototype.hasOwnProperty.call(response, "body")||
               typeof response.body == "string"
             ) {
               return;
@@ -213,12 +213,13 @@ export default {
 
             // Make sure the response contains gene info
             // TODO: validate response fingerprint
-            if (json.hasOwnProperty("found")) {
+            if (Object.prototype.hasOwnProperty.call(json, "found")) {
               this.geneInfo = json.found;
             }
 
             // Give a warning if some genes are missing
-            if (json.hasOwnProperty("missing") && json.missing.length > 0) {
+            if (Object.prototype.hasOwnProperty.call(json, "missing")
+              && json.missing.length > 0) {
               this.$snackbar.open({
                 message: `Some gene names had no matches: ${json.missing.join(
                   ", "
@@ -274,7 +275,7 @@ export default {
           response => {
             // Make sure the response has a non-empty body
             if (
-              !response.hasOwnProperty("body") ||
+              !Object.prototype.hasOwnProperty.call(response, "body")||
               typeof response.body == "string"
             ) {
               return;
@@ -284,7 +285,7 @@ export default {
 
             // Make sure the response contains gene info
             // TODO: validate response fingerprint
-            if (json.hasOwnProperty("genes")) {
+            if (Object.prototype.hasOwnProperty.call(json, "genes")) {
               this.totalGenes = json.total;
               this.pagination = json.pagination;
               this.geneInfo = json.genes;
@@ -317,7 +318,7 @@ export default {
       // Set the mode of the page based on the existance of gene param.
       // If it's not existed, then a list of all genes that passed a certain filter will be displayed.
       // Otherwise, only list the genes requested.
-      if (query.hasOwnProperty("gene")) {
+      if (Object.prototype.hasOwnProperty.call(query, "gene")) {
         // Get the genes from the router
         this.listAllGenes = false;
         this.genes = query.gene.toUpperCase();

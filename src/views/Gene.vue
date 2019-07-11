@@ -957,7 +957,7 @@ export default {
         response => {
           // Make sure the response has a non-empty body
           if (
-            !response.hasOwnProperty("body") ||
+            !Object.prototype.hasOwnProperty.call(response, "body") ||
             typeof response.body == "string"
           )
             return;
@@ -980,41 +980,41 @@ export default {
             date.getDate();
 
           // Populate Assay information
-          if (json.hasOwnProperty("genome_rnai")) {
+          if (Object.prototype.hasOwnProperty.call(json, "genome_rnai")) {
             this.hasAssay.any = true;
             this.hasAssay.genome_rnai = true;
             this.genomeRNAiData = json.genome_rnai.hits;
             this.genomeRNAiTotalEntries = json.genome_rnai.total_entries;
           }
 
-          if (json.hasOwnProperty("genome_crispr")) {
+          if (Object.prototype.hasOwnProperty.call(json, "genome_crispr")) {
             this.hasAssay.any = true;
             this.hasAssay.genome_crispr = true;
             this.genomeCRISPRData = json.genome_crispr;
             this.genomeCRISPRStats = json.genome_crispr_stats;
           }
 
-          if (json.hasOwnProperty("orthology")) {
+          if (Object.prototype.hasOwnProperty.call(json, "orthology")) {
             this.hasAssay.any = true;
             this.hasAssay.orthology = true;
             this.orthologyData = json.orthology;
           }
 
-          if (json.hasOwnProperty("overexpression")) {
+          if (Object.prototype.hasOwnProperty.call(json, "overexpression")) {
             // Over Expression
             this.hasAssay.any = true;
             this.hasAssay.overexpression = true;
             this.overexprData = json.overexpression;
           }
 
-          if (json.hasOwnProperty("huri")) {
+          if (Object.prototype.hasOwnProperty.call(json, "huri")) {
             // Human Interactome
             this.hasAssay.any = true;
             this.hasAssay.huri = true;
             this.huriData = json.huri;
           }
 
-          if (json.hasOwnProperty("omim")) {
+          if (Object.prototype.hasOwnProperty.call(json, "omim")) {
             // OMIM Phenotype
             this.hasPhenotype.any = true;
             this.hasPhenotype.omim = true;
@@ -1022,42 +1022,42 @@ export default {
             this.omimID = json.omim.omim_id;
           }
 
-          if (json.hasOwnProperty("clinvar")) {
+          if (Object.prototype.hasOwnProperty.call(json, "clinvar")) {
             // Clinvar Phenotype
             this.hasPhenotype.any = true;
             this.hasPhenotype.clinvar = true;
             this.clinvarData = json.clinvar;
           }
 
-          if (json.hasOwnProperty("cancer_census")) {
+          if (Object.prototype.hasOwnProperty.call(json, "cancer_census")) {
             // Cancer Census Phenotype
             this.hasPhenotype.any = true;
             this.hasPhenotype.cancer_census = true;
             this.cancerGeneCensusPhenotype = json.cancer_census;
           }
 
-          if (json.hasOwnProperty("orphanet")) {
+          if (Object.prototype.hasOwnProperty.call(json, "orphanet")) {
             // Orphanet Phenotype
             this.hasPhenotype.any = true;
             this.hasPhenotype.orphanet = true;
             this.orphanetData = json.orphanet;
           }
 
-          if (json.hasOwnProperty("invitae")) {
+          if (Object.prototype.hasOwnProperty.call(json, "invitae")) {
             // Invitiae Panel
             this.hasClinicalInterest.any = true;
             this.hasClinicalInterest.invitae = true;
             this.invitaeData = json.invitae;
           }
 
-          if (json.hasOwnProperty("ambry")) {
+          if (Object.prototype.hasOwnProperty.call(json, "ambry")) {
             // Ambry Panel
             this.hasClinicalInterest.any = true;
             this.hasClinicalInterest.ambry = true;
             this.ambryData = json.ambry;
           }
 
-          if (json.hasOwnProperty("genedx")) {
+          if (Object.prototype.hasOwnProperty.call(json, "genedx")) {
             // GeneDx Panel
             this.hasClinicalInterest.any = true;
             this.hasClinicalInterest.genedx = true;
@@ -1086,7 +1086,7 @@ export default {
             res => {
               const json = res.body;
 
-              if (json.hasOwnProperty("Transcript")) {
+              if (Object.prototype.hasOwnProperty.call(json, "Transcript")) {
                 // Populate transcripts database
                 for (const entity of json.Transcript) {
                   const newEntry = {
@@ -1112,7 +1112,9 @@ export default {
                   // Update amino acid length range
                   if (!Number.isInteger(newEntry.peptide_length)) continue;
 
+                  // eslint-disable-next-line no-prototype-builtins
                   if (!this.lengthRange.hasOwnProperty("upper") && 
+                    // eslint-disable-next-line no-prototype-builtins
                     !this.lengthRange.hasOwnProperty("lower")) {
                     this.lengthRange.upper = newEntry.peptide_length;
                     this.lengthRange.lower = newEntry.peptide_length;

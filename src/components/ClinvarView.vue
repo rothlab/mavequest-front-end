@@ -300,8 +300,8 @@ export default {
   },
   computed: {
     variantStats: function() { // Compute variant summary
-      if (this.clinvarData.hasOwnProperty('all_variants') 
-        && this.clinvarData.hasOwnProperty('missense_variants')) {
+      if (Object.prototype.hasOwnProperty.call(this.clinvarData, 'all_variants')
+        && Object.prototype.hasOwnProperty.call(this.clinvarData, 'missense_variants')) {
           return [
               {
                 name: "Benign",
@@ -379,7 +379,7 @@ export default {
     },
   },
   mounted() {
-    if (this.clinvarData.hasOwnProperty("pathogenic_variants")) {
+    if (Object.prototype.hasOwnProperty.call(this.clinvarData, "pathogenic_variants")) {
       this.pathoVariants = this.clinvarData.pathogenic_variants;
     }
   },

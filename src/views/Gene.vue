@@ -521,7 +521,8 @@
                   anchor="clinvar"
                   title="Clinvar"
                   icon="fas fa-bars"
-                  :dblink="'https://www.ncbi.nlm.nih.gov/clinvar/?term=' + geneName + '[gene]'"
+                  :dblink="'https://www.ncbi.nlm.nih.gov/clinvar/?term=' + 
+                    geneName + '[gene] AND &quot;single gene&quot;[Properties]'"
                   reflink="/about#clinvar"
                 ></AssayTitle>
                 <ClinvarView :clinvarData="clinvarData"></ClinvarView>
@@ -887,6 +888,15 @@ const LinkBadge = {
 const AssayTitle = {
   props: ["title", "icon", "anchor", "dblink", "dblabel", "reflink"],
   render() {
+    let linkBadge = undefined;
+    if (this.dblink) {
+      linkBadge = <LinkBadge
+        reflink={this.dblink}
+        label={this.dblabel}
+        style="vertical-align: super;"
+      />
+    }
+
     return (
       <div class="block" style="margin-top:1.5rem">
         <div class="is-hidden-mobile is-inline">
@@ -905,11 +915,7 @@ const AssayTitle = {
           position="is-bottom"
           label="Visit source database(s)"
         >
-          <LinkBadge
-            reflink={this.dblink}
-            label={this.dblabel}
-            style="vertical-align: super;"
-          />
+        {linkBadge}
         </b-tooltip>
         <b-tooltip
           style="display:initial;"

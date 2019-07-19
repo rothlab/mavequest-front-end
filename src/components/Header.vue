@@ -2,14 +2,14 @@
   <div>
     <section class="hero is-info is-hidden-mobile is-bold">
       <div class="hero-body header-control">
-        <div class="container box">
+        <div class="container">
           <div class="level">
             <div class="level-left">
-              <h1 class="title has-text-grey-dark" v-if="title">{{title}}</h1>
+              <h1 class="title" v-if="title">{{title}}</h1>
               <h2 class="subtitle" v-if="subtitle">{{subtitle}}</h2>
             </div>
 
-            <div class="level-right search">
+            <div class="level-right search box">
               <SearchBar showButton :genes="genes"></SearchBar>
             </div>
           </div>

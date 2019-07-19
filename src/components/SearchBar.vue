@@ -70,6 +70,7 @@
 
 <script>
 import debounce from "lodash/debounce";
+import { Promise } from 'q';
 
 export default {
   name: "SearchBar",
@@ -118,35 +119,11 @@ export default {
       };
       this.$router.push(dest);
     },
-    getGeneNames: debounce(function(text) {
-      // User have to type in at least two characters before initialting an autocomplete search to save computing resources
-      if (text.length < 2) {
-        this.isFetching = false;
-        this.emptyMessage = "Please enter at least 2 characters.";
-        this.autoCompleteRes = [];
-        return;
-      }
-
-      // Determine which dropdown style should be used
-      const autocompleteDropdownWidth = document.getElementsByClassName("autocomplete control")[0].clientWidth;
-      if (autocompleteDropdownWidth < 450 ) {
-        // Use full-size style
-        this.isFullView = false;
-      } else {
-        // Use compact style
-        this.isFullView = true;
-      }
-
-      // Initiaite an autocomplete search
-      // Here we use the NCBI Autocomplete API
-      this.text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      this.isFetching = true;
-      this.autoCompleteRes = [];
-      this.emptyMessage = "No genes found.";
+    autocomplete({text, resolve, reject}) {
       this.$http
         .get(
           `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${
-            this.text
+            text
           }&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
         )
         .then(data => {
@@ -183,8 +160,47 @@ export default {
           }
 
           this.autoCompleteRes = this.autoCompleteRes.concat(aliasList);
-          this.isFetching = false;
-        });
+          resolve();
+        })
+        .catch(res => {
+          if (this.attempt++ < 2) {
+            // Wait for 1 second before retry
+            setTimeout(() => this.autocomplete({text, resolve, reject}), 1000);
+          } else {
+            reject(res);
+          }
+        });  
+    },
+    getGeneNames: debounce(function(text) {
+      // User have to type in at least two characters before initialting an autocomplete search to save computing resources
+      if (text.length < 2) {
+        this.isFetching = false;
+        this.emptyMessage = "Please enter at least 2 characters.";
+        this.autoCompleteRes = [];
+        return;
+      }
+
+      // Determine which dropdown style should be used
+      const autocompleteDropdownWidth = document.getElementsByClassName("autocomplete control")[0].clientWidth;
+      if (autocompleteDropdownWidth < 450 ) {
+        // Use full-size style
+        this.isFullView = false;
+      } else {
+        // Use compact style
+        this.isFullView = true;
+      }
+
+      // Initiaite an autocomplete search
+      // Here we use the NCBI Autocomplete API
+      this.text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      this.isFetching = true;
+      this.autoCompleteRes = [];
+      this.emptyMessage = "No genes found."; 
+      this.attempt = 0;
+      new Promise((resolve, reject) => 
+      this.autocomplete({text, resolve, reject})).then(() => {
+        this.isFetching = false;
+      })
     })
   }
 };

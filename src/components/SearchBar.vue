@@ -1,8 +1,9 @@
 <template>
   <div class="search-bar is-fullwidth">
-    <div class="columns">
-      <div class="column">
-        <b-taginput
+    <b-field>
+      <b-taginput
+          icon="search"
+          icon-pack="fas"
           ref="searchBar"
           v-model="genes"
           :data="autoCompleteRes"
@@ -56,14 +57,14 @@
 
           <template slot="empty" v-if="!isFetching">{{emptyMessage}}</template>
         </b-taginput>
-      </div>
-      <div class="column is-narrow" v-if="showButton">
-        <button
-          class="button is-medium is-fullwidth is-fullheight is-info is-inverted is-outlined"
-          @click="searchGenes"
-        >Search</button>
-      </div>
-    </div>
+        <p class="control" style="margin-left:-0.5rem">
+          <button
+            v-if="showButton"
+            class="button is-medium is-fullwidth is-fullheight is-info has-text-white"
+            @click="searchGenes"
+          >Search</button>
+        </p>
+    </b-field>
   </div>
 </template>
 
@@ -193,6 +194,7 @@ export default {
 .search {
   vertical-align: baseline !important;
   height: 100%;
+  width: 100%;
 }
 .no-topbottom-padding {
   display: flex;

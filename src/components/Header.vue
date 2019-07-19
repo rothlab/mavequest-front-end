@@ -1,11 +1,11 @@
 <template>
   <div>
     <section class="hero is-info is-hidden-mobile is-bold">
-      <div class="hero-body">
-        <div class="container">
+      <div class="hero-body header-control">
+        <div class="container box">
           <div class="level">
             <div class="level-left">
-              <h1 class="title" v-if="title">{{title}}</h1>
+              <h1 class="title has-text-grey-dark" v-if="title">{{title}}</h1>
               <h2 class="subtitle" v-if="subtitle">{{subtitle}}</h2>
             </div>
 
@@ -56,6 +56,10 @@ export default {
 </script>
 
 <style scoped>
+.header-control {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
 .search {
   width: 60%
 }

@@ -86,13 +86,52 @@
                         v-if="alias || alias_description"
                       >(Alias: {{flatten([alias, alias_description]).join(", ")}})</span>
                     </p>
-                    <div style="margin-bottom:0.5rem">
-                      <p v-if="lengthRange.lower && lengthRange.upper && lengthRange.lower != lengthRange.upper">
-                        Amino acid length: {{lengthRange.lower}} - {{lengthRange.upper}} a.a.
-                      </p>
-                      <p v-else-if="lengthRange.lower && lengthRange.upper">
-                        Amino acid length: {{lengthRange.lower}} a.a.
-                      </p>
+                    <div style="margin-bottom:0.5rem" v-if="aaLength">
+                      <span>Canonical Isoform: </span>
+                      <span v-if="aaLength.is_agreed === 'agree'">
+                        {{aaLength.combined.join(', ')}} a.a.
+                        <b-tooltip 
+                          label="Agreed between Ensembl and Uniprot databases." 
+                          type="is-dark" multilined>
+                          <b-icon icon="thumbs-up" pack="far"></b-icon>
+                        </b-tooltip>
+                      </span>
+
+                      <span v-else-if="aaLength.is_agreed === 'intersect'">
+                        {{aaLength.combined.join(', ')}} a.a.
+                        <b-tooltip 
+                          label="Intersect between Ensembl and Uniprot databases." 
+                          type="is-dark" multilined>
+                          <b-icon icon="dot-circle" pack="far"></b-icon>
+                        </b-tooltip>
+
+                        Ensembl: {{aaLength.ensembl.join(', ')}} a.a.; 
+                        Uniprot: {{aaLength.uniprot.join(', ')}} a.a.
+                      </span>
+
+                      
+                      <span v-else-if="aaLength.is_agreed === 'disagree'">
+                        Ensembl: {{aaLength.ensembl.join(', ')}} a.a.; 
+                        Uniprot: {{aaLength.uniprot.join(', ')}} a.a.
+
+                        <b-tooltip 
+                          label="Disagree between Ensembl and Uniprot databases." 
+                          type="is-dark" multilined>
+                          <b-icon icon="thumbs-down" pack="far"></b-icon>
+                        </b-tooltip>
+                      </span>
+
+                      <span v-else-if="aaLength.is_agreed === 'one-missing'">
+                        {{aaLength.combined.join(', ')}} a.a.
+
+                        <b-tooltip
+                          :label="aaLength.uniprot ? 
+                            'Data missing in Ensembl databases.' 
+                            : 'Data missing in Uniprot databases.'" 
+                          type="is-dark" multilined>
+                          <b-icon icon="exclamation-triangle" pack="fas"></b-icon>
+                        </b-tooltip>
+                      </span>
                     </div>
 
                     <b-field grouped group-multiline class="gene-summary">
@@ -152,11 +191,28 @@
                           </b-tooltip>
                         </b-tag>
                       </div>
+
+                      <div class="control" v-if="uniprotID.length > 0">
+                        <b-tooltip :label="uniprotID.join(', ')" type="is-dark">
+                          <b-tag class="has-background-grey">
+                            <a
+                              :href="uniprotID.length > 1 ? 
+                                'https://www.uniprot.org/uniprot/?query=' + uniprotID.join('+OR+')
+                                : 'https://www.uniprot.org/uniprot/' + uniprotID[0]"
+                              target="_blank"
+                              class="has-text-white"
+                            >
+                              Uniprot &nbsp;
+                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            </a>
+                          </b-tag>
+                        </b-tooltip>
+                      </div>
                     </b-field>
                   </div>
                 </div>
 
-                <div class="has-background-white">
+                <div class="has-background-white" v-if="ensemblID">
                   <b-collapse aria-id="transcript-peptide" :open.sync="showTranscripts">
                     <div
                       slot="trigger"
@@ -986,6 +1042,8 @@ export default {
           this.description = json.description;
           this.entrezID = json.entrez_id;
           this.ensemblID = json.ensembl_id;
+          this.uniprotID = json.uniprot_id;
+          this.aaLength = json.aa_length;
           this.alias = json.alias;
           this.alias_description = json.alias_description;
 
@@ -1091,6 +1149,7 @@ export default {
       )
       .then(() => {
         if (this.showErrorComponent) return;
+        if (!this.ensemblID) return;
 
         this.loadingTranscriptsStatus = 1;
 
@@ -1126,24 +1185,6 @@ export default {
                     this.transcriptList.unshift(newEntry);
                   } else {
                     this.transcriptList.push(newEntry);
-                  }
-
-                  // Update amino acid length range
-                  if (!Number.isInteger(newEntry.peptide_length)) continue;
-
-                  // eslint-disable-next-line no-prototype-builtins
-                  if (!this.lengthRange.hasOwnProperty("upper") && 
-                    // eslint-disable-next-line no-prototype-builtins
-                    !this.lengthRange.hasOwnProperty("lower")) {
-                    this.lengthRange.upper = newEntry.peptide_length;
-                    this.lengthRange.lower = newEntry.peptide_length;
-                    continue;
-                  }
-
-                  if (newEntry.peptide_length > this.lengthRange.upper) {
-                    this.lengthRange.upper = newEntry.peptide_length;
-                  } else if (newEntry.peptide_length < this.lengthRange.lower) {
-                    this.lengthRange.lower = newEntry.peptide_length;
                   }
                 }
               }
@@ -1181,8 +1222,9 @@ export default {
       description: "",
       entrezID: "",
       ensemblID: "",
+      uniprotID: [],
       omimID: undefined,
-      lengthRange: {},
+      aaLength: {},
       lastUpdate: "",
       transcriptList: [],
       alias: [],

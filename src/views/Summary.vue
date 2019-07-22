@@ -162,6 +162,7 @@ export default {
       listAllGenes: false,
       title: "",
       totalGenes: 0,
+      genes: [],
       pagination: {
         offset: 0,
         limit: 20
@@ -321,8 +322,7 @@ export default {
       if (Object.prototype.hasOwnProperty.call(query, "gene")) {
         // Get the genes from the router
         this.listAllGenes = false;
-        this.genes = query.gene.toUpperCase();
-        this.genes = this.genes
+        this.genes = query.gene.toUpperCase()
           .split(",")
           .filter(Boolean)
           .map(res => res.trim());

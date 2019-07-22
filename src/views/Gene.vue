@@ -609,6 +609,18 @@
                       hoverable
                       narrowed
                     >
+                      <template slot-scope="props" slot="header">
+                        {{props.column.label}}
+                        <b-tooltip
+                          v-if="props.column.field === 'hallmark'"
+                          label="Information on the function of proteins coded by cancer genes"
+                          type="is-dark"
+                          multilined
+                        >
+                          <b-icon pack="fas" size="is-small" icon="question-circle"></b-icon>
+                        </b-tooltip>
+                      </template>
+
                       <template slot-scope="props">
                         <b-table-column field="tier" label="Tier" width="50">{{props.row.tier}}</b-table-column>
 
@@ -619,20 +631,21 @@
                         >{{props.row.inheritance}}</b-table-column>
 
                         <b-table-column field="hallmark" label="Hallmark" width="50">
-                          <b-icon
-                            pack="fas"
-                            type="is-grey"
-                            :icon="props.row.hallmark ? 'check-circle' : 'times-circle'"
-                          ></b-icon>
+                          <a v-if="props.row.hallmark"
+                            :href="'https://cancer.sanger.ac.uk/cosmic/census-page/' 
+                              + geneName">
+                            <b-icon pack="fas" icon="check-circle"></b-icon>
+                          </a>
+                          <b-icon v-else pack="fas" icon="times-circle"></b-icon>
                         </b-table-column>
 
                         <b-table-column
-                          v-if="props.row.tumour_germline"
                           field="germline"
                           label="Germline"
                           width="400"
                         >
                           <ExpandableRow
+                            v-if="props.row.tumour_germline"
                             class="is-capitalized"
                             :elements="props.row.tumour_germline.map(e => e.trim())"
                             preview_items="3"
@@ -640,11 +653,11 @@
                         </b-table-column>
 
                         <b-table-column
-                          v-if="props.row.tumour_somatic"
                           field="somatic"
                           label="Somatic"
                         >
                           <ExpandableRow
+                            v-if="props.row.tumour_somatic"
                             class="is-capitalized"
                             :elements="props.row.tumour_somatic.map(e => e.trim())"
                             preview_items="3"

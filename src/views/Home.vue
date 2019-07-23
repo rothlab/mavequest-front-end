@@ -7,7 +7,7 @@
         <div class="container is-marginless is-fullwidth box">
           <div class="columns">
             <div class="column">
-              <SearchBar showButton :filters="filters"></SearchBar>
+              <SearchBar showButton></SearchBar>
             </div>
             <div class="column is-narrow">
               <b-dropdown hoverable class="is-fullwidth is-fullheight" @change="jumpToSummaryWithParam">

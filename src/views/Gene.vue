@@ -1011,12 +1011,12 @@ export default {
     ErrorView,
     SyncLoader
   },
-  created() {
-    this.geneName = this.$route.params.name.toUpperCase();
-  },
   beforeMount() {
     // Capture the hash before it's overwritten by vue-scrollactive
     this.hash = window.location.hash;
+  },
+  beforeRouteUpdate(to, from, next) {
+    next();
   },
   mounted() {
     // Update highlighted navbar item
@@ -1258,6 +1258,11 @@ export default {
       ambryData: [],
       genedxData: []
     };
+  },
+  computed: {
+    geneName: function() {
+      return this.$route.params.name.toUpperCase();
+    }
   },
   methods: {
     showCytoscape() {

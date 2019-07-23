@@ -10,7 +10,7 @@
             </div>
 
             <div class="level-right search box">
-              <SearchBar showButton :genes="genes"></SearchBar>
+              <SearchBar showButton></SearchBar>
             </div>
           </div>
         </div>

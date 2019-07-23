@@ -55,7 +55,7 @@
             </div>
           </template>
 
-          <template slot="empty" v-if="!isFetching">{{emptyMessage}}</template>
+          <template slot="empty">{{emptyMessage}}</template>
         </b-taginput>
         <p class="control" style="margin-left:-0.5rem">
           <button
@@ -70,6 +70,7 @@
 
 <script>
 import debounce from "lodash/debounce";
+import uniq from "lodash/uniq";
 import { Promise } from 'q';
 
 export default {
@@ -87,10 +88,17 @@ export default {
       isFetching: false,
       emptyMessage: "No genes found.",
       isFullView: true,
-      geneNames: []
+      geneNames: [],
     };
   },
   methods: {
+    resetData() {
+      this.autoCompleteRes = [];
+      this.isFetching = false;
+      this.emptyMessage = "No genes found.";
+      this.isFullView = true;
+      this.geneNames = [];
+    },
     searchGenes() {
       // Extract gene names
       for (let gene of this.genes) {
@@ -102,7 +110,7 @@ export default {
       }
 
       // Give a warning if no gene was inputed
-      if (this.geneNames.length == 0) {
+      if (this.geneNames.length === 0) {
         this.$snackbar.open({
           message: "Please select a gene from the dropdown menu.",
           type: "is-warning",
@@ -112,11 +120,22 @@ export default {
         return;
       }
 
+      // Find unique genes
+      this.geneNames = uniq(this.geneNames);
+
+      // If only one gene, jump directly to detail page
+      let dest = {};
+      if (this.geneNames.length === 1) {
+        dest = { path: "/gene/" + this.geneNames.join(",") };
+      } else {
+        dest = { 
+          path: "/query",
+          query: { gene: this.geneNames.join(",") },
+        };
+      }
+
       // Call router
-      const dest = {
-        path: "/query",
-        query: { gene: this.geneNames.join(",") }
-      };
+      this.resetData();
       this.$router.push(dest);
     },
     autocomplete({text, resolve, reject}) {
@@ -195,11 +214,12 @@ export default {
       this.text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       this.isFetching = true;
       this.autoCompleteRes = [];
-      this.emptyMessage = "No genes found."; 
+      this.emptyMessage = "Fetching gene info..."
       this.attempt = 0;
       new Promise((resolve, reject) => 
       this.autocomplete({text, resolve, reject})).then(() => {
         this.isFetching = false;
+        this.emptyMessage = "No genes found."; 
       })
     })
   }

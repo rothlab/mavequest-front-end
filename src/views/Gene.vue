@@ -87,48 +87,52 @@
                       >(Alias: {{flatten([alias, alias_description]).join(", ")}})</span>
                     </p>
                     <div style="margin-bottom:0.5rem" v-if="aaLength">
-                      <span>Canonical Isoform: </span>
+                      <span>Canonical Isoform:</span>
                       <span v-if="aaLength.is_agreed === 'agree'">
                         {{aaLength.combined.join(', ')}} a.a.
-                        <b-tooltip 
-                          label="Agreed between Ensembl and Uniprot databases." 
-                          type="is-dark" multilined>
+                        <b-tooltip
+                          label="Agreed between Ensembl and Uniprot databases."
+                          type="is-dark"
+                          multilined
+                        >
                           <b-icon icon="thumbs-up" pack="far"></b-icon>
                         </b-tooltip>
                       </span>
 
                       <span v-else-if="aaLength.is_agreed === 'intersect'">
                         {{aaLength.combined.join(', ')}} a.a.
-                        <b-tooltip 
-                          label="Intersect between Ensembl and Uniprot databases." 
-                          type="is-dark" multilined>
+                        <b-tooltip
+                          label="Intersect between Ensembl and Uniprot databases."
+                          type="is-dark"
+                          multilined
+                        >
                           <b-icon icon="dot-circle" pack="far"></b-icon>
                         </b-tooltip>
-
-                        Ensembl: {{aaLength.ensembl.join(', ')}} a.a.; 
+                        Ensembl: {{aaLength.ensembl.join(', ')}} a.a.;
                         Uniprot: {{aaLength.uniprot.join(', ')}} a.a.
                       </span>
 
-                      
                       <span v-else-if="aaLength.is_agreed === 'disagree'">
-                        Ensembl: {{aaLength.ensembl.join(', ')}} a.a.; 
+                        Ensembl: {{aaLength.ensembl.join(', ')}} a.a.;
                         Uniprot: {{aaLength.uniprot.join(', ')}} a.a.
-
-                        <b-tooltip 
-                          label="Disagree between Ensembl and Uniprot databases." 
-                          type="is-dark" multilined>
+                        <b-tooltip
+                          label="Disagree between Ensembl and Uniprot databases."
+                          type="is-dark"
+                          multilined
+                        >
                           <b-icon icon="thumbs-down" pack="far"></b-icon>
                         </b-tooltip>
                       </span>
 
                       <span v-else-if="aaLength.is_agreed === 'one-missing'">
                         {{aaLength.combined.join(', ')}} a.a.
-
                         <b-tooltip
                           :label="aaLength.uniprot ? 
                             'Data missing in Ensembl databases.' 
-                            : 'Data missing in Uniprot databases.'" 
-                          type="is-dark" multilined>
+                            : 'Data missing in Uniprot databases.'"
+                          type="is-dark"
+                          multilined
+                        >
                           <b-icon icon="exclamation-triangle" pack="fas"></b-icon>
                         </b-tooltip>
                       </span>
@@ -415,11 +419,7 @@
                       >{{props.row.phenotype.join(', ')}}</b-table-column>
 
                       <b-table-column field="cellline" label="Cell Line">
-                        <ExpandableRow
-                          :elements="props.row.cellline"
-                          preview_items="5"
-                          bold
-                        ></ExpandableRow>
+                        <ExpandableRow :elements="props.row.cellline" preview_items="5" bold></ExpandableRow>
                       </b-table-column>
                     </template>
                   </b-table>
@@ -543,7 +543,7 @@
                   reflink="/about#huri"
                 ></AssayTitle>
                 <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
-                  <CytoscapeView :head="geneName" :elements="huriData"/>
+                  <CytoscapeView :head="geneName" :elements="huriData" />
                 </b-modal>
 
                 <div class="content">
@@ -687,19 +687,17 @@
                         >{{props.row.inheritance}}</b-table-column>
 
                         <b-table-column field="hallmark" label="Hallmark" width="50">
-                          <a v-if="props.row.hallmark"
+                          <a
+                            v-if="props.row.hallmark"
                             :href="'https://cancer.sanger.ac.uk/cosmic/census-page/' 
-                              + geneName">
+                              + geneName"
+                          >
                             <b-icon pack="fas" icon="check-circle"></b-icon>
                           </a>
                           <b-icon v-else pack="fas" icon="times-circle"></b-icon>
                         </b-table-column>
 
-                        <b-table-column
-                          field="germline"
-                          label="Germline"
-                          width="400"
-                        >
+                        <b-table-column field="germline" label="Germline" width="400">
                           <ExpandableRow
                             v-if="props.row.tumour_germline"
                             class="is-capitalized"
@@ -708,10 +706,7 @@
                           ></ExpandableRow>
                         </b-table-column>
 
-                        <b-table-column
-                          field="somatic"
-                          label="Somatic"
-                        >
+                        <b-table-column field="somatic" label="Somatic">
                           <ExpandableRow
                             v-if="props.row.tumour_somatic"
                             class="is-capitalized"
@@ -867,10 +862,7 @@
                     >
                       <template slot-scope="props">
                         <b-table-column field="id" label="Test ID">
-                          <a
-                            :href="props.row.link"
-                            target="_blank"
-                          >{{props.row.id}}</a>
+                          <a :href="props.row.link" target="_blank">{{props.row.id}}</a>
                         </b-table-column>
 
                         <b-table-column field="name" label="Test Name">{{props.row.name}}</b-table-column>
@@ -959,11 +951,13 @@ const AssayTitle = {
   render() {
     let linkBadge = undefined;
     if (this.dblink) {
-      linkBadge = <LinkBadge
-        reflink={this.dblink}
-        label={this.dblabel}
-        style="vertical-align: super;"
-      />
+      linkBadge = (
+        <LinkBadge
+          reflink={this.dblink}
+          label={this.dblabel}
+          style="vertical-align: super;"
+        />
+      );
     }
 
     return (
@@ -984,7 +978,7 @@ const AssayTitle = {
           position="is-bottom"
           label="Visit source database(s)"
         >
-        {linkBadge}
+          {linkBadge}
         </b-tooltip>
         <b-tooltip
           style="display:initial;"
@@ -999,6 +993,56 @@ const AssayTitle = {
   }
 };
 
+function initialState() {
+  return {
+    hash: "",
+    isExpandDetail: false,
+    isLoading: true,
+    loadingTranscriptsStatus: 0,
+    showErrorComponent: false,
+    showTranscripts: false,
+    errorResponse: undefined,
+    isFloat: false,
+    description: "",
+    entrezID: "",
+    ensemblID: "",
+    uniprotID: [],
+    omimID: undefined,
+    aaLength: {},
+    lastUpdate: "",
+    transcriptList: [],
+    alias: [],
+    alias_description: [],
+    hasAssay: {},
+    hasPhenotype: {},
+    hasClinicalInterest: {},
+    orthologyData: [],
+    orthologDbAvailable: [
+      "S. cerevisiae",
+      "S. pombe",
+      "M. musculus",
+      "D. melanogaster",
+      "C. elegans",
+      "R. norvegicus",
+      "D. rerio"
+    ],
+    huri: [],
+    showCytoscapeView: false,
+    genomeRNAiTotalEntries: 0,
+    genomeRNAiData: [],
+    genomeCRISPRData: [],
+    genomeCRISPRStats: {},
+    overexprData: [],
+    clinvarData: {},
+    variantStats: [],
+    omimPhenotype: [],
+    cancerGeneCensusPhenotype: [],
+    orphanetData: [],
+    invitaeData: [],
+    ambryData: [],
+    genedxData: []
+  };
+}
 export default {
   name: "gene-details",
   components: {
@@ -1016,248 +1060,18 @@ export default {
     this.hash = window.location.hash;
   },
   beforeRouteUpdate(to, from, next) {
+    this.resetData();
+    this.loadData(to.params.name);
     next();
   },
   mounted() {
     // Update highlighted navbar item
     this.$emit("updateNav", "search");
 
-    // Display loading animation
-    const loadingComponent = this.$loading.open();
-
-    // Get detail info
-    this.$http
-      .get(this.$apiEntryPoint + "/detail/" + this.geneName)
-      .then(
-        response => {
-          // Make sure the response has a non-empty body
-          if (
-            !Object.prototype.hasOwnProperty.call(response, "body") ||
-            typeof response.body == "string"
-          )
-            return;
-          const json = response.body;
-
-          // Populate basic information
-          this.description = json.description;
-          this.entrezID = json.entrez_id;
-          this.ensemblID = json.ensembl_id;
-          this.uniprotID = json.uniprot_id;
-          this.aaLength = json.aa_length;
-          this.alias = json.alias;
-          this.alias_description = json.alias_description;
-
-          // Handle date
-          const date = new Date(json.last_update);
-          this.lastUpdate =
-            date.getFullYear() +
-            "-" +
-            (date.getMonth() + 1) +
-            "-" +
-            date.getDate();
-
-          // Populate Assay information
-          if (Object.prototype.hasOwnProperty.call(json, "genome_rnai")) {
-            this.hasAssay.any = true;
-            this.hasAssay.genome_rnai = true;
-            this.genomeRNAiData = json.genome_rnai.hits;
-            this.genomeRNAiTotalEntries = json.genome_rnai.total_entries;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "genome_crispr")) {
-            this.hasAssay.any = true;
-            this.hasAssay.genome_crispr = true;
-            this.genomeCRISPRData = json.genome_crispr;
-            this.genomeCRISPRStats = json.genome_crispr_stats;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "orthology")) {
-            this.hasAssay.any = true;
-            this.hasAssay.orthology = true;
-            this.orthologyData = json.orthology;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "overexpression")) {
-            // Over Expression
-            this.hasAssay.any = true;
-            this.hasAssay.overexpression = true;
-            this.overexprData = json.overexpression;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "huri")) {
-            // Human Interactome
-            this.hasAssay.any = true;
-            this.hasAssay.huri = true;
-            this.huriData = json.huri;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "omim")) {
-            // OMIM Phenotype
-            this.hasPhenotype.any = true;
-            this.hasPhenotype.omim = true;
-            this.omimPhenotype = json.omim.records;
-            this.omimID = json.omim.omim_id;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "clinvar")) {
-            // Clinvar Phenotype
-            this.hasPhenotype.any = true;
-            this.hasPhenotype.clinvar = true;
-            this.clinvarData = json.clinvar;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "cancer_census")) {
-            // Cancer Census Phenotype
-            this.hasPhenotype.any = true;
-            this.hasPhenotype.cancer_census = true;
-            this.cancerGeneCensusPhenotype = json.cancer_census;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "orphanet")) {
-            // Orphanet Phenotype
-            this.hasPhenotype.any = true;
-            this.hasPhenotype.orphanet = true;
-            this.orphanetData = json.orphanet;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "invitae")) {
-            // Invitiae Panel
-            this.hasClinicalInterest.any = true;
-            this.hasClinicalInterest.invitae = true;
-            this.invitaeData = json.invitae;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "ambry")) {
-            // Ambry Panel
-            this.hasClinicalInterest.any = true;
-            this.hasClinicalInterest.ambry = true;
-            this.ambryData = json.ambry;
-          }
-
-          if (Object.prototype.hasOwnProperty.call(json, "genedx")) {
-            // GeneDx Panel
-            this.hasClinicalInterest.any = true;
-            this.hasClinicalInterest.genedx = true;
-            this.genedxData = json.genedx;
-          }
-        },
-        response => {
-          // Error handling
-          this.showErrorComponent = true;
-          this.errorResponse = response;
-        }
-      )
-      .then(() => {
-        if (this.showErrorComponent) return;
-        if (!this.ensemblID) return;
-
-        this.loadingTranscriptsStatus = 1;
-
-        // Get Ensembl Data
-        this.$http
-          .get(
-            "https://rest.ensembl.org/lookup/id/" +
-              this.ensemblID +
-              "?expand=1;content-type=application/json"
-          )
-          .then(
-            res => {
-              const json = res.body;
-
-              if (Object.prototype.hasOwnProperty.call(json, "Transcript")) {
-                // Populate transcripts database
-                for (const entity of json.Transcript) {
-                  const newEntry = {
-                    id: entity.id,
-                    name: entity.display_name,
-                    biotype: entity.biotype,
-                    num_exons: entity.Exon.length,
-                    peptide_id: entity.Translation
-                      ? entity.Translation.id
-                      : "NA",
-                    peptide_length: entity.Translation
-                      ? entity.Translation.length
-                      : "NA"
-                  };
-
-                  // Make sure canonical entry always goes to the front
-                  if (entity.is_canonical) {
-                    this.transcriptList.unshift(newEntry);
-                  } else {
-                    this.transcriptList.push(newEntry);
-                  }
-                }
-              }
-            },
-            res => {
-              // Error handling
-              this.loadingTranscriptsStatus = -1;
-              this.showErrorComponent = true;
-              this.errorResponse = res;
-            }
-          );
-      })
-      .then(() => {
-        // Close loading animation
-        loadingComponent.close();
-        this.isLoading = false;
-
-        // Scroll to element if set by hash
-        if (this.hash !== "") {
-          const element = document.getElementById(this.hash.replace("#", ""));
-          if (element) this.$refs.scrollactive.scrollTo(element);
-        }
-      });
+    this.loadData(this.geneName);
   },
   data() {
-    return {
-      hash: "",
-      isExpandDetail: false,
-      isLoading: true,
-      loadingTranscriptsStatus: 0,
-      showErrorComponent: false,
-      showTranscripts: false,
-      errorResponse: undefined,
-      isFloat: false,
-      description: "",
-      entrezID: "",
-      ensemblID: "",
-      uniprotID: [],
-      omimID: undefined,
-      aaLength: {},
-      lastUpdate: "",
-      transcriptList: [],
-      alias: [],
-      alias_description: [],
-      hasAssay: {},
-      hasPhenotype: {},
-      hasClinicalInterest: {},
-      orthologyData: [],
-      orthologDbAvailable: [
-        "S. cerevisiae",
-        "S. pombe",
-        "M. musculus",
-        "D. melanogaster",
-        "C. elegans",
-        "R. norvegicus",
-        "D. rerio"
-      ],
-      huri: [],
-      showCytoscapeView: false,
-      genomeRNAiTotalEntries: 0,
-      genomeRNAiData: [],
-      genomeCRISPRData: [],
-      genomeCRISPRStats: {},
-      overexprData: [],
-      clinvarData: {},
-      variantStats: [],
-      omimPhenotype: [],
-      cancerGeneCensusPhenotype: [],
-      orphanetData: [],
-      invitaeData: [],
-      ambryData: [],
-      genedxData: []
-    };
+    return initialState();
   },
   computed: {
     geneName: function() {
@@ -1265,6 +1079,197 @@ export default {
     }
   },
   methods: {
+    resetData() {
+      Object.assign(this.$data, initialState());
+    },
+    loadData(gene) {
+      // Display loading animation
+      const loadingComponent = this.$loading.open();
+
+      // Get detail info
+      this.$http
+        .get(this.$apiEntryPoint + "/detail/" + gene)
+        .then(
+          response => {
+            // Make sure the response has a non-empty body
+            if (
+              !Object.prototype.hasOwnProperty.call(response, "body") ||
+              typeof response.body == "string"
+            )
+              return;
+            const json = response.body;
+
+            // Populate basic information
+            this.description = json.description;
+            this.entrezID = json.entrez_id;
+            this.ensemblID = json.ensembl_id;
+            this.uniprotID = json.uniprot_id;
+            this.aaLength = json.aa_length;
+            this.alias = json.alias;
+            this.alias_description = json.alias_description;
+
+            // Handle date
+            const date = new Date(json.last_update);
+            this.lastUpdate =
+              date.getFullYear() +
+              "-" +
+              (date.getMonth() + 1) +
+              "-" +
+              date.getDate();
+
+            // Populate Assay information
+            if (Object.prototype.hasOwnProperty.call(json, "genome_rnai")) {
+              this.hasAssay.any = true;
+              this.hasAssay.genome_rnai = true;
+              this.genomeRNAiData = json.genome_rnai.hits;
+              this.genomeRNAiTotalEntries = json.genome_rnai.total_entries;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "genome_crispr")) {
+              this.hasAssay.any = true;
+              this.hasAssay.genome_crispr = true;
+              this.genomeCRISPRData = json.genome_crispr;
+              this.genomeCRISPRStats = json.genome_crispr_stats;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "orthology")) {
+              this.hasAssay.any = true;
+              this.hasAssay.orthology = true;
+              this.orthologyData = json.orthology;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "overexpression")) {
+              // Over Expression
+              this.hasAssay.any = true;
+              this.hasAssay.overexpression = true;
+              this.overexprData = json.overexpression;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "huri")) {
+              // Human Interactome
+              this.hasAssay.any = true;
+              this.hasAssay.huri = true;
+              this.huriData = json.huri;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "omim")) {
+              // OMIM Phenotype
+              this.hasPhenotype.any = true;
+              this.hasPhenotype.omim = true;
+              this.omimPhenotype = json.omim.records;
+              this.omimID = json.omim.omim_id;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "clinvar")) {
+              // Clinvar Phenotype
+              this.hasPhenotype.any = true;
+              this.hasPhenotype.clinvar = true;
+              this.clinvarData = json.clinvar;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "cancer_census")) {
+              // Cancer Census Phenotype
+              this.hasPhenotype.any = true;
+              this.hasPhenotype.cancer_census = true;
+              this.cancerGeneCensusPhenotype = json.cancer_census;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "orphanet")) {
+              // Orphanet Phenotype
+              this.hasPhenotype.any = true;
+              this.hasPhenotype.orphanet = true;
+              this.orphanetData = json.orphanet;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "invitae")) {
+              // Invitiae Panel
+              this.hasClinicalInterest.any = true;
+              this.hasClinicalInterest.invitae = true;
+              this.invitaeData = json.invitae;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "ambry")) {
+              // Ambry Panel
+              this.hasClinicalInterest.any = true;
+              this.hasClinicalInterest.ambry = true;
+              this.ambryData = json.ambry;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "genedx")) {
+              // GeneDx Panel
+              this.hasClinicalInterest.any = true;
+              this.hasClinicalInterest.genedx = true;
+              this.genedxData = json.genedx;
+            }
+          },
+          response => {
+            // Error handling
+            this.showErrorComponent = true;
+            this.errorResponse = response;
+          }
+        )
+        .then(() => {
+          if (this.showErrorComponent) return;
+          if (!this.ensemblID) return;
+
+          this.loadingTranscriptsStatus = 1;
+
+          // Get Ensembl Data
+          this.$http
+            .get(
+              "https://rest.ensembl.org/lookup/id/" +
+                this.ensemblID +
+                "?expand=1;content-type=application/json"
+            )
+            .then(
+              res => {
+                const json = res.body;
+
+                if (Object.prototype.hasOwnProperty.call(json, "Transcript")) {
+                  // Populate transcripts database
+                  for (const entity of json.Transcript) {
+                    const newEntry = {
+                      id: entity.id,
+                      name: entity.display_name,
+                      biotype: entity.biotype,
+                      num_exons: entity.Exon.length,
+                      peptide_id: entity.Translation
+                        ? entity.Translation.id
+                        : "NA",
+                      peptide_length: entity.Translation
+                        ? entity.Translation.length
+                        : "NA"
+                    };
+
+                    // Make sure canonical entry always goes to the front
+                    if (entity.is_canonical) {
+                      this.transcriptList.unshift(newEntry);
+                    } else {
+                      this.transcriptList.push(newEntry);
+                    }
+                  }
+                }
+              },
+              res => {
+                // Error handling
+                this.loadingTranscriptsStatus = -1;
+                this.showErrorComponent = true;
+                this.errorResponse = res;
+              }
+            );
+        })
+        .then(() => {
+          // Close loading animation
+          loadingComponent.close();
+          this.isLoading = false;
+
+          // Scroll to element if set by hash
+          if (this.hash !== "") {
+            const element = document.getElementById(this.hash.replace("#", ""));
+            if (element) this.$refs.scrollactive.scrollTo(element);
+          }
+        });
+    },
     showCytoscape() {
       this.showCytoscapeView = true;
     },

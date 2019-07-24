@@ -1,25 +1,25 @@
 <template>
   <div class="search-bar is-fullwidth">
-    <div class="columns">
-      <div class="column">
-        <b-taginput
-          ref="searchBar"
-          v-model="genes"
-          :data="autoCompleteRes"
-          size="is-medium"
-          :loading="isFetching"
-          autocomplete
-          field="gene_symbol"
-          @typing="getGeneNames"
-          class="search"
-          @submit="searchGenes"
-          placeholder="Search with Gene Symbol"
-        >
-
-          <template slot-scope="props">
-            <!-- Full-view autocomplete list -->
-            <div>
-              <div class="columns is-marginless" v-if="isFullView">
+    <b-field>
+      <b-taginput
+        icon="search"
+        icon-pack="fas"
+        ref="searchBar"
+        v-model="genes"
+        :data="autoCompleteRes"
+        size="is-medium"
+        :loading="isFetching"
+        autocomplete
+        field="gene_symbol"
+        @typing="getGeneNames"
+        class="search"
+        @submit="searchGenes"
+        placeholder="Search with Gene Symbol"
+      >
+        <template slot-scope="props">
+          <!-- Full-view autocomplete list -->
+          <div>
+            <div class="columns is-marginless" v-if="isFullView">
               <div class="column is-one-third no-topbottom-padding">
                 <p
                   class="is-size-5"
@@ -33,7 +33,7 @@
                   , Alias:
                   <span v-html="props.option.alias_symbol.join(', ')"></span>
                 </i>
-                <br>
+                <br />
                 <p class="is-size-7 is-capitalized">{{props.option.gene_description}}</p>
               </div>
             </div>
@@ -51,44 +51,50 @@
                 <span v-html="props.option.alias_symbol.join(', ')"></span>
               </i>
             </div>
-            </div>
-          </template>
+          </div>
+        </template>
 
-          <template slot="empty" v-if="!isFetching">{{emptyMessage}}</template>
-        </b-taginput>
-      </div>
-      <div class="column is-narrow" v-if="showButton">
+        <template slot="empty">{{emptyMessage}}</template>
+      </b-taginput>
+      <p class="control" style="margin-left:-0.5rem">
         <button
-          class="button is-medium is-fullwidth is-fullheight is-info is-inverted is-outlined"
+          v-if="showButton"
+          class="button is-medium is-fullwidth is-fullheight is-info has-text-white"
           @click="searchGenes"
         >Search</button>
-      </div>
-    </div>
+      </p>
+    </b-field>
   </div>
 </template>
 
 <script>
 import debounce from "lodash/debounce";
+import uniq from "lodash/uniq";
+import { Promise } from "q";
+
+function initialState() {
+  return {
+    autoCompleteRes: [],
+    isFetching: false,
+    emptyMessage: "No genes found.",
+    isFullView: true,
+    geneNames: [],
+    genes: []
+  };
+}
 
 export default {
   name: "SearchBar",
   props: {
-    showButton: Boolean,
-    genes: {
-      default: () => [],
-      type: Array
-    }
+    showButton: Boolean
   },
   data() {
-    return {
-      autoCompleteRes: [],
-      isFetching: false,
-      emptyMessage: "No genes found.",
-      isFullView: true,
-      geneNames: []
-    };
+    return initialState();
   },
   methods: {
+    resetData() {
+      Object.assign(this.$data, initialState());
+    },
     searchGenes() {
       // Extract gene names
       for (let gene of this.genes) {
@@ -100,7 +106,7 @@ export default {
       }
 
       // Give a warning if no gene was inputed
-      if (this.geneNames.length == 0) {
+      if (this.geneNames.length === 0) {
         this.$snackbar.open({
           message: "Please select a gene from the dropdown menu.",
           type: "is-warning",
@@ -110,43 +116,28 @@ export default {
         return;
       }
 
+      // Find unique genes
+      this.geneNames = uniq(this.geneNames);
+
+      // If only one gene, jump directly to detail page
+      let dest = {};
+      if (this.geneNames.length === 1) {
+        dest = { path: "/gene/" + this.geneNames.join(",") };
+      } else {
+        dest = {
+          path: "/query",
+          query: { gene: this.geneNames.join(",") }
+        };
+      }
+
       // Call router
-      const dest = {
-        path: "/query",
-        query: { gene: this.geneNames.join(",") }
-      };
+      this.resetData();
       this.$router.push(dest);
     },
-    getGeneNames: debounce(function(text) {
-      // User have to type in at least two characters before initialting an autocomplete search to save computing resources
-      if (text.length < 2) {
-        this.isFetching = false;
-        this.emptyMessage = "Please enter at least 2 characters.";
-        this.autoCompleteRes = [];
-        return;
-      }
-
-      // Determine which dropdown style should be used
-      const autocompleteDropdownWidth = document.getElementsByClassName("autocomplete control")[0].clientWidth;
-      if (autocompleteDropdownWidth < 450 ) {
-        // Use full-size style
-        this.isFullView = false;
-      } else {
-        // Use compact style
-        this.isFullView = true;
-      }
-
-      // Initiaite an autocomplete search
-      // Here we use the NCBI Autocomplete API
-      this.text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      this.isFetching = true;
-      this.autoCompleteRes = [];
-      this.emptyMessage = "No genes found.";
+    autocomplete({ text, resolve, reject }) {
       this.$http
         .get(
-          `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${
-            this.text
-          }&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
+          `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${text}&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
         )
         .then(data => {
           const response = data.body;
@@ -182,8 +173,54 @@ export default {
           }
 
           this.autoCompleteRes = this.autoCompleteRes.concat(aliasList);
-          this.isFetching = false;
+          resolve();
+        })
+        .catch(res => {
+          if (this.attempt++ < 2) {
+            // Wait for 1 second before retry
+            setTimeout(
+              () => this.autocomplete({ text, resolve, reject }),
+              1000
+            );
+          } else {
+            reject(res);
+          }
         });
+    },
+    getGeneNames: debounce(function(text) {
+      // User have to type in at least two characters before initialting an autocomplete search to save computing resources
+      if (text.length < 2) {
+        this.isFetching = false;
+        this.emptyMessage = "Please enter at least 2 characters.";
+        this.autoCompleteRes = [];
+        return;
+      }
+
+      // Determine which dropdown style should be used
+      const autocompleteDropdownWidth = document.getElementsByClassName(
+        "autocomplete control"
+      )[0].clientWidth;
+      if (autocompleteDropdownWidth < 450) {
+        // Use full-size style
+        this.isFullView = false;
+      } else {
+        // Use compact style
+        this.isFullView = true;
+      }
+
+      // Initiaite an autocomplete search
+      // Here we use the NCBI Autocomplete API
+      this.text = text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      this.isFetching = true;
+      this.autoCompleteRes = [];
+      this.emptyMessage = "Fetching gene info...";
+      this.attempt = 0;
+      new Promise((resolve, reject) =>
+        this.autocomplete({ text, resolve, reject })
+      ).then(() => {
+        this.isFetching = false;
+        this.emptyMessage = "No genes found.";
+      });
     })
   }
 };
@@ -193,6 +230,7 @@ export default {
 .search {
   vertical-align: baseline !important;
   height: 100%;
+  width: 100%;
 }
 .no-topbottom-padding {
   display: flex;

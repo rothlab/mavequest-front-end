@@ -1,7 +1,7 @@
 <template>
   <div>
     <section class="hero is-info is-hidden-mobile is-bold">
-      <div class="hero-body">
+      <div class="hero-body header-control">
         <div class="container">
           <div class="level">
             <div class="level-left">
@@ -9,8 +9,8 @@
               <h2 class="subtitle" v-if="subtitle">{{subtitle}}</h2>
             </div>
 
-            <div class="level-right search">
-              <SearchBar showButton :genes="genes"></SearchBar>
+            <div class="level-right search box">
+              <SearchBar showButton></SearchBar>
             </div>
           </div>
         </div>
@@ -56,6 +56,10 @@ export default {
 </script>
 
 <style scoped>
+.header-control {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
 .search {
   width: 60%
 }

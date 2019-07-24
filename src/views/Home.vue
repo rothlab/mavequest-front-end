@@ -4,15 +4,15 @@
       <div class="container search-display">
         <h1 class="title">MaveQuest</h1>
         <h2 class="subtitle">Explore potential assays and phenotypes for human gene variants</h2>
-        <div class="container is-marginless is-fullwidth">
+        <div class="container is-marginless is-fullwidth box">
           <div class="columns">
             <div class="column">
-              <SearchBar showButton :filters="filters"></SearchBar>
+              <SearchBar showButton></SearchBar>
             </div>
             <div class="column is-narrow">
               <b-dropdown hoverable class="is-fullwidth is-fullheight" @change="jumpToSummaryWithParam">
                 <button slot="trigger" 
-                  class="button is-medium is-white has-text-info 
+                  class="button is-medium is-info is-outlined
                     is-fullwidth is-fullheight">
                   <span>Summary</span>
                   <b-icon pack="fas" icon="sort-down"></b-icon>
@@ -89,7 +89,7 @@ export default {
   width: 100% !important;
 }
 .search-display {
-  min-width: 80vw;
+  min-width: 60vw;
 }
 .fill-screen-withheader {
   min-height: calc(100vh - 3.25rem - 13.5rem);

@@ -44,7 +44,7 @@
             >{{entry.method}}</a>
           </div>
           <div class="source">
-            <b-tooltip :label="entry.ref" type="is-dark">
+            <b-tooltip :label="entry.ref" type="is-dark" position="is-left">
               <a
                 :href="'https://www.ncbi.nlm.nih.gov/pubmed/' 
                     + entry.pubmed_id"

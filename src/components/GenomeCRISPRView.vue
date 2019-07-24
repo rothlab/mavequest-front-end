@@ -13,7 +13,7 @@
         Click&nbsp;
         <b-icon 
           pack="fas" type="is-link" size="is-small" icon="chevron-right">
-        </b-icon>&nbsp;to show distribution of records in database
+        </b-icon>&nbsp;to show percentage of hits in the database
       </template>
 
       <template slot-scope="props">
@@ -37,7 +37,9 @@
       </template>
 
       <template slot="detail" slot-scope="props">
-        <VueApexCharts type="bar" :series="setStats(props)" :options="chartOptions" height="120"></VueApexCharts>
+        <VueApexCharts type="bar" :series="getSeries(props)" 
+          :height="getHeight(props)" :options="chartOptions">
+        </VueApexCharts>
       </template>
     </b-table>
   </div>
@@ -61,9 +63,7 @@ export default {
     return {
       chartOptions: {
         chart: {
-          stacked: true,
-          stackType: "100%",
-          toolbar: { show: false }
+          toolbar: { show: false },
         },
         dataLabels: { enabled: false },
         plotOptions: {
@@ -71,17 +71,13 @@ export default {
             horizontal: true
           }
         },
-        stroke: {
-          width: 1,
-          colors: ["#fff"]
-        },
         grid: {
-          show: false,
+          show: true,
           xaxis: { lines: { show: false } },
-          yaxis: { lines: { show: false } }
+          yaxis: { lines: { show: false } },
         },
         title: {
-          text: "Distribution of records in the database",
+          text: "Percentage of hits in the database",
           margin: 0,
           floating: true,
           style: {
@@ -93,14 +89,32 @@ export default {
           y: {
             formatter: function(value) {
               return value.toFixed(2) + "% of total records";
+            },
+            title: {
+              formatter: () => ""
             }
+          },
+          marker: {show: false}
+        },
+        xaxis: {
+          labels: {
+            formatter: (value) => value.toFixed(2)
+          },
+          title: {
+            text: "Percentage of Hits"
           }
-        }
+        },
+        yaxis: {
+          labels: {
+            offsetY: 3.5
+          }
+        },
+        legend: {show: false}
       }
     };
   },
   methods: {
-    setStats(props) {
+    getStats(props) {
       // Construct a key
       const pubmed = props.row.source;
       const condition = props.row.condition;
@@ -110,21 +124,30 @@ export default {
         e => e.condition === condition && e.num_hits > 0
       );
 
-      let series = stats.map(e => {
-        return {
-          name: e.cellline,
-          data: [e.percent_hits * 100]
-        };
-      });
+      return stats;
+    },
+    getSeries(props) {
+      const stats = this.getStats(props);
 
-      series.push({
-        name: "Non-hits",
-        data: [
-          (1 - stats.map(e => e.percent_hits).reduce((a, b) => a + b, 0)) * 100
-        ]
-      });
+      // this.chartOptions.xaxis['categories'] = 
+      //   stats.map(e => e.cellline.toString());
+
+      const series = [{
+        data: stats.map(e => {
+          return {
+            x: e.cellline.toString(),
+            y: e.percent_hits * 100
+          }
+        })
+      }];
 
       return series;
+    },
+    getHeight(props) {
+      const stats = this.getStats(props);
+
+      const cellline = stats.map(e => e.cellline.toString());
+      return 90 + cellline.length * 20;
     }
   }
 };

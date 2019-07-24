@@ -247,7 +247,18 @@
                         :selected="transcriptList[0]"
                       >
                         <template slot="bottom-left">
-                          <b-tag type="is-info" size="is-medium">Canonical isoform</b-tag>
+                          <b-taglist>
+                            <b-tag type="is-info" size="is-medium">
+                              Canonical isoform
+                            </b-tag>
+                            <b-tag type="is-light" size="is-medium">
+                              Data Source:&nbsp;
+                              <a 
+                                href="https://useast.ensembl.org/index.html" 
+                                target="_blank">Ensembl
+                              </a>
+                            </b-tag>
+                          </b-taglist>
                         </template>
 
                         <template slot="empty">
@@ -581,7 +592,8 @@
                     geneName + '[gene] AND &quot;single gene&quot;[Properties]'"
                   reflink="/about#clinvar"
                 ></AssayTitle>
-                <ClinvarView :clinvarData="clinvarData"></ClinvarView>
+                <ClinvarView :clinvarData="clinvarData"
+                  :aaLength="Math.max(aaLength.combined)"></ClinvarView>
               </div>
 
               <div v-if="hasPhenotype.omim">

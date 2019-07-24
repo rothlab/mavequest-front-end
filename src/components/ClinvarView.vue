@@ -5,7 +5,11 @@
     </header>
     <div class="card-content clinvar-stats clinvar-stats-adaptive">
       <apexchart type="bar" height="140px" :options="variantSumChartOptions" :series="variantStats"></apexchart>
-      <div v-if="this.clinvarData.all_variants.others > 0" class="has-text-grey-light" style="position:relative; top:-2rem; float:right">
+      <div
+        v-if="this.clinvarData.all_variants.others > 0"
+        class="has-text-grey-light"
+        style="position:relative; top:-2rem; float:right"
+      >
         <b-tooltip
           type="is-light"
           position="is-left"
@@ -21,139 +25,55 @@
     </div>
 
     <header class="card-header">
-      <p class="card-header-title">(Likely) Pathogenic Variants</p>
+      <p class="card-header-title">Non-synonymous SNV Distributions</p>
     </header>
-    <div class="card-content">
-      <div v-if="pathoVariants.length > 0 || hasZoomedIn" class="pathogenic-stats pathogenic-stats-adaptive">
+    <div class="card-content" v-if="pathoVariants || benignVariants">
+      <div
+        class="pathogenic-stats pathogenic-stats-adaptive"
+      >
         <apexchart
           type="scatter"
           height="200px"
-          :options="pathogenicDistriChartOptions"
-          :series="pathogenicDistriData"
+          :options="distriChartOptions"
+          :series="distriData"
         ></apexchart>
-        <span 
-          class="has-text-grey-light is-hidden-mobile" 
+      </div>
+
+      <span
+          class="has-text-grey-light is-hidden-mobile"
           style="position:relative; top:-2rem; float:right"
         >
           <b-icon pack="fas" icon="lightbulb" size="is-small"></b-icon>
           <span v-if="!hasZoomedIn"> Select a region to zoom in</span>
-          <span v-else> Click 
-            <b-icon pack="fas" icon="home" size="is-small"></b-icon>
-            to reset zoom</span>
+          <span v-else>
+            Click
+            <b-icon pack="fas" icon="home" size="is-small"></b-icon> to reset zoom
+          </span>
         </span>
-      </div>
+    </div>
 
-      <div v-if="pathoVariants.length > 0 || hasZoomedIn" class="clinvar-table">
-        <b-table
-          :data="pathoVariants"
-          narrowed
-          paginated
-          per-page="10"
-          pagination-simple
-          hoverable
-          detailed
-          detailed-key="id"
-          default-sort="review_star"
-          default-sort-direction="desc"
-        >
-          <template slot="bottom-left">
-            <b-tag size="is-medium" style="margin-right: 5px;"
-              type="is-info" v-if="hasZoomedIn"
-            >Limited to Selected SNVs</b-tag>
-            Click&nbsp;
-            <b-icon pack="fas" type="is-link" size="is-small" icon="chevron-right"></b-icon>&nbsp;to Show Phenotypes
-          </template>
-
-          <template slot-scope="props">
-            <b-table-column field="id" label="Clinvar ID">
-              <a
-                :href="'https://www.ncbi.nlm.nih.gov/clinvar/variation/'+ props.row.id"
-                target="_blank"
-              >{{props.row.id}}</a>
-            </b-table-column>
-
-            <b-table-column class="is-capitalized" field="name" label="Name">
-              <span style="word-break: break-all;">{{props.row.name}}</span>
-            </b-table-column>
-
-            <b-table-column field="review_star" label="Review Status" sortable>
-              <b-tooltip
-                class="is-capitalized"
-                type="is-dark"
-                :label="props.row.review_stats"
-                multilined
-                size="is-small"
-                :position="isMobile ? 'is-left' : 'is-top'"
-              >
-                <b-icon
-                  pack="fas"
-                  icon="star"
-                  type="is-warning"
-                  v-for="n in props.row.review_star"
-                  v-bind:key="n"
-                ></b-icon>
-                <b-icon pack="far" icon="star" type="is-warning" v-if="props.row.review_star < 1"></b-icon>
-              </b-tooltip>
-            </b-table-column>
-
-            <b-table-column field="count" label="Count">{{props.row.count}}</b-table-column>
-
-            <b-table-column
-              sortable
-              class="is-capitalized"
-              field="type"
-              label="Type"
-            >{{props.row.type === "single nucleotide variant" ? "SNV" : props.row.type}}</b-table-column>
-
-            <b-table-column class="is-capitalized" field="origin" label="Origin">
-              <ExpandableRow :elements="props.row.origin.split('/')" preview_items="5"></ExpandableRow>
-            </b-table-column>
-          </template>
-
-          <template slot="detail" slot-scope="props">
-            <p class="title is-5">Phenotype</p>
-            <div class="columns">
-              <div class="column">
-                <p
-                  class="is-marginless is-capitalized"
-                  v-for="p in splitInChunk(props.row.phenotype, 2, 1)"
-                  v-bind:key="p"
-                >{{p}}</p>
-              </div>
-              <div class="column">
-                <p
-                  class="is-marginless is-capitalized"
-                  v-for="p in splitInChunk(props.row.phenotype, 2, 2)"
-                  v-bind:key="p"
-                >{{p}}</p>
-              </div>
-            </div>
-          </template>
-        </b-table>
-      </div>
-      <div v-else class="has-text-centered">No (Likely) pathogenic variants available.</div>
+    <div class="card-content" v-else>
+      <p class="has-text-centered">No non-synonmous SNVs for this gene.</p>
     </div>
   </div>
 </template>
 
 <script>
 import VueApexCharts from "vue-apexcharts";
-import ExpandableRow from "@/components/ExpandableRow.vue";
-import chunk from "lodash/chunk";
 
 export default {
   name: "clinvar-view",
   components: {
-    apexchart: VueApexCharts,
-    ExpandableRow
+    apexchart: VueApexCharts
   },
   props: {
-    clinvarData: Object
+    clinvarData: Object,
+    aaLength: Number
   },
   data() {
     return {
       isMobile: window.innerWidth < 768,
-      hasZoomedIn: false,
+      hasZoomedIn: 0,
       variantSumChartOptions: {
         chart: {
           stacked: true,
@@ -219,7 +139,7 @@ export default {
           }
         ]
       },
-      pathogenicDistriChartOptions: {
+      distriChartOptions: {
         chart: {
           zoom: {
             enabled: true,
@@ -237,17 +157,17 @@ export default {
             }
           },
           toolbar: {
-            tools: { 
+            tools: {
               download: false,
               reset: '<i class="fas fa-home"></i>'
             }
           },
-          events: { 
+          events: {
             zoomed: this.selectDatapoints
           }
         },
         dataLabels: { enabled: false },
-        stroke: { curve: 'straight' },
+        stroke: { curve: "straight" },
         markers: {
           size: 5,
           hover: {
@@ -263,7 +183,7 @@ export default {
                 zoom: { enabled: false }
               },
               xaxis: {
-                title: {offsetY: -10}
+                title: { offsetY: -10 }
               }
             }
           }
@@ -276,142 +196,219 @@ export default {
             }
           },
           title: {
-            text: "Nucleotide Position",
+            text: "Amino Acid Position (a.a.)",
             style: { fontSize: "16px" }
           },
-          tooltip: { enabled: false }
+          tooltip: { enabled: false },
+          min: 0,
+          max: this.aaLength
         },
         yaxis: {
           title: {
             text: "# SNVs",
-            style: { fontSize: "16px" },
+            style: { fontSize: "16px" }
           },
+          min: 0,
+          max: 0,
+          tickAmount: 0
         },
         tooltip: {
           x: {
             formatter: function(value) {
-              return "Position " + value;
+              return "A.A. Pos " + value;
             }
           }
+        },
+        legend: {
+          showForSingleSeries: true,
+          position: "top"
         }
-      },
-      pathoVariants: [],
-    }
+      }
+    };
   },
   computed: {
-    variantStats: function() { // Compute variant summary
-      if (Object.prototype.hasOwnProperty.call(this.clinvarData, 'all_variants')
-        && Object.prototype.hasOwnProperty.call(this.clinvarData, 'missense_variants')) {
-          return [
-              {
-                name: "Benign",
-                data: [
-                  this.clinvarData.all_variants.benign,
-                  this.clinvarData.missense_variants.benign
-                ]
-              },
-              {
-                name: "Likely Benign",
-                data: [
-                  this.clinvarData.all_variants.likely_benign,
-                  this.clinvarData.missense_variants.likely_benign
-                ]
-              },
-              {
-                name: "Uncertain",
-                data: [
-                  this.clinvarData.all_variants.uncertain,
-                  this.clinvarData.missense_variants.uncertain
-                ]
-              },
-              {
-                name: "Likely Pathogenic",
-                data: [
-                  this.clinvarData.all_variants.likely_pathogenic,
-                  this.clinvarData.missense_variants.likely_pathogenic
-                ]
-              },
-              {
-                name: "Pathogenic",
-                data: [
-                  this.clinvarData.all_variants.pathogenic,
-                  this.clinvarData.missense_variants.pathogenic
-                ]
-              },
-              {
-                name: "Others",
-                data: [
-                  this.clinvarData.all_variants.others,
-                  this.clinvarData.missense_variants.others
-                ]
-              }
-            ];
-        }
-      return [];
-    },
-    pathoVariantStats: function() {
-      if (this.clinvarData.pathogenic_variants) {
-        const pos = this.clinvarData.pathogenic_variants
-          .filter(e => e.isMissense && e.isSnv && e.name)
-          .map(e => parseInt(e.name.match(/c.\d*/)[0].substring(2)));
-        const count = pos.reduce((acc, val) => {
-          acc[val] = acc[val] == undefined ? 1 : (acc[val] += 1);
-          return acc;
-        }, {});
-
-        // Update tick Amount
-        this.updateYTickAmount(Math.max(...Object.values(count)));
-
-        return Object.entries(count).map(([key, value]) => [
-          parseInt(key),
-          value
-        ]);
+    variantStats: function() {
+      // Compute variant summary
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this.clinvarData,
+          "all_variants"
+        ) &&
+        Object.prototype.hasOwnProperty.call(
+          this.clinvarData,
+          "missense_variants"
+        )
+      ) {
+        return [
+          {
+            name: "Benign",
+            data: [
+              this.clinvarData.all_variants.benign,
+              this.clinvarData.missense_variants.benign
+            ]
+          },
+          {
+            name: "Likely Benign",
+            data: [
+              this.clinvarData.all_variants.likely_benign,
+              this.clinvarData.missense_variants.likely_benign
+            ]
+          },
+          {
+            name: "Uncertain",
+            data: [
+              this.clinvarData.all_variants.uncertain,
+              this.clinvarData.missense_variants.uncertain
+            ]
+          },
+          {
+            name: "Likely Pathogenic",
+            data: [
+              this.clinvarData.all_variants.likely_pathogenic,
+              this.clinvarData.missense_variants.likely_pathogenic
+            ]
+          },
+          {
+            name: "Pathogenic",
+            data: [
+              this.clinvarData.all_variants.pathogenic,
+              this.clinvarData.missense_variants.pathogenic
+            ]
+          },
+          {
+            name: "Others",
+            data: [
+              this.clinvarData.all_variants.others,
+              this.clinvarData.missense_variants.others
+            ]
+          }
+        ];
       }
       return [];
     },
-    pathogenicDistriData: function() {
-      return [
-        {
-          name: "SNVs",
-          data: this.pathoVariantStats
+    pathoVariants: function() {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this.clinvarData,
+          "pathogenic_variants"
+        )
+      ) {
+        const ret = this.parseVariants(this.clinvarData.pathogenic_variants);
+        if (ret.missense || ret.stop) {
+          return ret
         }
-      ];
+        return undefined;
+      }
+      return undefined;
     },
-  },
-  mounted() {
-    if (Object.prototype.hasOwnProperty.call(this.clinvarData, "pathogenic_variants")) {
-      this.pathoVariants = this.clinvarData.pathogenic_variants;
+    benignVariants: function() {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          this.clinvarData,
+          "benign_variants"
+        )
+      ) {
+        const ret = this.parseVariants(this.clinvarData.benign_variants);
+        if (ret.missense || ret.stop) {
+          return ret
+        }
+        return undefined;
+      }
+      return undefined;
+    },
+    distriData: function() {
+      return this.formatDistriData(this.pathoVariants, "(Likely) Pathogenic")
+        .concat(this.formatDistriData(this.benignVariants, "(Likely) Benign"));
     }
   },
   methods: {
-    splitInChunk(list, total, index) {
-      // Remove not provided unless there's nothing else
-      let l = list.filter(e => e != "not provided");
-      if (l.length < 1) l = ["not provided"];
+    parseVariants(vars) {
+      const varList = vars
+        .filter(e => e.isSnv && e.name && e.name.match(/p.\D*\d*/))
+        .map(e => {
+          if (e.name.match(/p.\D*\d*/)) {
+            e.pos = parseInt(e.name.match(/p.\D*\d*/)[0].match(/\d+/)[0]);
+            e.isNonsense = e.name.match(/p.\D*\d*=/) == true;
+          }
+          return e;
+        });
 
-      return chunk(l, total)[index - 1];
+      const misVarList = varList.filter(e => !e.isNonsense);
+      const nonVarList = varList.filter(e => e.isNonsense);
+
+      return {
+        missense:
+          misVarList.length > 0
+            ? this.summarizeVariants(misVarList)
+            : undefined,
+        stop:
+          nonVarList.length > 0 ? this.summarizeVariants(nonVarList) : undefined
+      };
+    },
+    formatDistriData(vars, type) {
+      let series = [];
+      if (vars.missense) {
+        series.push({
+          name: type + " Missense",
+          data: Object.entries(vars.missense).map(e => {
+            return [parseInt(e[0]), e[1].count];
+          })
+        });
+      }
+
+      if (vars.stop) {
+        series.push({
+          name: type + "Stop",
+          data: Object.entries(vars.stop).map(e => {
+            return [parseInt(e[0]), e[1].count];
+          })
+        });
+      }
+
+      return series;
+    },
+    summarizeVariants(varList) {
+      const count = varList.reduce((acc, val) => {
+        if (!acc[val.pos]) {
+          acc[val.pos] = {
+            count: 0,
+            ids: [],
+            names: []
+          };
+        }
+        acc[val.pos].count += 1;
+        acc[val.pos].ids.push(val.id);
+        acc[val.pos].names.push(val.name);
+
+        return acc;
+      });
+
+      // Update count
+      const maxCount = 
+        Math.max(...Object.values(count).map(e => e.count).filter(Number));
+      if (this.distriChartOptions.yaxis.max < maxCount) {
+        this.distriChartOptions.yaxis.max = maxCount;
+
+        if (maxCount > 4) {
+          this.distriChartOptions.yaxis.tickAmount = (maxCount % 2) + 4;
+        } else {
+          this.distriChartOptions.yaxis.tickAmount = maxCount;
+        } 
+      }
+
+      return count;
     },
     selectDatapoints(chartContext, { xaxis }) {
       // If zoomed out completely
       if (!xaxis.min || !xaxis.max) {
-        this.pathoVariants = this.clinvarData.pathogenic_variants;
         this.hasZoomedIn = false;
         return;
       }
 
-      // Filter variants
-      this.pathoVariants = this.clinvarData.pathogenic_variants.filter(e => {
-        if (!e.isSnv || !e.name) return false;
-        const pos = parseInt(e.name.match(/c.\d*/)[0].substring(2));
-        return pos >= xaxis.min && pos <= xaxis.max
-      });
       this.hasZoomedIn = true;
-    },
-    updateYTickAmount(maxSnv) {
-      this.pathogenicDistriChartOptions.yaxis['tickAmount'] = maxSnv;
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -439,8 +436,8 @@ export default {
     margin-right: -10px !important;
   }
   .pathogenic-stats-adaptive {
-    margin-top: -30px !important;
-    margin-left: -30px !important;
+    margin-top: -10px !important;
+    margin-left: -40px !important;
     margin-right: -25px !important;
     margin-bottom: -20px !important;
   }

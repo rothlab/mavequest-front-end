@@ -10,12 +10,14 @@
               <SearchBar showButton></SearchBar>
             </div>
             <div class="column is-narrow">
-              <b-dropdown hoverable class="is-fullwidth is-fullheight" @change="jumpToSummaryWithParam">
+              <b-dropdown hoverable class="is-fullwidth is-fullheight" 
+                @change="jumpToSummaryWithParam" position="is-bottom-left">
                 <button slot="trigger" 
                   class="button is-medium is-info is-outlined
-                    is-fullwidth is-fullheight">
+                    is-fullwidth">
                   <span>Summary</span>
-                  <b-icon pack="fas" icon="sort-down"></b-icon>
+                  <b-icon pack="fas" icon="sort-down" 
+                    style="align-items: baseline;"></b-icon>
                 </button>
 
                 <b-dropdown-item value="all">All Genes</b-dropdown-item>
@@ -100,5 +102,11 @@ export default {
 .is-fullwidth > .dropdown-trigger {
   max-width: 100% !important;
   width: 100% !important;
+}
+@media only screen and (max-width: 768px) {
+  .dropdown-menu {
+    display: block;
+    width: inherit;
+  }
 }
 </style>

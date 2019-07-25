@@ -30,7 +30,7 @@
     </header>
     <div class="card-content" v-if="pathoVariants || benignVariants">
       <div
-        class="pathogenic-stats pathogenic-stats-adaptive"
+        class="pathogenic-stats pathogenic-stats-adaptive is-hidden-mobile"
       >
         <apexchart
           type="scatter"
@@ -52,6 +52,17 @@
              to reset zoom
           </span>
         </span>
+      
+      <div class="media is-hidden-tablet is-vcentered">
+        <div class="media-left">
+          <b-icon pack="fas" icon="expand-arrows-alt" size="is-medium" 
+            custom-class="fa-rotate-90"></b-icon>
+        </div>
+        <div class="level-content">
+          Your device or browser window is too small for 
+          this panel to display.
+        </div>
+      </div>
     </div>
 
     <div class="card-content" v-else>
@@ -271,7 +282,10 @@ export default {
         legend: {
           showForSingleSeries: true,
           position: "top",
-          fontSize: "16px"
+          fontSize: "16px",
+          width: 500,
+          horizontalAlign: "left",
+          offsetX: 40
         }
       },
       selectedVariants: {}

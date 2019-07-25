@@ -17,7 +17,6 @@
           'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 
           'Helvetica Neue', 'Helvetica', 'Arial', sans-serif"
           ref="apidoc"
-          style="min-width: 300px;"
         >
         </rapi-doc>
       </div>

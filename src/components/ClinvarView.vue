@@ -1,10 +1,11 @@
 <template>
   <div class="card">
     <header class="card-header">
-      <p class="card-header-title">Clinvar Variant Summary</p>
+      <p class="card-header-title">Variant Summary</p>
     </header>
     <div class="card-content clinvar-stats clinvar-stats-adaptive">
-      <apexchart type="bar" height="140px" :options="variantSumChartOptions" :series="variantStats"></apexchart>
+      <apexchart type="bar" height="140px" 
+        :options="variantSumChartOptions" :series="variantStats"></apexchart>
       <div
         v-if="this.clinvarData.all_variants.others > 0"
         class="has-text-grey-light"
@@ -47,7 +48,8 @@
           <span v-if="!hasZoomedIn"> Select a region to zoom in</span>
           <span v-else>
             Click
-            <b-icon pack="fas" icon="home" size="is-small"></b-icon> to reset zoom
+            <b-icon pack="fas" icon="home" size="is-small"></b-icon>
+             to reset zoom
           </span>
         </span>
     </div>
@@ -55,11 +57,52 @@
     <div class="card-content" v-else>
       <p class="has-text-centered">No non-synonmous SNVs for this gene.</p>
     </div>
+
+    <b-modal :active.sync="isVariantModalActive" :width="400" 
+      @close="closeVariantModal">
+      <div class="modal-card" style="width: auto">
+        <b-message 
+          :title="`ClinVar Variants at A.A. Pos ${selectedVariants.pos}`"
+          aria-close-label="Close" 
+          @close="closeVariantModal" type="is-info">
+          <b-taglist v-for="ele in selectedVariants.data" :key="ele.id">
+            <a :href="`https://www.ncbi.nlm.nih.gov/clinvar/variation/${ele.id}`" 
+              target="_blank" rel="noopener noreferrer" 
+              style="text-decoration: none;" class="is-fullwidth">
+              <b-taglist attached>
+                <b-tag class="has-background-grey has-text-white" 
+                  size="is-medium" style="width: 30%">ID {{ele.id}}</b-tag>
+                <b-tag type="is-light" size="is-medium" style="width: 70%">
+                  <span>{{ele.hgvs}}&nbsp;&nbsp;</span>
+                  <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                </b-tag>
+              </b-taglist>
+            </a>
+          </b-taglist>
+        </b-message>
+      </div>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import VueApexCharts from "vue-apexcharts";
+
+const presetDistriColors = {
+  plp: {
+    missense: '#FF3860',
+    stop: '#BF0032'
+  },
+  blb: {
+    missense: '#23D160',
+    stop: '#007E10'
+  }
+};
+
+const presetDistriSeriesNames = {
+  plp: '(Likely) Pathogenic',
+  blb: '(Likely) Benign',
+};
 
 export default {
   name: "clinvar-view",
@@ -73,6 +116,7 @@ export default {
   data() {
     return {
       isMobile: window.innerWidth < 768,
+      isVariantModalActive: false,
       hasZoomedIn: 0,
       variantSumChartOptions: {
         chart: {
@@ -84,6 +128,7 @@ export default {
             horizontal: true
           }
         },
+        colors: ['#23D160', '#2E93fA', '#FF3860', '#DBDBDB'],
         stroke: {
           width: 1,
           colors: ["#fff"]
@@ -124,10 +169,11 @@ export default {
         },
         dataLabels: { enabled: false },
         legend: {
-          onItemClick: { toggleDataSeries: false },
+          onItemClick: { toggleDataSeries: true },
           position: "top",
           offsetY: 15,
-          fontSize: "16px"
+          fontSize: "16px",
+          showForSingleSeries: true,
         },
         responsive: [
           {
@@ -163,7 +209,8 @@ export default {
             }
           },
           events: {
-            zoomed: this.selectDatapoints
+            zoomed: this.zoomIn,
+            dataPointSelection: this.selectPoint
           }
         },
         dataLabels: { enabled: false },
@@ -174,6 +221,7 @@ export default {
             size: 9
           }
         },
+        colors: [],
         responsive: [
           {
             breakpoint: 768,
@@ -215,15 +263,18 @@ export default {
         tooltip: {
           x: {
             formatter: function(value) {
-              return "A.A. Pos " + value;
+              return "<b>A.A. Pos" + value + "</b>" +
+                "<br> Click to show individual variants";
             }
-          }
+          },
         },
         legend: {
           showForSingleSeries: true,
-          position: "top"
+          position: "top",
+          fontSize: "16px"
         }
-      }
+      },
+      selectedVariants: {}
     };
   },
   computed: {
@@ -241,17 +292,12 @@ export default {
       ) {
         return [
           {
-            name: "Benign",
+            name: "(Likely) Benign",
             data: [
-              this.clinvarData.all_variants.benign,
-              this.clinvarData.missense_variants.benign
-            ]
-          },
-          {
-            name: "Likely Benign",
-            data: [
-              this.clinvarData.all_variants.likely_benign,
-              this.clinvarData.missense_variants.likely_benign
+              this.clinvarData.all_variants.likely_benign + 
+                this.clinvarData.all_variants.benign,
+              this.clinvarData.missense_variants.likely_benign +
+                this.clinvarData.missense_variants.benign
             ]
           },
           {
@@ -262,17 +308,12 @@ export default {
             ]
           },
           {
-            name: "Likely Pathogenic",
+            name: "(Likely) Pathogenic",
             data: [
-              this.clinvarData.all_variants.likely_pathogenic,
-              this.clinvarData.missense_variants.likely_pathogenic
-            ]
-          },
-          {
-            name: "Pathogenic",
-            data: [
-              this.clinvarData.all_variants.pathogenic,
-              this.clinvarData.missense_variants.pathogenic
+              this.clinvarData.all_variants.likely_pathogenic +
+                this.clinvarData.all_variants.pathogenic,
+              this.clinvarData.missense_variants.likely_pathogenic +
+                this.clinvarData.missense_variants.pathogenic
             ]
           },
           {
@@ -293,7 +334,7 @@ export default {
           "pathogenic_variants"
         )
       ) {
-        const ret = this.parseVariants(this.clinvarData.pathogenic_variants);
+        const ret = this.parseVariants(this.clinvarData.pathogenic_variants, "path");
         if (ret.missense || ret.stop) {
           return ret
         }
@@ -317,20 +358,20 @@ export default {
       return undefined;
     },
     distriData: function() {
-      return this.formatDistriData(this.pathoVariants, "(Likely) Pathogenic")
-        .concat(this.formatDistriData(this.benignVariants, "(Likely) Benign"));
+      return this.formatDistriData(this.pathoVariants, "plp")
+        .concat(this.formatDistriData(this.benignVariants, "blb"));
     }
   },
   methods: {
     parseVariants(vars) {
+      // Deep copy objects
       const varList = vars
         .filter(e => e.isSnv && e.name && e.name.match(/p.\D*\d*/))
         .map(e => {
-          if (e.name.match(/p.\D*\d*/)) {
-            e.pos = parseInt(e.name.match(/p.\D*\d*/)[0].match(/\d+/)[0]);
-            e.isNonsense = e.name.match(/p.\D*\d*=/) == true;
-          }
-          return e;
+          let res = Object.assign({}, e);
+          res.pos = parseInt(e.name.match(/p.\D*\d*/)[0].match(/\d+/)[0]);
+          res.isNonsense = !(e.name.match(/p.\D*\d*=/) === null);
+          return res;
         });
 
       const misVarList = varList.filter(e => !e.isNonsense);
@@ -349,20 +390,22 @@ export default {
       let series = [];
       if (vars.missense) {
         series.push({
-          name: type + " Missense",
+          name: presetDistriSeriesNames[type] + " Missense",
           data: Object.entries(vars.missense).map(e => {
             return [parseInt(e[0]), e[1].count];
           })
         });
+        this.distriChartOptions.colors.push(presetDistriColors[type].missense);
       }
 
       if (vars.stop) {
         series.push({
-          name: type + "Stop",
+          name: presetDistriSeriesNames[type] + " Stop",
           data: Object.entries(vars.stop).map(e => {
             return [parseInt(e[0]), e[1].count];
           })
         });
+        this.distriChartOptions.colors.push(presetDistriColors[type].stop);
       }
 
       return series;
@@ -381,7 +424,7 @@ export default {
         acc[val.pos].names.push(val.name);
 
         return acc;
-      });
+      }, {});
 
       // Update count
       const maxCount = 
@@ -395,10 +438,9 @@ export default {
           this.distriChartOptions.yaxis.tickAmount = maxCount;
         } 
       }
-
       return count;
     },
-    selectDatapoints(chartContext, { xaxis }) {
+    zoomIn(chartContext, { xaxis }) {
       // If zoomed out completely
       if (!xaxis.min || !xaxis.max) {
         this.hasZoomedIn = false;
@@ -406,6 +448,49 @@ export default {
       }
 
       this.hasZoomedIn = true;
+    },
+    selectPoint(event, chartContext, config) {
+      const index = config.dataPointIndex;
+      const series = config.seriesIndex;
+      const data = this.distriData[series];
+      const pos = data.data[index][0];
+
+      // Check if pathogenic or benign
+      let variants = {};
+      if (data.name.toLowerCase().includes("pathogenic")) {
+        if (data.name.toLowerCase().includes("missense")) {
+          variants = this.pathoVariants.missense[pos];
+        }
+
+        if (data.name.toLowerCase().includes("stop")) {
+          variants = this.pathoVariants.stop[pos];
+        }
+      }
+
+      if (data.name.toLowerCase().includes("benign")) {
+        if (data.name.toLowerCase().includes("missense")) {
+          variants = this.benignVariants.missense[pos];
+        }
+
+        if (data.name.toLowerCase().includes("stop")) {
+          variants = this.benignVariants.stop[pos];
+        }
+      }
+
+      this.isVariantModalActive = true;
+      this.selectedVariants = {
+        pos: pos,
+        data: variants.ids.map((e, i) => {
+          return {
+            id: e,
+            hgvs: variants.names[i]
+          }
+        })
+      }
+    },
+    closeVariantModal () {
+      this.isVariantModalActive = false;
+      this.selectedVariants = {};
     }
   }
 };

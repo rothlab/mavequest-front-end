@@ -1,6 +1,6 @@
 <template>
   <div class="search-bar is-fullwidth">
-    <b-field>
+    <b-field style="margin-bottom: 0;">
       <b-taginput
         icon="search"
         icon-pack="fas"
@@ -56,14 +56,22 @@
 
         <template slot="empty">{{emptyMessage}}</template>
       </b-taginput>
-      <p class="control" style="margin-left:-0.5rem">
+      <p class="control is-hidden-mobile" style="margin-left:-0.5rem">
         <button
           v-if="showButton"
-          class="button is-medium is-fullwidth is-fullheight is-info has-text-white"
+          class="button is-medium is-fullheight is-info has-text-white"
           @click="searchGenes"
         >Search</button>
       </p>
     </b-field>
+    
+    <div class="is-hidden-tablet" style="margin-top:0.5rem">
+      <button
+        v-if="showButton"
+        class="button is-medium is-fullwidth is-info has-text-white"
+        @click="searchGenes"
+      >Search</button>
+    </div>
   </div>
 </template>
 

@@ -35,7 +35,7 @@
                 <p class="menu-label" v-if="hasPhenotype.any">Disease Phenotype</p>
                 <ul class="menu-list" v-if="hasPhenotype.any">
                   <li v-if="hasPhenotype.clinvar">
-                    <a href="#clinvar" class="scrollactive-item">Clinvar</a>
+                    <a href="#clinvar" class="scrollactive-item">ClinVar</a>
                   </li>
                   <li v-if="hasPhenotype.omim">
                     <a href="#omim" class="scrollactive-item">OMIM</a>
@@ -586,7 +586,7 @@
               <div v-if="hasPhenotype.clinvar">
                 <AssayTitle
                   anchor="clinvar"
-                  title="Clinvar"
+                  title="ClinVar"
                   icon="fas fa-bars"
                   :dblink="'https://www.ncbi.nlm.nih.gov/clinvar/?term=' + 
                     geneName + '[gene] AND &quot;single gene&quot;[Properties]'"

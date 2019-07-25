@@ -93,6 +93,7 @@
                         <b-tooltip
                           label="Agreed between Ensembl and Uniprot databases."
                           type="is-dark"
+                          position="is-left"
                           multilined
                         >
                           <b-icon icon="thumbs-up" pack="far"></b-icon>

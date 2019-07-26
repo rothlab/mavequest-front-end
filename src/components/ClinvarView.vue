@@ -26,7 +26,7 @@
     </div>
 
     <header class="card-header">
-      <p class="card-header-title">Non-synonymous SNV Distributions</p>
+      <p class="card-header-title">Single-nucleotide Variants (SNVs) Distribution</p>
     </header>
     <div class="card-content" v-if="pathoVariants || benignVariants">
       <div
@@ -101,12 +101,12 @@ import VueApexCharts from "vue-apexcharts";
 
 const presetDistriColors = {
   plp: {
-    missense: '#FF3860',
-    stop: '#BF0032'
+    missense: '#BF0032',
+    synonymous: '#FF3860'
   },
   blb: {
-    missense: '#23D160',
-    stop: '#007E10'
+    missense: '#007E10',
+    synonymous: '#23D160'
   }
 };
 
@@ -283,7 +283,7 @@ export default {
           showForSingleSeries: true,
           position: "top",
           fontSize: "16px",
-          width: 500,
+          width: 550,
           horizontalAlign: "left",
           offsetX: 40
         }
@@ -348,8 +348,8 @@ export default {
           "pathogenic_variants"
         )
       ) {
-        const ret = this.parseVariants(this.clinvarData.pathogenic_variants, "path");
-        if (ret.missense || ret.stop) {
+        const ret = this.parseVariants(this.clinvarData.pathogenic_variants);
+        if (ret.missense || ret.synonymous) {
           return ret
         }
         return undefined;
@@ -364,7 +364,7 @@ export default {
         )
       ) {
         const ret = this.parseVariants(this.clinvarData.benign_variants);
-        if (ret.missense || ret.stop) {
+        if (ret.missense || ret.synonymous) {
           return ret
         }
         return undefined;
@@ -396,7 +396,7 @@ export default {
           misVarList.length > 0
             ? this.summarizeVariants(misVarList)
             : undefined,
-        stop:
+        synonymous:
           nonVarList.length > 0 ? this.summarizeVariants(nonVarList) : undefined
       };
     },
@@ -404,7 +404,7 @@ export default {
       let series = [];
 
       if (!vars) return series;
-      
+
       if (vars.missense) {
         series.push({
           name: presetDistriSeriesNames[type] + " Missense",
@@ -415,14 +415,14 @@ export default {
         this.distriChartOptions.colors.push(presetDistriColors[type].missense);
       }
 
-      if (vars.stop) {
+      if (vars.synonymous) {
         series.push({
-          name: presetDistriSeriesNames[type] + " Stop",
-          data: Object.entries(vars.stop).map(e => {
+          name: presetDistriSeriesNames[type] + " Synonymous",
+          data: Object.entries(vars.synonymous).map(e => {
             return [parseInt(e[0]), e[1].count];
           })
         });
-        this.distriChartOptions.colors.push(presetDistriColors[type].stop);
+        this.distriChartOptions.colors.push(presetDistriColors[type].synonymous);
       }
 
       return series;
@@ -479,8 +479,8 @@ export default {
           variants = this.pathoVariants.missense[pos];
         }
 
-        if (data.name.toLowerCase().includes("stop")) {
-          variants = this.pathoVariants.stop[pos];
+        if (data.name.toLowerCase().includes("synonymous")) {
+          variants = this.pathoVariants.synonymous[pos];
         }
       }
 
@@ -489,8 +489,8 @@ export default {
           variants = this.benignVariants.missense[pos];
         }
 
-        if (data.name.toLowerCase().includes("stop")) {
-          variants = this.benignVariants.stop[pos];
+        if (data.name.toLowerCase().includes("synonymous")) {
+          variants = this.benignVariants.synonymous[pos];
         }
       }
 

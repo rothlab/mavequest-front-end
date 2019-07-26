@@ -41,6 +41,16 @@ export default new Router({
       component: () => import('./views/Api.vue')
     },
     {
+      path: '/docs/tos',
+      name: 'tos',
+      component: () => import('./views/ToS.vue')
+    },
+    {
+      path: '/docs/privacy',
+      name: 'privacy',
+      component: () => import('./views/Privacy.vue')
+    },
+    {
       path: '/redirect/:params',
       name: 'redirect',
       component: () => import('./views/Redirect.vue')

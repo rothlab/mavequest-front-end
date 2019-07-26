@@ -402,6 +402,9 @@ export default {
     },
     formatDistriData(vars, type) {
       let series = [];
+
+      if (!vars) return series;
+      
       if (vars.missense) {
         series.push({
           name: presetDistriSeriesNames[type] + " Missense",

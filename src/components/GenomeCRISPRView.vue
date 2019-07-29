@@ -13,7 +13,7 @@
         Click&nbsp;
         <b-icon 
           pack="fas" type="is-link" size="is-small" icon="chevron-right">
-        </b-icon>&nbsp;to show percentage of hits in the database
+        </b-icon>&nbsp;to show the percentage of records that are hits.
       </template>
 
       <template slot-scope="props">
@@ -77,7 +77,7 @@ export default {
           yaxis: { lines: { show: false } },
         },
         title: {
-          text: "Percentage of hits in the database",
+          text: "Percentage of records that are hits",
           margin: 0,
           floating: true,
           style: {

@@ -103,13 +103,15 @@ export default {
   max-width: 100% !important;
   width: 100% !important;
 }
-@media only screen and (max-width: 767px) {
-  .fill-screen {
-    min-height: calc(100vh - 3.25rem - 6rem);
-  }
+@media only screen and (max-width: 768px) {
   .dropdown-menu {
     display: block;
     width: inherit;
+  }
+}
+@media only screen and (max-width: 767px) {
+  .fill-screen {
+    min-height: calc(100vh - 3.25rem - 6rem);
   }
 }
 </style>

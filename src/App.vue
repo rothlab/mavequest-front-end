@@ -79,7 +79,7 @@ export default {
           message: 'We use cookies to offer you a better experience.<br >' +
           'By using the service, you agree to our ' + 
           '<a href="/docs/tos" class="has-text-light"><u>Terms</u></a> and ' +
-          '<a href="/docs/privacy" class="has-text-light"><u>Privacy Policies</u></a>.',
+          '<a href="/docs/privacy" class="has-text-light"><u>Privacy Policy</u></a>.',
           type: 'is-warning',
           indefinite: true,
           actionText: 'I Agree',

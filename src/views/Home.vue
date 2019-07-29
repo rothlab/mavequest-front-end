@@ -109,4 +109,9 @@ export default {
     width: inherit;
   }
 }
+@media only screen and (max-width: 767px) {
+  .fill-screen {
+    min-height: calc(100vh - 3.25rem - 6rem);
+  }
+}
 </style>

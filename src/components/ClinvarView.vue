@@ -34,7 +34,7 @@
       >
         <apexchart
           type="scatter"
-          height="200px"
+          height="250px"
           :options="distriChartOptions"
           :series="distriData"
         ></apexchart>
@@ -102,11 +102,13 @@ import VueApexCharts from "vue-apexcharts";
 const presetDistriColors = {
   plp: {
     missense: '#BF0032',
-    synonymous: '#FF3860'
+    synonymous: '#FF3860',
+    stop: '#ffc3cf'
   },
   blb: {
-    missense: '#007E10',
-    synonymous: '#23D160'
+    missense: '#23D160',
+    synonymous: '#65de8f',
+    stop: '#007E10'
   }
 };
 
@@ -283,7 +285,7 @@ export default {
           showForSingleSeries: true,
           position: "top",
           fontSize: "16px",
-          width: 550,
+          width: 600,
           horizontalAlign: "left",
           offsetX: 40
         }
@@ -384,11 +386,13 @@ export default {
         .map(e => {
           let res = Object.assign({}, e);
           res.pos = parseInt(e.name.match(/p.\D*\d*/)[0].match(/\d+/)[0]);
-          res.isNonsense = !(e.name.match(/p.\D*\d*=/) === null);
+          res.isSyn = !(e.name.match(/p.\D*\d*=/) === null);
+          res.isNonsense = !(e.name.match(/p.\D*\d*(Ter|\*)/) === null);
           return res;
         });
 
-      const misVarList = varList.filter(e => !e.isNonsense);
+      const misVarList = varList.filter(e => !e.isNonsense && !e.isSyn);
+      const synVarList = varList.filter(e => e.isSyn);
       const nonVarList = varList.filter(e => e.isNonsense);
 
       return {
@@ -397,7 +401,13 @@ export default {
             ? this.summarizeVariants(misVarList)
             : undefined,
         synonymous:
-          nonVarList.length > 0 ? this.summarizeVariants(nonVarList) : undefined
+          synVarList.length > 0 
+          ? this.summarizeVariants(synVarList) 
+          : undefined,
+        stop:
+          nonVarList.length > 0 
+          ? this.summarizeVariants(nonVarList)
+          : undefined
       };
     },
     formatDistriData(vars, type) {
@@ -423,6 +433,16 @@ export default {
           })
         });
         this.distriChartOptions.colors.push(presetDistriColors[type].synonymous);
+      }
+
+      if (vars.stop) {
+        series.push({
+          name: presetDistriSeriesNames[type] + " Stop",
+          data: Object.entries(vars.stop).map(e => {
+            return [parseInt(e[0]), e[1].count];
+          })
+        });
+        this.distriChartOptions.colors.push(presetDistriColors[type].stop);
       }
 
       return series;
@@ -467,6 +487,9 @@ export default {
       this.hasZoomedIn = true;
     },
     selectPoint(event, chartContext, config) {
+      // Don't respond to touchstart as another mousedown event will be fired
+      if (event.type === "touchstart") return;
+
       const index = config.dataPointIndex;
       const series = config.seriesIndex;
       const data = this.distriData[series];
@@ -482,6 +505,10 @@ export default {
         if (data.name.toLowerCase().includes("synonymous")) {
           variants = this.pathoVariants.synonymous[pos];
         }
+
+        if (data.name.toLowerCase().includes("stop")) {
+          variants = this.pathoVariants.stop[pos];
+        }
       }
 
       if (data.name.toLowerCase().includes("benign")) {
@@ -491,6 +518,10 @@ export default {
 
         if (data.name.toLowerCase().includes("synonymous")) {
           variants = this.benignVariants.synonymous[pos];
+        }
+
+        if (data.name.toLowerCase().includes("stop")) {
+          variants = this.benignVariants.stop[pos];
         }
       }
 

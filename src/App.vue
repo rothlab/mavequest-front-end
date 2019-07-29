@@ -57,12 +57,41 @@ export default {
       version: process.env.GIT_VERSION,
       isActive: 'search',
       isMobile: window.innerWidth < 768,
-      isTablet: window.innerWidth >= 768 && window.innerWidth < 1023
+      isTablet: window.innerWidth >= 768 && window.innerWidth < 1023,
+      hasAgreedToCompliance: false
     };
   },
   methods: {
     updateActiveNavbarItem(value) {
       this.isActive = value;
+    }
+  },
+  mounted() {
+      // Read compliance status
+      const complianceStats = window.localStorage.getItem('hasAgreedToCompliance');
+      if (complianceStats) {
+        this.hasAgreedToCompliance = complianceStats === "true";
+      }
+      
+      // Display Compliance popup
+      if (!this.hasAgreedToCompliance) {
+        this.$snackbar.open({
+          message: 'We use cookies to offer you a better experience.<br >' +
+          'By using the service, you agree to our ' + 
+          '<a href="/docs/tos" class="has-text-light"><u>Terms</u></a> and ' +
+          '<a href="/docs/privacy" class="has-text-light"><u>Privacy Policies</u></a>.',
+          type: 'is-warning',
+          indefinite: true,
+          actionText: 'I Agree',
+          onAction: () => {
+            this.hasAgreedToCompliance = true;
+          }
+        })
+      }
+    },
+  watch: {
+    hasAgreedToCompliance(newVal) {
+      window.localStorage.setItem('hasAgreedToCompliance', newVal.toString());
     }
   }
 };

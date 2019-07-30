@@ -104,7 +104,7 @@
                         {{aaLength.combined.join(', ')}} a.a.
                         <b-tooltip
                           label="Intersect between Ensembl and Uniprot databases."
-                          type="is-dark"
+                          type="is-dark" position="is-left"
                           multilined
                         >
                           <b-icon icon="dot-circle" pack="far"></b-icon>
@@ -118,7 +118,7 @@
                         Uniprot: {{aaLength.uniprot.join(', ')}} a.a.
                         <b-tooltip
                           label="Disagree between Ensembl and Uniprot databases."
-                          type="is-dark"
+                          type="is-dark" position="is-left"
                           multilined
                         >
                           <b-icon icon="thumbs-down" pack="far"></b-icon>
@@ -131,7 +131,7 @@
                           :label="aaLength.uniprot ? 
                             'Data missing in Ensembl databases.' 
                             : 'Data missing in Uniprot databases.'"
-                          type="is-dark"
+                          type="is-dark" position="is-left"
                           multilined
                         >
                           <b-icon icon="exclamation-triangle" pack="fas"></b-icon>

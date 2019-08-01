@@ -172,6 +172,16 @@ give it a couple minutes and refresh your browser to see the update.
 Alternatively, you can go to [Travis CI](https://travis-ci.com/) and check the
 status of the deployment (look for the build with a version tag).
 
+## Monitor errors
+
+This Service uses [Slack](https://slack.com) and [Sentry](https://sentry.io) to
+monitor errors during the deploying and serving stages.
+
+This manual will not go into details about how they are implemented.
+
+If you are interested, please see the
+[Error Monitoring and Reporting](docs/error-monitoring-and-reporting.md) guide.
+
 ## Contact me
 
 Please feel free to [contact me](mailto:kvn.kuang@mail.utoronto.ca) if you still

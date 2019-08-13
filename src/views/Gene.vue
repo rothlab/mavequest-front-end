@@ -96,7 +96,7 @@
                           position="is-left"
                           multilined
                         >
-                          <b-icon icon="thumbs-up" pack="far"></b-icon>
+                          <b-icon type="is-success" icon="check-circle" pack="fas"></b-icon>
                         </b-tooltip>
                       </span>
 
@@ -109,19 +109,19 @@
                         >
                           <b-icon icon="dot-circle" pack="far"></b-icon>
                         </b-tooltip>
-                        Ensembl: {{aaLength.ensembl.join(', ')}} a.a.;
-                        Uniprot: {{aaLength.uniprot.join(', ')}} a.a.
+                        {{aaLength.ensembl.join(', ')}} a.a. (Ensembl), 
+                        {{aaLength.uniprot.join(', ')}} a.a. (Uniprot)
                       </span>
 
                       <span v-else-if="aaLength.is_agreed === 'disagree'">
-                        Ensembl: {{aaLength.ensembl.join(', ')}} a.a.;
-                        Uniprot: {{aaLength.uniprot.join(', ')}} a.a.
+                        {{aaLength.ensembl.join(', ')}} a.a. (Ensembl), 
+                        {{aaLength.uniprot.join(', ')}} a.a. (Uniprot)
                         <b-tooltip
-                          label="Disagree between Ensembl and Uniprot databases."
+                          label="Disagreement between Ensembl and Uniprot databases."
                           type="is-dark" position="is-left"
                           multilined
                         >
-                          <b-icon icon="thumbs-down" pack="far"></b-icon>
+                          <b-icon type="is-danger" icon="exclamation-triangle" pack="fas"></b-icon>
                         </b-tooltip>
                       </span>
 
@@ -594,7 +594,8 @@
                   reflink="/about#clinvar"
                 ></AssayTitle>
                 <ClinvarView :clinvarData="clinvarData"
-                  :aaLength="Math.max(aaLength.combined)"></ClinvarView>
+                  :aaLength="Math.max(parseInt(aaLength.combined))"
+                  :conflictCanonical="aaLength.is_agreed !== 'agree'"></ClinvarView>
               </div>
 
               <div v-if="hasPhenotype.omim">

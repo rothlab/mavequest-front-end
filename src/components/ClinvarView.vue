@@ -53,6 +53,23 @@
           </span>
         </span>
       
+        <span
+          class="has-text-danger is-hidden-mobile"
+          style="position:relative; top:-1rem; float:left"
+          v-if="conflictCanonical"
+        >
+          <b-icon pack="fas" icon="exclamation-triangle" size="is-small"></b-icon>
+          <span>
+            &nbsp;Canonical Isoform from Ensenbl and Uniprot don't agree.
+          </span>
+
+          <b-tooltip type="is-dark" multilined
+            label="The A.A. lengths of canonical isoform are different between 
+            databases. The longest A.A. length was used.">
+            <b-icon pack="fas" icon="question-circle" size="is-small"></b-icon>
+          </b-tooltip>
+        </span>
+      
       <div class="media is-hidden-tablet is-vcentered">
         <div class="media-left">
           <b-icon pack="fas" icon="expand-arrows-alt" size="is-medium" 
@@ -124,7 +141,8 @@ export default {
   },
   props: {
     clinvarData: Object,
-    aaLength: Number
+    aaLength: Number,
+    conflictCanonical: Boolean
   },
   data() {
     return {

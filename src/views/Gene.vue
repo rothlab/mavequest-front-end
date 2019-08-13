@@ -104,21 +104,23 @@
                         {{aaLength.combined.join(', ')}} a.a.
                         <b-tooltip
                           label="Intersect between Ensembl and Uniprot databases."
-                          type="is-dark" position="is-left"
+                          type="is-dark"
+                          position="is-left"
                           multilined
                         >
                           <b-icon icon="dot-circle" pack="far"></b-icon>
                         </b-tooltip>
-                        {{aaLength.ensembl.join(', ')}} a.a. (Ensembl), 
+                        {{aaLength.ensembl.join(', ')}} a.a. (Ensembl),
                         {{aaLength.uniprot.join(', ')}} a.a. (Uniprot)
                       </span>
 
                       <span v-else-if="aaLength.is_agreed === 'disagree'">
-                        {{aaLength.ensembl.join(', ')}} a.a. (Ensembl), 
+                        {{aaLength.ensembl.join(', ')}} a.a. (Ensembl),
                         {{aaLength.uniprot.join(', ')}} a.a. (Uniprot)
                         <b-tooltip
                           label="Disagreement between Ensembl and Uniprot databases."
-                          type="is-dark" position="is-left"
+                          type="is-dark"
+                          position="is-left"
                           multilined
                         >
                           <b-icon type="is-danger" icon="exclamation-triangle" pack="fas"></b-icon>
@@ -131,7 +133,8 @@
                           :label="aaLength.uniprot ? 
                             'Data missing in Ensembl databases.' 
                             : 'Data missing in Uniprot databases.'"
-                          type="is-dark" position="is-left"
+                          type="is-dark"
+                          position="is-left"
                           multilined
                         >
                           <b-icon icon="exclamation-triangle" pack="fas"></b-icon>
@@ -218,7 +221,11 @@
                 </div>
 
                 <div class="has-background-white" v-if="ensemblID">
-                  <b-collapse aria-id="transcript-peptide" :open.sync="showTranscripts">
+                  <b-collapse
+                    aria-id="transcript-peptide"
+                    :open.sync="showTranscripts"
+                    @open="queryEnsembl"
+                  >
                     <div
                       slot="trigger"
                       class="panel-heading"
@@ -249,15 +256,13 @@
                       >
                         <template slot="bottom-left">
                           <b-taglist>
-                            <b-tag type="is-info" size="is-medium">
-                              Canonical isoform
-                            </b-tag>
+                            <b-tag type="is-info" size="is-medium">Canonical isoform</b-tag>
                             <b-tag type="is-light" size="is-medium">
                               Data Source:&nbsp;
-                              <a 
-                                href="https://useast.ensembl.org/index.html" 
-                                target="_blank">Ensembl
-                              </a>
+                              <a
+                                href="https://useast.ensembl.org/index.html"
+                                target="_blank"
+                              >Ensembl</a>
                             </b-tag>
                           </b-taglist>
                         </template>
@@ -593,9 +598,11 @@
                     geneName + '[gene] AND &quot;single gene&quot;[Properties]'"
                   reflink="/about#clinvar"
                 ></AssayTitle>
-                <ClinvarView :clinvarData="clinvarData"
+                <ClinvarView
+                  :clinvarData="clinvarData"
                   :aaLength="Math.max(parseInt(aaLength.combined))"
-                  :conflictCanonical="aaLength.is_agreed !== 'agree'"></ClinvarView>
+                  :conflictCanonical="aaLength.is_agreed !== 'agree'"
+                ></ClinvarView>
               </div>
 
               <div v-if="hasPhenotype.omim">
@@ -1223,56 +1230,6 @@ export default {
           }
         )
         .then(() => {
-          if (this.showErrorComponent) return;
-          if (!this.ensemblID) return;
-
-          this.loadingTranscriptsStatus = 1;
-
-          // Get Ensembl Data
-          this.$http
-            .get(
-              "https://rest.ensembl.org/lookup/id/" +
-                this.ensemblID +
-                "?expand=1;content-type=application/json"
-            )
-            .then(
-              res => {
-                const json = res.body;
-
-                if (Object.prototype.hasOwnProperty.call(json, "Transcript")) {
-                  // Populate transcripts database
-                  for (const entity of json.Transcript) {
-                    const newEntry = {
-                      id: entity.id,
-                      name: entity.display_name,
-                      biotype: entity.biotype,
-                      num_exons: entity.Exon.length,
-                      peptide_id: entity.Translation
-                        ? entity.Translation.id
-                        : "NA",
-                      peptide_length: entity.Translation
-                        ? entity.Translation.length
-                        : "NA"
-                    };
-
-                    // Make sure canonical entry always goes to the front
-                    if (entity.is_canonical) {
-                      this.transcriptList.unshift(newEntry);
-                    } else {
-                      this.transcriptList.push(newEntry);
-                    }
-                  }
-                }
-              },
-              res => {
-                // Error handling
-                this.loadingTranscriptsStatus = -1;
-                this.showErrorComponent = true;
-                this.errorResponse = res;
-              }
-            );
-        })
-        .then(() => {
           // Close loading animation
           loadingComponent.close();
           this.isLoading = false;
@@ -1363,6 +1320,53 @@ export default {
       if (lenB === "NA") return -1;
 
       return isAsc ? lenA - lenB : lenB - lenA;
+    },
+    queryEnsembl() {
+      if (this.showErrorComponent) return;
+      if (!this.ensemblID) return;
+      if (this.transcriptList.length > 0) return;
+
+      this.loadingTranscriptsStatus = 1;
+
+      // Get Ensembl Data
+      this.$http
+        .get(
+          "https://rest.ensembl.org/lookup/id/" +
+            this.ensemblID +
+            "?expand=1;content-type=application/json"
+        )
+        .then(
+          res => {
+            const json = res.body;
+
+            if (Object.prototype.hasOwnProperty.call(json, "Transcript")) {
+              // Populate transcripts database
+              for (const entity of json.Transcript) {
+                const newEntry = {
+                  id: entity.id,
+                  name: entity.display_name,
+                  biotype: entity.biotype,
+                  num_exons: entity.Exon.length,
+                  peptide_id: entity.Translation ? entity.Translation.id : "NA",
+                  peptide_length: entity.Translation
+                    ? entity.Translation.length
+                    : "NA"
+                };
+
+                // Make sure canonical entry always goes to the front
+                if (entity.is_canonical) {
+                  this.transcriptList.unshift(newEntry);
+                } else {
+                  this.transcriptList.push(newEntry);
+                }
+              }
+            }
+          },
+          () => {
+            // Error handling
+            this.loadingTranscriptsStatus = -1;
+          }
+        );
     }
   }
 };

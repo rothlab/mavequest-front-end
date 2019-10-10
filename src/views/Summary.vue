@@ -221,7 +221,7 @@ export default {
             // Give a warning if some genes are missing
             if (Object.prototype.hasOwnProperty.call(json, "missing")
               && json.missing.length > 0) {
-              this.$snackbar.open({
+              this.$buefy.snackbar.open({
                 message: `Some gene names had no matches: ${json.missing.join(
                   ", "
                 )}`,

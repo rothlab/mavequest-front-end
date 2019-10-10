@@ -1105,7 +1105,7 @@ export default {
     },
     loadData(gene) {
       // Display loading animation
-      const loadingComponent = this.$loading.open();
+      const loadingComponent = this.$buefy.loading.open();
 
       // Get detail info
       this.$http

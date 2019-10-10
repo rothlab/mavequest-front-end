@@ -253,7 +253,7 @@ export default {
         edge.addClass("highlighted");
 
         if (window.innerWidth < 768) {
-          this.$toast.open({
+          this.$buefy.toast.open({
             message: "Cannot show interactions on mobile devices.",
             type: "is-warning",
             queue: false

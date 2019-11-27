@@ -1096,7 +1096,13 @@ export default {
   },
   computed: {
     geneName: function() {
-      return this.$route.params.name.toUpperCase();
+      let name = this.$route.params.name;
+      // Handle C*orf* gene name
+      // TODO: fix this properly
+      if (!/C\d*orf\d*/g.test(name)) {
+        name = name.toUpperCase();
+      }
+      return name;
     }
   },
   methods: {
@@ -1105,7 +1111,7 @@ export default {
     },
     loadData(gene) {
       // Display loading animation
-      const loadingComponent = this.$loading.open();
+      const loadingComponent = this.$buefy.loading.open();
 
       // Get detail info
       this.$http

@@ -60,7 +60,7 @@
         >
           <b-icon pack="fas" icon="exclamation-triangle" size="is-small"></b-icon>
           <span>
-            &nbsp;Canonical Isoforms from Ensenbl and Uniprot don't agree.
+            &nbsp;Canonical Isoforms from Ensembl and Uniprot don't agree.
           </span>
 
           <b-tooltip type="is-dark" multilined

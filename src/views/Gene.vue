@@ -599,6 +599,7 @@
                   reflink="/about#clinvar"
                 ></AssayTitle>
                 <ClinvarView
+                  :symbol="geneName"
                   :clinvarData="clinvarData"
                   :aaLength="Math.max(parseInt(aaLength.combined))"
                   :conflictCanonical="aaLength.is_agreed !== 'agree'"

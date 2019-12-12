@@ -2,13 +2,13 @@
   <div class="card">
     <header class="card-header">
       <p class="card-header-title">Variant Summary</p>
-      <div class="card-header-icon">
+      <div class="card-header-icon" v-if="downloadData.length > 0">
         <download-csv
-          class="button is-light"
+          class="button is-outlined is-info"
           :data="downloadData"
           :name="symbol + '_clinvar.csv'">
           <b-icon icon="download" size="is-small"></b-icon>
-          <p>Download Variants</p>
+          <p>Download</p>
         </download-csv>
       </div>
     </header>
@@ -578,7 +578,7 @@ export default {
       if (!list) {
         return []
       }
-      
+
       return list.map(e => {
         e['category'] = category;
         return e;

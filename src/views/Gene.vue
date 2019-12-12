@@ -1192,6 +1192,7 @@ export default {
               this.hasPhenotype.any = true;
               this.hasPhenotype.clinvar = true;
               this.clinvarData = json.clinvar;
+              this.clinvarData['gene_symbol'] = this.geneName;
             }
 
             if (Object.prototype.hasOwnProperty.call(json, "cancer_census")) {

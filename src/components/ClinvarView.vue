@@ -2,6 +2,16 @@
   <div class="card">
     <header class="card-header">
       <p class="card-header-title">Variant Summary</p>
+      <div class="card-header-icon">
+        <b-button
+          icon-left="download"
+          type="is-light"
+          tag="a"
+          :href="downloadLink"
+          target="_blank">
+          Download Variants
+        </b-button>
+      </div>
     </header>
     <div class="card-content clinvar-stats clinvar-stats-adaptive">
       <apexchart type="bar" height="140px" 
@@ -394,6 +404,10 @@ export default {
     distriData: function() {
       return this.formatDistriData(this.pathoVariants, "plp")
         .concat(this.formatDistriData(this.benignVariants, "blb"));
+    },
+    downloadLink: function() {
+      return this.$apiEntryPoint + '/download/' + 
+        this.clinvarData.gene_symbol + '?source=clinvar'
     }
   },
   methods: {

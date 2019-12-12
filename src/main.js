@@ -29,6 +29,7 @@ import VueCytoscape from 'vue-cytoscape'
 import VueAnalytics from 'vue-analytics'
 import VueResize from 'vue-resize'
 import VueScrollactive from 'vue-scrollactive'
+import JsonCSV from 'vue-json-csv'
 
 // Make sure App is loaded last so that the styles are not overwritten
 import App from './App.vue'
@@ -63,7 +64,8 @@ Vue.use(Buefy, {
   }
 })
 .use(VueResize)
-.use(VueScrollactive);
+.use(VueScrollactive)
+.component('downloadCsv', JsonCSV);
 
 new Vue({
   router,

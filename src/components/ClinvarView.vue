@@ -3,14 +3,13 @@
     <header class="card-header">
       <p class="card-header-title">Variant Summary</p>
       <div class="card-header-icon">
-        <b-button
-          icon-left="download"
-          type="is-light"
-          tag="a"
-          :href="downloadLink"
-          target="_blank">
-          Download Variants
-        </b-button>
+        <download-csv
+          class="button is-light"
+          :data="downloadData"
+          :name="symbol + '_clinvar.csv'">
+          <b-icon icon="download" size="is-small"></b-icon>
+          <p>Download Variants</p>
+        </download-csv>
       </div>
     </header>
     <div class="card-content clinvar-stats clinvar-stats-adaptive">
@@ -150,6 +149,7 @@ export default {
     apexchart: VueApexCharts
   },
   props: {
+    symbol: String,
     clinvarData: Object,
     aaLength: Number,
     conflictCanonical: Boolean
@@ -405,9 +405,11 @@ export default {
       return this.formatDistriData(this.pathoVariants, "plp")
         .concat(this.formatDistriData(this.benignVariants, "blb"));
     },
-    downloadLink: function() {
-      return this.$apiEntryPoint + '/download/' + 
-        this.clinvarData.gene_symbol + '?source=clinvar'
+    downloadData: function() {
+      return Array.prototype.concat(
+        this.addCategory(this.clinvarData.benign_variants, 'benign'), 
+        this.addCategory(this.clinvarData.pathogenic_variants, 'pathogenic')
+        )
     }
   },
   methods: {
@@ -571,7 +573,17 @@ export default {
     closeVariantModal () {
       this.isVariantModalActive = false;
       this.selectedVariants = {};
-    }
+    },
+    addCategory: function(list, category) {
+      if (!list) {
+        return []
+      }
+      
+      return list.map(e => {
+        e['category'] = category;
+        return e;
+      })
+    },
   }
 };
 </script>

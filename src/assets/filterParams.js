@@ -1,10 +1,11 @@
 export default {
     availAssays: [
+        "mavedb",
         "genome_crispr",
         "genome_rnai",
         "orthology",
         "overexpression",
-        "huri"
+        "huri",
     ],
     availPhenotypes: [
         "clinvar",
@@ -19,6 +20,8 @@ export default {
     ],
     formatTag(tag) {
         switch (tag) {
+            case "mavedb":
+                return "MaveDB";
             case "genome_rnai":
                 return "RNAi";
             case "genome_crispr":

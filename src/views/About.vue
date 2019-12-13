@@ -116,6 +116,28 @@
             <div class="content para-spacing">
               <h2 id="primary-data" class="subtitle is-anchor">Primary Data Source</h2>
 
+              <!-- MaveDB -->
+              <div ref="mavedb" class="in-paragraph">
+                <h4 class="in-list" id="mavedb">
+                  MaveDb &nbsp;
+                  <a href="https://mavedb.org/" target="_blank">
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  Esposito, D., Weile, J., Shendure, J., Starita, L. M., Papenfuss, A. T., Roth, F. P., ... & Rubin, A. F.
+                  <strong>MaveDB: an open-source platform to distribute and interpret data from multiplexed assays of variant effect. </strong>
+                  <i>Genome biology</i> 20, no. 1 (2019): 1-11.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/31679514"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
+
               <!-- Genome CRISPR -->
               <div ref="genome_crispr" class="in-paragraph">
                 <h4 class="in-list" id="genome_crispr">

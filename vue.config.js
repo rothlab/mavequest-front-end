@@ -1,10 +1,4 @@
-const GitRevisionPlugin = require('git-revision-webpack-plugin');
 const Webpack = require('webpack');
-const gitRevisionPlugin = new GitRevisionPlugin({
-  versionCommand: 'describe --tag --long'
-});
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-//     .BundleAnalyzerPlugin;
 
 module.exports = {
   // generate sourceMap for production build?
@@ -13,10 +7,8 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new Webpack.DefinePlugin({
-        'process.env.GIT_VERSION': JSON.stringify(gitRevisionPlugin.version()),
-        'process.env.GIT_COMMITHASH': JSON.stringify(gitRevisionPlugin.commithash())
+        'process.env.GIT_VERSION': JSON.stringify(require('./package.json').version),
       }),
-      // new BundleAnalyzerPlugin()
     ]
   },
 }

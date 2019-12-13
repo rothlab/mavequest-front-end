@@ -2,13 +2,13 @@
   <div class="card">
     <header class="card-header">
       <p class="card-header-title">Variant Summary</p>
-      <div class="card-header-icon">
+      <div class="card-header-icon" v-if="downloadData.length > 0">
         <download-csv
-          class="button is-light"
+          class="button is-outlined is-info"
           :data="downloadData"
           :name="symbol + '_clinvar.csv'">
-          <b-icon icon="download" size="is-small"></b-icon>
-          <p>Download Variants</p>
+          <b-icon pack="fas" icon="download" size="is-small"></b-icon>
+          <p>Download</p>
         </download-csv>
       </div>
     </header>
@@ -36,6 +36,19 @@
 
     <header class="card-header">
       <p class="card-header-title">Single-nucleotide Variants (SNVs) Distribution</p>
+      <div class="card-header-icon is-hidden-mobile" style="z-index: 10;">
+        <p style="margin-right: 0.5rem;">Review Stars</p>
+        <b-field>
+          <b-checkbox-button
+            v-for="star in reviewStars"
+            :key="star"
+            :native-value="star"
+            type="is-info"
+            v-model="selectedStars">
+            {{star}}
+          </b-checkbox-button>
+        </b-field>
+      </div>
     </header>
     <div class="card-content" v-if="pathoVariants || benignVariants">
       <div
@@ -124,6 +137,7 @@
 
 <script>
 import VueApexCharts from "vue-apexcharts";
+import uniq from "lodash/uniq";
 
 const presetDistriColors = {
   plp: {
@@ -318,7 +332,8 @@ export default {
           offsetX: 40
         }
       },
-      selectedVariants: {}
+      selectedVariants: {},
+      selectedStars: []
     };
   },
   computed: {
@@ -410,13 +425,23 @@ export default {
         this.addCategory(this.clinvarData.benign_variants, 'benign'), 
         this.addCategory(this.clinvarData.pathogenic_variants, 'pathogenic')
         )
+    },
+    reviewStars: function() {
+      const stars = Array.prototype.concat(this.clinvarData.benign_variants, 
+        this.clinvarData.pathogenic_variants).map(e => e.review_star);
+
+      return uniq(stars).sort()
     }
+  },
+  mounted () {
+    this.selectedStars = this.reviewStars;
   },
   methods: {
     parseVariants(vars) {
       // Deep copy objects
       const varList = vars
-        .filter(e => e.isSnv && e.name && e.name.match(/p.\D*\d*/))
+        .filter(e => e.isSnv && e.name && e.name.match(/p.\D*\d*/) 
+          && this.selectedStars.includes(e.review_star))
         .map(e => {
           let res = Object.assign({}, e);
           res.pos = parseInt(e.name.match(/p.\D*\d*/)[0].match(/\d+/)[0]);
@@ -578,7 +603,7 @@ export default {
       if (!list) {
         return []
       }
-      
+
       return list.map(e => {
         e['category'] = category;
         return e;

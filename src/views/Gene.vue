@@ -354,6 +354,52 @@
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
 
+              <div v-if="hasAssay.mavedb">
+                <AssayTitle
+                  anchor="mavedb"
+                  title="MaveDB"
+                  icon="fas fa-bars"
+                  :dblink="'https://www.mavedb.org/search/?target=' + geneName"
+                  reflink="/about#mavedb"
+                ></AssayTitle>
+
+                <div class="card has-table-padding in-paragraph in-list">
+                  <b-table
+                    :data="mavedbData"
+                    paginated
+                    per-page="10"
+                    pagination-simple
+                    hoverable
+                    narrowed
+                  >
+                    <template slot="bottom-left">
+                      <b-tag
+                        size="is-medium"
+                        >
+                        <b-icon pack="fas" size="is-small" icon="info-circle"></b-icon>
+                        <span>&nbsp;MAVE studies related to {{geneName}}</span>
+                      </b-tag>
+                    </template>
+                    <template slot-scope="props">
+                      <b-table-column field="id" label="ID">
+                        <a
+                          :href="'https://www.mavedb.org/experiment/' + props.row.id"
+                          target="_blank"
+                        >{{props.row.id}}</a>
+                      </b-table-column>
+
+                      <b-table-column field="name" label="Name">
+                        {{props.row.name}}
+                      </b-table-column>
+
+                      <b-table-column field="type" label="Type">
+                        {{props.row.type}}
+                      </b-table-column>
+                    </template>
+                  </b-table>
+                </div>
+              </div>
+
               <div v-if="hasAssay.genome_crispr">
                 <AssayTitle
                   anchor="genome_crispr"
@@ -1050,6 +1096,7 @@ function initialState() {
     ],
     huri: [],
     showCytoscapeView: false,
+    mavedbData: [],
     genomeRNAiTotalEntries: 0,
     genomeRNAiData: [],
     genomeCRISPRData: [],
@@ -1146,6 +1193,12 @@ export default {
               date.getDate();
 
             // Populate Assay information
+            if (Object.prototype.hasOwnProperty.call(json, "mavedb")) {
+              this.hasAssay.any = true;
+              this.hasAssay.mavedb = true;
+              this.mavedbData = json.mavedb.experiments;
+            }
+
             if (Object.prototype.hasOwnProperty.call(json, "genome_rnai")) {
               this.hasAssay.any = true;
               this.hasAssay.genome_rnai = true;

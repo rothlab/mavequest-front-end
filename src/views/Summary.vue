@@ -75,6 +75,9 @@
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
                   </a>
                 </b-table-column>
+                <b-table-column field="alias_name" label="Alias Name">
+                  <ExpandableRow :elements="props.row.alias_name" preview_items="2" bold></ExpandableRow>
+                </b-table-column>
                 <b-table-column field="potential_assay" label="Potential Assay"
                   :meta="filterParams.availAssays">
                   <b-tag
@@ -125,13 +128,15 @@ import Header from "@/components/Header.vue";
 import ErrorView from "@/components/ErrorView.vue";
 import FilterView from "@/components/FilterView.vue";
 import FilterParams from "@/assets/filterParams.js";
+import ExpandableRow from "@/components/ExpandableRow.vue";
 
 export default {
   name: "gene-summary",
   components: {
     Header,
     ErrorView,
-    FilterView
+    FilterView,
+    ExpandableRow,
   },
   mounted() {
     // Update highlighted navbar item

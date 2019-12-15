@@ -36,7 +36,10 @@
 
     <header class="card-header">
       <p class="card-header-title">Single-nucleotide Variants (SNVs) Distribution</p>
-      <div class="card-header-icon is-hidden-mobile" style="z-index: 10;">
+      <div
+        class="card-header-icon is-hidden-mobile"
+        style="z-index: 10;"
+        v-if="pathoVariants || benignVariants">
         <p style="margin-right: 0.5rem;">Review Stars</p>
         <b-field>
           <b-checkbox-button
@@ -427,10 +430,16 @@ export default {
         )
     },
     reviewStars: function() {
-      const stars = Array.prototype.concat(this.clinvarData.benign_variants, 
+      if (this.clinvarData.benign_variants || 
+        this.clinvarData.pathogenic_variants) {
+        const stars = Array.prototype.concat(this.clinvarData.benign_variants, 
         this.clinvarData.pathogenic_variants).map(e => e.review_star);
 
-      return uniq(stars).sort()
+        return uniq(stars).sort()
+      } else {
+        return []
+      }
+
     }
   },
   mounted () {

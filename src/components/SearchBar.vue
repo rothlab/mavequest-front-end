@@ -1,19 +1,19 @@
 <template>
   <div class="search-bar is-fullwidth">
     <b-field style="margin-bottom: 0;">
-      <b-taginput
+      <b-autocomplete
         icon="search"
         icon-pack="fas"
         ref="searchBar"
-        v-model="genes"
+        v-model="gene"
         :data="autoCompleteRes"
         size="is-medium"
         :loading="isFetching"
-        autocomplete
         field="gene_symbol"
         @typing="getGeneNames"
         class="search"
         @submit="searchGenes"
+        @select="autoCompleteRes = []"
         placeholder="Search with Gene Symbol"
       >
         <template slot-scope="props">
@@ -55,8 +55,8 @@
         </template>
 
         <template slot="empty">{{emptyMessage}}</template>
-      </b-taginput>
-      <p class="control is-hidden-mobile" style="margin-left:-0.5rem">
+      </b-autocomplete>
+      <p class="control is-hidden-mobile">
         <button
           v-if="showButton"
           class="button is-medium is-fullheight is-info has-text-white"
@@ -87,7 +87,7 @@ function initialState() {
     emptyMessage: "No genes found.",
     isFullView: true,
     geneNames: [],
-    genes: []
+    gene: "",
   };
 }
 
@@ -104,21 +104,28 @@ export default {
       Object.assign(this.$data, initialState());
     },
     searchGenes() {
-      // Extract gene names
-      for (let gene of this.genes) {
-        if (typeof gene === "object") {
-          this.geneNames.push(gene.gene_symbol);
-        } else if (typeof gene === "string") {
-          this.geneNames.push(gene);
-        }
-      }
-
-      // Give a warning if no gene was inputed
-      if (this.geneNames.length === 0) {
+      // If not selected from autosearch, initiate a partial search
+      if (this.autoCompleteRes.length >= 50) {
         this.$buefy.snackbar.open({
-          message: "Please select a gene from the dropdown menu.",
+          message: "Please be more specific about your search query.",
           type: "is-warning",
           position: "is-top",
+          queue: false,
+          actionText: "Retry"
+        });
+
+        return;
+      } else if (this.autoCompleteRes.length >= 1) {
+        this.geneNames = this.autoCompleteRes.map(e => e.gene_symbol);
+      } else if (this.gene !== ""){
+        this.geneNames.push(this.gene);
+      } else {
+        // Give a warning if no gene was inputed
+        this.$buefy.snackbar.open({
+          message: "Please enter a gene name.",
+          type: "is-warning",
+          position: "is-top",
+          queue: false,
           actionText: "Retry"
         });
         return;

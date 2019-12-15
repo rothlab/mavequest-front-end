@@ -82,6 +82,7 @@ export default {
           '<a href="/docs/privacy" class="has-text-light"><u>Privacy Policy</u></a>.',
           type: 'is-warning',
           indefinite: true,
+          queue: false,
           actionText: 'I Agree',
           onAction: () => {
             this.hasAgreedToCompliance = true;

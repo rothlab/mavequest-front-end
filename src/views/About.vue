@@ -318,6 +318,29 @@
                 </p>
               </div>
 
+              <!-- PharmGKB -->
+              <div ref="pharmgkb" class="in-paragraph">
+                <h4 class="in-list" id="pharmgkb">
+                  PharmGKB &nbsp;
+                  <a href="https://www.pharmgkb.org/" target="_blank">
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  Whirl‐Carrillo, Michelle, Ellen M. McDonagh, J. M. Hebert, 
+                  Li Gong, K. Sangkuhl, C. F. Thorn, Russ B. Altman, 
+                  and Teri E. Klein.
+                  <strong>Pharmacogenomics knowledge for personalized medicine.</strong>
+                  <i>Clinical Pharmacology & Therapeutics</i> 92, no. 4 (2012): 414-417.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/22992668"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
               <!-- Orphanet -->
               <div ref="orphanet" class="in-paragraph">
                 <h4 class="in-list" id="orphanet">

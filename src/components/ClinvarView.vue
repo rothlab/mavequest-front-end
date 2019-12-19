@@ -39,7 +39,7 @@
       <div
         class="card-header-icon is-hidden-mobile"
         style="z-index: 10;"
-        v-if="pathoVariants || benignVariants">
+        v-if="clinvarData.benign_variants || clinvarData.pathogenic_variants">
         <p style="margin-right: 0.5rem;">Review Stars</p>
         <b-field>
           <b-checkbox-button
@@ -141,6 +141,7 @@
 <script>
 import VueApexCharts from "vue-apexcharts";
 import uniq from "lodash/uniq";
+import compact from "lodash/compact";
 
 const presetDistriColors = {
   plp: {
@@ -432,8 +433,10 @@ export default {
     reviewStars: function() {
       if (this.clinvarData.benign_variants || 
         this.clinvarData.pathogenic_variants) {
-        const stars = Array.prototype.concat(this.clinvarData.benign_variants, 
-        this.clinvarData.pathogenic_variants).map(e => e.review_star);
+        let stars = Array.prototype.concat(this.clinvarData.benign_variants, 
+          this.clinvarData.pathogenic_variants);
+        stars = compact(stars).map(e => e.review_star);
+        console.log(compact(stars));
 
         return uniq(stars).sort()
       } else {

@@ -43,6 +43,9 @@
                   <li v-if="hasPhenotype.cancer_census">
                     <a href="#cancer_census" class="scrollactive-item">Cancer Gene Census</a>
                   </li>
+                  <li v-if="hasPhenotype.pharmgkb">
+                    <a href="#pharmgkb" class="scrollactive-item">PharmGKB</a>
+                  </li>
                   <li v-if="hasPhenotype.orphanet">
                     <a href="#orpha" class="scrollactive-item">Orphanet</a>
                   </li>
@@ -788,6 +791,68 @@
                 </div>
               </div>
 
+              <div v-if="hasPhenotype.pharmgkb">
+                <AssayTitle
+                  anchor="pharmgkb"
+                  title="PharmGKB"
+                  icon="fas fa-bars"
+                  :dblink="'https://www.pharmgkb.org/gene/' + pharmgkbData.pharmgkb_id"
+                  reflink="/about#pharmgkb"
+                ></AssayTitle>
+                <div class="content">
+                  <div class="card has-table-padding in-paragraph in-list">
+                    <b-table
+                      :data="pharmgkbData.records"
+                      narrowed
+                      paginated
+                      per-page="10"
+                      pagination-simple
+                      hoverable
+                    >
+                      <template slot-scope="props">
+                        <b-table-column
+                          class="is-capitalized"
+                          field="annot_id"
+                          label="Annotation ID">
+                          <a
+                            :href="'https://www.pharmgkb.org/variantAnnotation/'
+                              + props.row.annot_id" 
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            {{props.row.annot_id}}
+                          </a>
+                        </b-table-column>
+                        <b-table-column field="source" label="Pubmed Source">
+                          <a
+                            :href="'https://www.ncbi.nlm.nih.gov/pubmed/'
+                              + props.row.pmid"
+                            target="_blank"
+                          >{{props.row.pmid}}</a>
+                        </b-table-column>
+                        <b-table-column
+                          class="is-capitalized"
+                          field="drug"
+                          label="Drug">
+                          {{props.row.drug}}
+                        </b-table-column>
+                        <b-table-column
+                          field="phenotype"
+                          label="Phenotype"
+                          class="is-capitalized">
+                          {{props.row.phenotype}}
+                        </b-table-column>
+                        <b-table-column
+                          field="clinical_annot"
+                          label="Clinical Evidence Level">
+                          <b-tag v-if="props.row.evidence != 'NA'">
+                            Level {{props.row.evidence}}
+                          </b-tag>
+                        </b-table-column>
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
+              </div>
               <div v-if="hasPhenotype.orphanet">
                 <AssayTitle
                   anchor="orpha"
@@ -1106,10 +1171,11 @@ function initialState() {
     variantStats: [],
     omimPhenotype: [],
     cancerGeneCensusPhenotype: [],
+    pharmgkbData: {},
     orphanetData: [],
     invitaeData: [],
     ambryData: [],
-    genedxData: []
+    genedxData: [],
   };
 }
 export default {
@@ -1255,6 +1321,12 @@ export default {
               this.cancerGeneCensusPhenotype = json.cancer_census;
             }
 
+            if (Object.prototype.hasOwnProperty.call(json, "pharmgkb")) {
+              // PharmGKB
+              this.hasPhenotype.any = true;
+              this.hasPhenotype.pharmgkb = true;
+              this.pharmgkbData = json.pharmgkb;
+            }
             if (Object.prototype.hasOwnProperty.call(json, "orphanet")) {
               // Orphanet Phenotype
               this.hasPhenotype.any = true;

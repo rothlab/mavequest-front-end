@@ -39,7 +39,7 @@
       <div
         class="card-header-icon is-hidden-mobile"
         style="z-index: 10;"
-        v-if="pathoVariants || benignVariants">
+        v-if="clinvarData.benign_variants || clinvarData.pathogenic_variants">
         <p style="margin-right: 0.5rem;">Review Stars</p>
         <b-field>
           <b-checkbox-button

@@ -505,7 +505,7 @@
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
-                  <b-tabs>
+                  <b-tabs vertical>
                     <b-tab-item v-for="(entry, index) of ogeeData" :key="index">
                       <template slot="header">
                         <b-taglist attached>
@@ -520,6 +520,15 @@
                           </b-tag>
                         </b-taglist>
                       </template>
+                      <h2 class="subtitle">
+                        <a
+                              :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + 
+                                entry.pubmed"
+                              target="_blank"
+                              rel="noopener noreferrer">
+                              <strong>PubMed:</strong> {{entry.pubmed}}
+                            </a>
+                      </h2>
                       <div
                         class="content"
                         v-for="(study, index) of ogeeStudy[entry.pubmed]"
@@ -528,14 +537,7 @@
                             <strong>Assay:</strong> {{study.assay}} <br>
                             <strong>Condition:</strong> {{study.condition}} <br>
                             <strong>Definition of Essentiality:</strong> 
-                              {{study.def_essential}} <br>
-                            <a
-                              :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + 
-                                entry.pubmed"
-                              target="_blank"
-                              rel="noopener noreferrer">
-                              <strong>PubMed:</strong> {{entry.pubmed}}
-                            </a>
+                              {{study.def_essential}}
                           </p>
                       </div>
                     </b-tab-item>

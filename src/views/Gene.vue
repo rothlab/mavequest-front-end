@@ -22,6 +22,9 @@
                   <li v-if="hasAssay.genome_rnai">
                     <a href="#genome_rnai" class="scrollactive-item">GenomeRNAi</a>
                   </li>
+                  <li v-if="hasAssay.ogee">
+                    <a href="#ogee" class="scrollactive-item">OGEE</a>
+                  </li>
                   <li v-if="hasAssay.orthology">
                     <a href="#orthology" class="scrollactive-item">Orthology</a>
                   </li>
@@ -437,7 +440,7 @@
                   >
                     <template slot="bottom-left">
                       <b-taglist attached>
-                        <b-tag size="is-medium" type="has-background-grey-lighter">
+                        <b-tag size="is-medium" type="is-light">
                           Hits / Total &nbsp;
                           <b-tooltip
                             type="is-dark"
@@ -489,6 +492,54 @@
                       </b-table-column>
                     </template>
                   </b-table>
+                </div>
+              </div>
+
+              <div v-if="hasAssay.ogee">
+                <AssayTitle
+                  anchor="ogee"
+                  title="OGEE"
+                  icon="fas fa-bars"
+                  :dblink="['http://ogee.medgenius.info/browse/Homo%2520sapiens/'+ ensemblID]"
+                  reflink="/about#ogee"
+                ></AssayTitle>
+
+                <div class="card has-table-padding in-paragraph in-list">
+                  <b-tabs>
+                    <b-tab-item v-for="(entry, index) of ogeeData" :key="index">
+                      <template slot="header">
+                        <b-taglist attached>
+                          <b-tag
+                            type="is-light">
+                            PMID: {{entry.pubmed}}
+                          </b-tag>
+                          <b-tag
+                            :type="entry.essential ? 'is-info' 
+                              : 'has-background-white-bis'">
+                            {{entry.essential ? 'Essential' : 'Non-essential'}}
+                          </b-tag>
+                        </b-taglist>
+                      </template>
+                      <div
+                        class="content"
+                        v-for="(study, index) of ogeeStudy[entry.pubmed]"
+                        :key="index">
+                          <p>
+                            <strong>Assay:</strong> {{study.assay}} <br>
+                            <strong>Condition:</strong> {{study.condition}} <br>
+                            <strong>Definition of Essentiality:</strong> 
+                              {{study.def_essential}} <br>
+                            <a
+                              :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + 
+                                entry.pubmed"
+                              target="_blank"
+                              rel="noopener noreferrer">
+                              <strong>PubMed:</strong> {{entry.pubmed}}
+                            </a>
+                          </p>
+                      </div>
+                    </b-tab-item>
+                  </b-tabs>
                 </div>
               </div>
 
@@ -1166,6 +1217,8 @@ function initialState() {
     genomeRNAiData: [],
     genomeCRISPRData: [],
     genomeCRISPRStats: {},
+    ogeeData: [],
+    ogeeStudy: [],
     overexprData: [],
     clinvarData: {},
     variantStats: [],
@@ -1277,6 +1330,13 @@ export default {
               this.hasAssay.genome_crispr = true;
               this.genomeCRISPRData = json.genome_crispr;
               this.genomeCRISPRStats = json.genome_crispr_stats;
+            }
+
+            if (Object.prototype.hasOwnProperty.call(json, "ogee_gene")) {
+              this.hasAssay.any = true;
+              this.hasAssay.ogee = true;
+              this.ogeeData = json.ogee_gene;
+              this.ogeeStudy = json.ogee_study;
             }
 
             if (Object.prototype.hasOwnProperty.call(json, "orthology")) {

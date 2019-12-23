@@ -182,6 +182,29 @@
                 </p>
               </div>
 
+              <!-- OGEE -->
+              <div ref="ogee" class="in-paragraph">
+                <h4 class="in-list" id="ogee">
+                  OGEE &nbsp;
+                  <a href="http://ogee.medgenius.info/browse/" target="_blank">
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  Chen, W. H., Lu, G., Chen, X., Zhao, X. M., & Bork, P.
+                  <strong>OGEE v2: an update of the online gene essentiality 
+                    database with special focus on differentially essential 
+                    genes in human cancer cell lines. </strong>
+                  <i>Nucleic acids research</i> (2016): gkw1013.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/27799467"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
               <!-- Orthology -->
               <div ref="orthology" class="in-paragraph">
                 <h4 class="in-list" id="orthology">Orthology</h4>

@@ -15,6 +15,7 @@
         @submit="searchGenes"
         @select="autoCompleteRes = []"
         placeholder="Search with Gene Symbol"
+        @keydown.native.enter="searchGenes"
       >
         <template slot-scope="props">
           <!-- Full-view autocomplete list -->

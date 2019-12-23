@@ -435,7 +435,7 @@ export default {
         this.clinvarData.pathogenic_variants) {
         let stars = Array.prototype.concat(this.clinvarData.benign_variants, 
           this.clinvarData.pathogenic_variants);
-        stars = compact(stars).map(e => e.review_star);
+        stars = compact(stars).filter(e => e.isSnv).map(e => e.review_star);
 
         return uniq(stars).sort()
       } else {

@@ -505,7 +505,7 @@
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
-                  <b-tabs vertical>
+                  <b-tabs vertical class="is-expanded">
                     <b-tab-item v-for="(entry, index) of ogeeData" :key="index">
                       <template slot="header">
                         <b-taglist attached>
@@ -1612,6 +1612,9 @@ export default {
   .clinvar-stats-adaptive {
     margin-top: -40px !important;
     margin-bottom: -60px !important;
+  }
+  .is-expanded {
+    display: block !important;
   }
 }
 </style>

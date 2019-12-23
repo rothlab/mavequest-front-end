@@ -40,7 +40,15 @@
         class="card-header-icon is-hidden-mobile"
         style="z-index: 10;"
         v-if="clinvarData.benign_variants || clinvarData.pathogenic_variants">
-        <p style="margin-right: 0.5rem;">Review Stars</p>
+        <p style="margin-right: 0.5rem;">
+          Review Status
+          <a
+            href="https://www.ncbi.nlm.nih.gov/clinvar/docs/review_status/"
+            target="_blank"
+            rel="noopener noreferrer">
+            <b-icon pack="fas" size="is-small" icon="question-circle"></b-icon>
+          </a>
+        </p>
         <b-field>
           <b-checkbox-button
             v-for="star in reviewStars"

@@ -67,11 +67,24 @@
       >
         <apexchart
           type="scatter"
-          height="250px"
+          height="200px"
           :options="distriChartOptions"
           :series="distriData"
         ></apexchart>
       </div>
+
+      <div v-if="structureSeries" class="structure-chart">
+        <apexchart
+          type="rangeBar"
+          :height="20 * numStructure"
+          :options="structureChartOptions"
+          :series="structureSeries"
+        ></apexchart>
+      </div>
+
+      <p
+        style="position:relative; top:-1.5rem; text-align: center"
+        >Amino Acid Position (a.a.)</p>
 
       <span
           class="has-text-grey-light is-hidden-mobile"
@@ -177,6 +190,7 @@ export default {
   props: {
     symbol: String,
     clinvarData: Object,
+    structureData: Object,
     aaLength: Number,
     conflictCanonical: Boolean
   },
@@ -277,7 +291,11 @@ export default {
           },
           events: {
             zoomed: this.zoomIn,
+            scrolled: this.zoomIn,
             dataPointSelection: this.selectPoint
+          },
+          animations: {
+            dynamicAnimation: { enabled: false }
           }
         },
         dataLabels: { enabled: false },
@@ -310,10 +328,6 @@ export default {
               return parseFloat(val).toFixed(0);
             }
           },
-          title: {
-            text: "Amino Acid Position (a.a.)",
-            style: { fontSize: "16px" }
-          },
           tooltip: { enabled: false },
           min: 0,
           max: this.aaLength
@@ -345,7 +359,52 @@ export default {
         }
       },
       selectedVariants: {},
-      selectedStars: []
+      selectedStars: [],
+      numStructure: 2,
+      structureChartOptions: {
+        chart: {
+          toolbar: { show: false },
+          animations: {
+            dynamicAnimation: { enabled: false }
+          }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: "80%"
+          },
+        },
+        grid: {
+          xaxis: { lines: { show: false } },
+          yaxis: { lines: { show: false } },
+          padding: {
+            left: 40,
+            right: -1,
+            top: -30,
+            bottom: 2
+          }
+        },
+        xaxis: {
+          type: "datetime",
+          labels: { show: false },
+          axisBorder: { show: false },
+          axisTicks: { show: false },
+          tooltip: { enabled: false },
+          min: 0,
+          max: this.aaLength
+        },
+        yaxis: { show: false },
+        tooltip: {
+          x: {
+            formatter: function(value) {
+              return value;
+            }
+          },
+        },
+        legend: {
+          show: false,
+        }
+      },
     };
   },
   computed: {
@@ -449,7 +508,38 @@ export default {
       } else {
         return []
       }
+    },
+    structureSeries: function() {
+      if (this.structureData && this.structureData.entries.length > 0) {
+        let series = [];
+        
+        for (const entry of this.structureData.entries) {
+          // Parse entry fragments
+          const fragments = entry.fragments.map(fragment => {
+            return {
+              x: entry.entry_acc,
+              y: [fragment.pos_start, fragment.pos_end]
+            }
+          });
 
+          // Append the entry to its category
+          // If the category doesn't exist, create one
+          const index = series.findIndex(element => 
+            element.name != entry.entry_type);
+          if (index < 0) {
+            series.push({
+              name: entry.entry_type,
+              data: fragments
+            })
+          } else {
+            series[index].data.concat(fragments)
+          }
+        }
+
+        return series;
+      }
+
+      return undefined;
     }
   },
   mounted () {
@@ -559,10 +649,22 @@ export default {
       // If zoomed out completely
       if (!xaxis.min || !xaxis.max) {
         this.hasZoomedIn = false;
+        this.structureChartOptions = {
+          xaxis: {
+            min: 0,
+            max: this.aaLength
+          }
+        }
         return;
       }
 
       this.hasZoomedIn = true;
+      this.structureChartOptions = {
+        xaxis: {
+          min: xaxis.min,
+          max: xaxis.max
+        }
+      }
     },
     selectPoint(event, chartContext, config) {
       // Don't respond to touchstart as another mousedown event will be fired
@@ -640,10 +742,15 @@ export default {
   z-index: 1;
 }
 .pathogenic-stats {
+  display: contents;
   overflow: hidden;
   margin-top: -10px;
   margin-left: -25px;
   z-index: 1;
+}
+.structure-chart {
+  margin-top: -10px;
+  z-index: 0;
 }
 .clinvar-table {
   position: relative;

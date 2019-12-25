@@ -704,6 +704,7 @@
                   :symbol="geneName"
                   :clinvarData="clinvarData"
                   :aaLength="Math.max(parseInt(aaLength.combined))"
+                  :structureData="structureData"
                   :conflictCanonical="aaLength.is_agreed !== 'agree'"
                 ></ClinvarView>
               </div>
@@ -1199,6 +1200,7 @@ function initialState() {
     transcriptList: [],
     alias: [],
     alias_description: [],
+    structureData: undefined,
     hasAssay: {},
     hasPhenotype: {},
     hasClinicalInterest: {},
@@ -1303,6 +1305,7 @@ export default {
             this.aaLength = json.aa_length;
             this.alias = json.alias;
             this.alias_description = json.alias_description;
+            this.structureData = json.structures;
 
             // Handle date
             const date = new Date(json.last_update);

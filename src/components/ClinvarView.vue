@@ -67,6 +67,7 @@
       >
         <apexchart
           type="scatter"
+          class="clickable"
           height="200px"
           :options="distriChartOptions"
           :series="distriData"
@@ -76,7 +77,8 @@
       <div v-if="structureSeries" class="structure-chart">
         <apexchart
           type="rangeBar"
-          :height="20 * numStructure"
+          class="clickable"
+          :height="25 * numStructure"
           :options="structureChartOptions"
           :series="structureSeries"
         ></apexchart>
@@ -360,18 +362,20 @@ export default {
       },
       selectedVariants: {},
       selectedStars: [],
-      numStructure: 2,
       structureChartOptions: {
         chart: {
           toolbar: { show: false },
           animations: {
             dynamicAnimation: { enabled: false }
+          },
+          events: {
+            dataPointSelection: this.selectStructure
           }
         },
         plotOptions: {
           bar: {
             horizontal: true,
-            barHeight: "80%"
+            barHeight: "100%"
           },
         },
         grid: {
@@ -379,9 +383,9 @@ export default {
           yaxis: { lines: { show: false } },
           padding: {
             left: 40,
-            right: -1,
+            right: 6,
             top: -30,
-            bottom: 2
+            bottom: 0
           }
         },
         xaxis: {
@@ -397,7 +401,7 @@ export default {
         tooltip: {
           x: {
             formatter: function(value) {
-              return value;
+              return value + 'a.a.';
             }
           },
         },
@@ -517,15 +521,20 @@ export default {
           // Parse entry fragments
           const fragments = entry.fragments.map(fragment => {
             return {
-              x: entry.entry_acc,
-              y: [fragment.pos_start, fragment.pos_end]
+              x: entry.entry_name,
+              y: [fragment.pos_start, fragment.pos_end],
+              acc: entry.entry_acc
             }
           });
+
+          // Format entry type
+          entry.entry_type = entry.entry_type.split('_')
+          .map(e => e.charAt(0).toUpperCase() + e.slice(1)).join(' ');
 
           // Append the entry to its category
           // If the category doesn't exist, create one
           const index = series.findIndex(element => 
-            element.name != entry.entry_type);
+            element.name == entry.entry_type);
           if (index < 0) {
             series.push({
               name: entry.entry_type,
@@ -540,6 +549,13 @@ export default {
       }
 
       return undefined;
+    },
+    numStructure: function() {
+      if (this.structureSeries) {
+        return this.structureSeries.length
+      }
+
+      return 0;
     }
   },
   mounted () {
@@ -716,6 +732,19 @@ export default {
         })
       }
     },
+    selectStructure (event, chartContext, config) {
+      // Don't respond to touchstart as another mousedown event will be fired
+      if (event.type === "touchstart") return;
+
+      // Get Interpro Accession
+      const seriesIndex = config.seriesIndex;
+      const dataPointIndex = config.dataPointIndex;
+      const data = this.structureSeries[seriesIndex].data[dataPointIndex];
+
+      // Open the detail page on InterPro
+      const url = 'https://www.ebi.ac.uk/interpro/entry/InterPro/' + data.acc;
+      window.open(url, "_blank");
+    },
     closeVariantModal () {
       this.isVariantModalActive = false;
       this.selectedVariants = {};
@@ -733,7 +762,11 @@ export default {
   }
 };
 </script>
-
+<style>
+.clickable .apexcharts-series {
+  cursor: pointer;
+}
+</style>
 <style scoped>
 .clinvar-stats {
   overflow: hidden;

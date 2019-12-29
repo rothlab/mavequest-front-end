@@ -74,7 +74,7 @@
         ></apexchart>
       </div>
 
-      <div v-if="structureSeries" class="structure-chart">
+      <div v-if="structureSeries" class="structure-chart is-hidden-mobile">
         <apexchart
           type="rangeBar"
           class="clickable"
@@ -82,24 +82,11 @@
           :options="structureChartOptions"
           :series="structureSeries"
         ></apexchart>
+
+        <p
+          style="position:relative; top:-1.5rem; text-align: center"
+          >Amino Acid Position (a.a.)</p>
       </div>
-
-      <p
-        style="position:relative; top:-1.5rem; text-align: center"
-        >Amino Acid Position (a.a.)</p>
-
-      <span
-          class="has-text-grey-light is-hidden-mobile"
-          style="position:relative; top:-2rem; float:right"
-        >
-          <b-icon pack="fas" icon="lightbulb" size="is-small"></b-icon>
-          <span v-if="!hasZoomedIn"> Select a region to zoom in</span>
-          <span v-else>
-            Click
-            <b-icon pack="fas" icon="home" size="is-small"></b-icon>
-             to reset zoom
-          </span>
-        </span>
       
         <span
           class="has-text-danger is-hidden-mobile"
@@ -370,12 +357,12 @@ export default {
           },
           events: {
             dataPointSelection: this.selectStructure
-          }
+          },
         },
         plotOptions: {
           bar: {
             horizontal: true,
-            barHeight: "100%"
+            barHeight: "100%",
           },
         },
         grid: {
@@ -384,8 +371,8 @@ export default {
           padding: {
             left: 40,
             right: 6,
-            top: -30,
-            bottom: 0
+            top: -15,
+            bottom: -5
           }
         },
         xaxis: {
@@ -397,7 +384,19 @@ export default {
           min: 0,
           max: this.aaLength
         },
-        yaxis: { show: false },
+        yaxis: {
+          show: false,
+          title: {
+            text: "Structure",
+            style: { fontSize: "16px" }
+          },
+          floating: true
+        },
+        legend: {
+          show: true,
+          position: "top",
+          fontSize: "16px",
+        },
         tooltip: {
           x: {
             formatter: function(value) {
@@ -405,9 +404,6 @@ export default {
             }
           },
         },
-        legend: {
-          show: false,
-        }
       },
     };
   },
@@ -783,6 +779,7 @@ export default {
 }
 .structure-chart {
   margin-top: -10px;
+  margin-bottom: -25px;
   z-index: 0;
 }
 .clinvar-table {

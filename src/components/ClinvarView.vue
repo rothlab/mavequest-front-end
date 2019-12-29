@@ -187,7 +187,6 @@ export default {
     return {
       isMobile: window.innerWidth < 768,
       isVariantModalActive: false,
-      hasZoomedIn: 0,
       variantSumChartOptions: {
         chart: {
           stacked: true,
@@ -279,6 +278,7 @@ export default {
             }
           },
           events: {
+            beforeZoom: this.beforeZoom,
             zoomed: this.zoomIn,
             scrolled: this.zoomIn,
             dataPointSelection: this.selectPoint
@@ -657,10 +657,18 @@ export default {
       }
       return count;
     },
+    beforeZoom(chartContext, { xaxis }) {
+      return {
+        xaxis: {
+          min: xaxis.min < 0 ? 0 : xaxis.min,
+          max: xaxis.max > this.aaLength ? this.aaLength : xaxis.max
+        }
+      };
+    },
     zoomIn(chartContext, { xaxis }) {
+      // Sync with secondary track plot
       // If zoomed out completely
       if (!xaxis.min || !xaxis.max) {
-        this.hasZoomedIn = false;
         this.structureChartOptions = {
           xaxis: {
             min: 0,
@@ -670,7 +678,6 @@ export default {
         return;
       }
 
-      this.hasZoomedIn = true;
       this.structureChartOptions = {
         xaxis: {
           min: xaxis.min,

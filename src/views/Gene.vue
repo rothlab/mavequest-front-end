@@ -747,12 +747,14 @@
 
                       <template slot-scope="props">
                         <b-table-column field="phenotype" label="Phenotype">
+                          <p>
                           {{props.row.phenotype.replace(/\d*$/, "")}}
                           <a
                             :href="'https://www.omim.org/entry/' + props.row.phenotype.match(/\d*$/).toString()"
                             target="_blank"
                             rel="noopener noreferrer"
                           >{{props.row.phenotype.match(/\d*$/).toString()}}</a>
+                          </p>
                         </b-table-column>
 
                         <b-table-column field="badge" label="Annotation" :meta="true">

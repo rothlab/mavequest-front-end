@@ -25,9 +25,9 @@
     <!-- Footer -->
     <footer class="footer footer-padding">
       <div class="content">
-        <div class="level" :class="{ 'is-mobile': isTablet }">
+        <div class="level">
           <div class="level-left">
-            <p :class="{ 'has-text-centered': isMobile }">
+            <p class="footer-text">
               © <b-tooltip :label="'Version ' + version" position="is-top" type="is-dark"><strong>{{ appName }} 
                 ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at the <a href="http://llama.mshri.on.ca/" target="_blank">{{ organization }}</a> 
               with <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
@@ -56,8 +56,6 @@ export default {
       organization: process.env.VUE_APP_ORGANIZATION,
       version: process.env.GIT_VERSION,
       isActive: 'search',
-      isMobile: window.innerWidth < 768,
-      isTablet: window.innerWidth >= 768 && window.innerWidth < 1023,
       hasAgreedToCompliance: false
     };
   },
@@ -151,5 +149,10 @@ $menu-item-active-background-color: $grey-lighter;
 .is-anchor {
   padding-top: 60px;
   margin-top: -60px;
+}
+@media screen and (max-width: 768px) {
+  .footer-text {
+    text-align: center;
+  }
 }
 </style>

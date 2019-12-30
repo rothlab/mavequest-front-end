@@ -28,8 +28,8 @@
         <div class="level">
           <div class="level-left">
             <p class="footer-text">
-              © <b-tooltip :label="'Version ' + version" position="is-top" type="is-dark"><strong>{{ appName }} 
-                ({{version.match(/[^-]+/).join()}})</strong></b-tooltip> made at the <a href="http://llama.mshri.on.ca/" target="_blank">{{ organization }}</a> 
+              © <strong>{{ appName }} ({{version.match(/[^-]+/).join()}})</strong>
+              made at the <a href="http://llama.mshri.on.ca/" target="_blank">{{ organization }}</a> 
               with <b-icon icon="heart" size="is-small" type="is-danger"></b-icon>
             </p>
           </div>

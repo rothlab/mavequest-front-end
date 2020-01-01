@@ -536,7 +536,7 @@ export default {
               data: fragments
             })
           } else {
-            series[index].data.concat(fragments)
+            series[index].data = series[index].data.concat(fragments)
           }
         }
 
@@ -547,7 +547,7 @@ export default {
     },
     numStructure: function() {
       if (this.structureSeries) {
-        return this.structureSeries.length
+        return this.structureSeries.reduce((s, curr) => s + curr.data.length, 0)
       }
 
       return 0;

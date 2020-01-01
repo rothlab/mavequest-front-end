@@ -12,10 +12,8 @@
         field="gene_symbol"
         @typing="getGeneNames"
         class="search"
-        @submit="searchGenes"
-        @select="autoCompleteRes = []"
+        @select="searchGenesFromAutoComplete"
         placeholder="Search with Gene Symbol"
-        @keydown.native.enter="searchGenes"
       >
         <template slot-scope="props">
           <!-- Full-view autocomplete list -->
@@ -149,6 +147,15 @@ export default {
       // Call router
       this.resetData();
       this.$router.push(dest);
+    },
+    searchGenesFromAutoComplete(option) {
+      // If searchGenes is iniated from autocomplete select, then reset the 
+      // selection panel
+      if (option && option.gene_symbol != "") {
+        this.autoCompleteRes = [];
+        this.gene = option.gene_symbol;
+        this.searchGenes();
+      }
     },
     autocomplete({ text, resolve, reject }) {
       this.$http

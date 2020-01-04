@@ -397,7 +397,7 @@
 
             <!-- Ambry Panel -->
               <div ref="ambry" class="in-paragraph">
-                <h4 class="in-list" id="invitae">
+                <h4 class="in-list" id="ambry">
                   Ambry &nbsp;
                   <a
                     href="https://www.ambrygen.com/clinician"
@@ -414,7 +414,7 @@
 
               <!-- GeneDx Panel -->
               <div ref="genedx" class="in-paragraph">
-                <h4 class="in-list" id="invitae">
+                <h4 class="in-list" id="genedx">
                   GeneDx &nbsp;
                   <a
                     href="https://www.genedx.com/test-catalog/testing-directory/#!/by-test/"
@@ -426,6 +426,52 @@
                 <p>
                   <strong>GeneDx.</strong>
                   Copyright, GeneDx.
+                </p>
+              </div>
+
+              <!-- InterPro -->
+              <div ref="interpro" class="in-paragraph">
+                <h4 class="in-list" id="interpro">
+                  InterPro &nbsp;
+                  <a href="https://www.ebi.ac.uk/interpro/" target="_blank">
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  Mitchell, Alex L., Teresa K. Attwood, Patricia C. Babbitt, 
+                  Matthias Blum, Peer Bork, Alan Bridge, Shoshana D. Brown et al.
+                  <strong>InterPro in 2019: improving coverage, classification 
+                    and access to protein sequence annotations.</strong>
+                  <i>Nucleic acids research</i> 47, no. D1 (2018): D351-D360.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/30398656"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
+
+              <!-- Uniprot -->
+              <div ref="uniprot" class="in-paragraph">
+                <h4 class="in-list" id="uniprot">
+                  InterPro &nbsp;
+                  <a href="https://www.uniprot.org/" target="_blank">
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  UniProt Consortium.
+                  <strong>UniProt: a worldwide hub of protein knowledge.</strong>
+                  <i>Nucleic acids research</i> 47, no. D1 (2018): D506-D515.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/30395287"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
                 </p>
               </div>
             </div>

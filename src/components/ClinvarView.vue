@@ -78,32 +78,37 @@
         <apexchart
           type="rangeBar"
           class="clickable"
-          :height="25 * numStructure"
+          style="z-index: 0;"
+          :height="15 * numStructure"
           :options="structureChartOptions"
           :series="structureSeries"
         ></apexchart>
 
-        <p
-          style="position:relative; top:-1.5rem; text-align: center"
-          >Amino Acid Position (a.a.)</p>
-      </div>
-      
-        <span
-          class="has-text-danger is-hidden-mobile"
-          style="position:relative; top:-1rem; float:left"
-          v-if="conflictCanonical"
-        >
-          <b-icon pack="fas" icon="exclamation-triangle" size="is-small"></b-icon>
-          <span>
-            &nbsp;Canonical Isoforms from Ensembl and Uniprot don't agree.
-          </span>
+        <a style="position:relative; z-index: 1;"
+          href="/about#interpro"
+          target="_blank"
+          rel="noopener noreferrer">
+          <b-tag>
+            <b-icon icon="far fa-file-alt" size="is-small"></b-icon>
+            <span>&nbsp;InterPro</span>
+          </b-tag>
+        </a>
 
-          <b-tooltip type="is-dark" multilined
-            label="The A.A. lengths of canonical isoform are different between 
-            databases. The longest A.A. length was used.">
-            <b-icon pack="fas" icon="question-circle" size="is-small"></b-icon>
-          </b-tooltip>
-        </span>
+        <a style="position:relative; z-index: 1; margin-left: 0.5rem"
+          href="/about#uniprot"
+          target="_blank"
+          rel="noopener noreferrer">
+          <b-tag>
+            <b-icon icon="far fa-file-alt" size="is-small"></b-icon>
+            <span>&nbsp;Uniprot</span>
+          </b-tag>
+        </a>
+      </div>
+
+      <p
+        class="is-hidden-mobile"
+        style="position:relative; top:0.5rem; text-align: center"
+      >Amino Acid Position (a.a.)</p>
       
       <div class="media is-hidden-tablet is-vcentered">
         <div class="media-left">
@@ -350,7 +355,9 @@ export default {
       selectedStars: [],
       structureChartOptions: {
         chart: {
-          toolbar: { show: false },
+          toolbar: {
+            show: false,
+          },
           animations: {
             dynamicAnimation: { enabled: false }
           },
@@ -369,9 +376,9 @@ export default {
           yaxis: { lines: { show: false } },
           padding: {
             left: 40,
-            right: 6,
+            right: 18,
             top: -15,
-            bottom: -5
+            bottom: -20
           }
         },
         xaxis: {
@@ -546,8 +553,8 @@ export default {
       return undefined;
     },
     numStructure: function() {
-      if (this.structureSeries) {
-        return this.structureSeries.reduce((s, curr) => s + curr.data.length, 0)
+      if (this.structureData && this.structureData.entries) {
+        return this.structureData.entries.length;
       }
 
       return 0;
@@ -743,9 +750,12 @@ export default {
       const dataPointIndex = config.dataPointIndex;
       const data = this.structureSeries[seriesIndex].data[dataPointIndex];
 
-      // Open the detail page on InterPro
-      const url = 'https://www.ebi.ac.uk/interpro/entry/InterPro/' + data.acc;
-      window.open(url, "_blank");
+      if (data.acc) {
+        // If data point has accession, open it in Interpro
+        // Open the detail page on InterPro
+        const url = 'https://www.ebi.ac.uk/interpro/entry/InterPro/' + data.acc;
+        window.open(url, "_blank");
+      }
     },
     closeVariantModal () {
       this.isVariantModalActive = false;
@@ -785,8 +795,7 @@ export default {
 }
 .structure-chart {
   margin-top: -10px;
-  margin-bottom: -25px;
-  z-index: 0;
+  margin-bottom: -30px;
 }
 .clinvar-table {
   position: relative;

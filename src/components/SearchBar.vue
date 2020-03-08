@@ -144,9 +144,11 @@ export default {
         };
       }
 
-      // Call router
+      // Call router when the dest path is different
       this.resetData();
-      this.$router.push(dest);
+      if (this.$route.path !== dest.path) {
+        this.$router.push(dest);
+      }
     },
     searchGenesFromAutoComplete(option) {
       // If searchGenes is iniated from autocomplete select, then reset the 

@@ -115,7 +115,7 @@ export default {
 
         return;
       } else if (this.autoCompleteRes.length >= 1) {
-        this.geneNames = this.autoCompleteRes.map(e => e.gene_symbol);
+        this.geneNames = this.autoCompleteRes.map(e => e.hgnc_id);
       } else if (this.gene !== ""){
         this.geneNames.push(this.gene);
       } else {
@@ -153,7 +153,7 @@ export default {
       // selection panel
       if (option && option.gene_symbol != "") {
         this.autoCompleteRes = [];
-        this.gene = option.gene_symbol;
+        this.gene = option.hgnc_id;
         this.searchGenes();
       }
     },

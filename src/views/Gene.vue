@@ -1191,6 +1191,7 @@ function initialState() {
     showTranscripts: false,
     errorResponse: undefined,
     isFloat: false,
+    symbol:"",
     description: "",
     entrezID: "",
     ensemblID: "",
@@ -1268,11 +1269,16 @@ export default {
   },
   computed: {
     geneName: function() {
-      let name = this.$route.params.name;
-      // Handle C*orf* gene name
-      // TODO: fix this properly
-      if (!/C\d*orf\d*/g.test(name)) {
-        name = name.toUpperCase();
+      let name;
+      if (this.symbol == "") {
+        name = this.$route.params.name;
+        // Handle C*orf* gene name
+        // TODO: fix this properly
+        if (!/C\d*orf\d*/g.test(name)) {
+          name = name.toUpperCase();
+        }
+      } else {
+        name = this.symbol;
       }
       return name;
     }
@@ -1299,6 +1305,7 @@ export default {
             const json = response.body;
 
             // Populate basic information
+            this.symbol = json.symbol;
             this.description = json.description;
             this.entrezID = json.entrez_id;
             this.ensemblID = json.ensembl_id;

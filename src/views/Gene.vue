@@ -152,13 +152,12 @@
                       <div class="control" v-if="entrezID">
                         <b-tag type="is-link" v-if="entrezID">
                           <a
-                            v-bind:href="'https://www.genecards.org/cgi-bin/carddisp.pl?gene=' + entrezID"
+                            v-bind:href="'https://www.ncbi.nlm.nih.gov/gene/' + entrezID"
                             target="_blank"
                             class="has-text-white"
                           >
                             Entrez: {{entrezID}}
-                            &nbsp;
-                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            <b-icon style="margin-left: 0rem;" icon="external-link-alt" size="is-small"></b-icon>
                           </a>
                         </b-tag>
                       </div>
@@ -171,8 +170,7 @@
                             class="has-text-white"
                           >
                             OMIM: {{omimID}}
-                            &nbsp;
-                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            <b-icon style="margin-left: 0rem;" icon="external-link-alt" size="is-small"></b-icon>
                           </a>
                         </b-tag>
                       </div>
@@ -184,8 +182,8 @@
                             target="_blank"
                             class="has-text-white"
                           >
-                            Google Scholar &nbsp;
-                            <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                            Google Scholar
+                            <b-icon style="margin-left: 0rem;" icon="external-link-alt" size="is-small"></b-icon>
                           </a>
                         </b-tag>
                       </div>
@@ -199,8 +197,7 @@
                               class="has-text-white"
                             >
                               Ensembl
-                              &nbsp;
-                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                              <b-icon style="margin-left: 0rem;" icon="external-link-alt" size="is-small"></b-icon>
                             </a>
                           </b-tooltip>
                         </b-tag>
@@ -216,8 +213,8 @@
                               target="_blank"
                               class="has-text-white"
                             >
-                              Uniprot &nbsp;
-                              <b-icon icon="external-link-alt" size="is-small"></b-icon>&nbsp;
+                              Uniprot
+                              <b-icon style="margin-left: 0rem;" icon="external-link-alt" size="is-small"></b-icon>
                             </a>
                           </b-tag>
                         </b-tooltip>
@@ -242,9 +239,10 @@
                         pack="fas"
                         icon="chevron-right"
                         size="is-small"
+                        style="margin-right: 0.5rem; transition: transform 0.2s ease;"
                         :style="{ transform: showTranscripts ? 'rotate(0.25turn)' : '' } "
                       ></b-icon>
-                      <span>&nbsp;&nbsp;Isoforms and Transcripts</span>
+                      <span>Isoforms and Transcripts</span>
                     </div>
 
                     <div class="item-border">
@@ -264,8 +262,9 @@
                           <b-taglist>
                             <b-tag type="is-info" size="is-medium">Canonical isoform</b-tag>
                             <b-tag type="is-light" size="is-medium">
-                              Data Source:&nbsp;
+                              Data Source:
                               <a
+                                style="margin-left: 0.25rem;"
                                 href="https://useast.ensembl.org/index.html"
                                 target="_blank"
                               >Ensembl</a>
@@ -279,7 +278,7 @@
                             v-if="loadingTranscriptsStatus === 1"
                           >
                             <SyncLoader :size="5" color="#7A7A7A"></SyncLoader>
-                            <span class="has-text-grey">&nbsp;&nbsp;Loading</span>
+                            <span style="margin-left: 0.5rem;" class="has-text-grey">Loading</span>
                           </p>
                           <p
                             class="has-text-centered title is-6"
@@ -382,7 +381,7 @@
                       <b-tag
                         size="is-medium"
                         >
-                        <b-icon pack="fas" size="is-small" icon="info-circle"></b-icon>
+                        <b-icon style="margin-left: 0rem;" pack="fas" size="is-small" icon="info-circle"></b-icon>
                         <span>&nbsp;MAVE studies related to {{geneName}}</span>
                       </b-tag>
                     </template>
@@ -441,7 +440,7 @@
                     <template slot="bottom-left">
                       <b-taglist attached>
                         <b-tag size="is-medium" type="is-light">
-                          Hits / Total &nbsp;
+                          Hits / Total
                           <b-tooltip
                             type="is-dark"
                             multilined
@@ -453,7 +452,7 @@
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              <b-icon pack="fas" size="is-small" icon="question-circle"></b-icon>
+                              <b-icon style="margin-left: 0.25rem;" pack="fas" size="is-small" icon="question-circle"></b-icon>
                             </a>
                           </b-tooltip>
                         </b-tag>
@@ -670,8 +669,8 @@
                     <div class="level is-fullwidth">
                       <div class="level-left">
                         <span class="subtitle is-5 is-vcentered is-flex">
-                          <b-tag rounded size="is-medium" type="is-dark">{{huriData.length}}</b-tag>
-                          &nbsp;pair{{huriData.length > 1 ? "s" : ""}}
+                          <b-tag rounded size="is-medium" type="is-dark" style="margin-right: 0.25rem;">{{huriData.length}}</b-tag>
+                          pair{{huriData.length > 1 ? "s" : ""}}
                           in the HuRI database.
                         </span>
                       </div>
@@ -1192,6 +1191,7 @@ function initialState() {
     showTranscripts: false,
     errorResponse: undefined,
     isFloat: false,
+    symbol:"",
     description: "",
     entrezID: "",
     ensemblID: "",
@@ -1269,11 +1269,16 @@ export default {
   },
   computed: {
     geneName: function() {
-      let name = this.$route.params.name;
-      // Handle C*orf* gene name
-      // TODO: fix this properly
-      if (!/C\d*orf\d*/g.test(name)) {
-        name = name.toUpperCase();
+      let name;
+      if (this.symbol == "") {
+        name = this.$route.params.name;
+        // Handle C*orf* gene name
+        // TODO: fix this properly
+        if (!/C\d*orf\d*/g.test(name)) {
+          name = name.toUpperCase();
+        }
+      } else {
+        name = this.symbol;
       }
       return name;
     }
@@ -1300,6 +1305,7 @@ export default {
             const json = response.body;
 
             // Populate basic information
+            this.symbol = json.symbol;
             this.description = json.description;
             this.entrezID = json.entrez_id;
             this.ensemblID = json.ensembl_id;

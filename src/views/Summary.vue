@@ -66,12 +66,12 @@
                     target="_blank"
                   >{{props.row.gene_name}}</a>
                 </b-table-column>
-                <b-table-column field="entrez_id" label="Entrez ID">
+                <b-table-column field="hgnc_id" label="HGNC ID">
                   <a
-                    v-bind:href="'https://www.ncbi.nlm.nih.gov/gene/' + props.row.entrez_id"
+                    v-bind:href="'https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:' + props.row.hgnc_id"
                     target="_blank"
                   >
-                    {{props.row.entrez_id}}
+                    {{props.row.hgnc_id}}
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
                   </a>
                 </b-table-column>
@@ -227,7 +227,7 @@ export default {
             if (Object.prototype.hasOwnProperty.call(json, "missing")
               && json.missing.length > 0) {
               this.$buefy.snackbar.open({
-                message: `Some gene names had no matches: ${json.missing.join(
+                message: `Some gene identifiers had no matches: ${json.missing.join(
                   ", "
                 )}`,
                 type: "is-warning",

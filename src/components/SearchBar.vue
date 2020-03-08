@@ -115,7 +115,7 @@ export default {
 
         return;
       } else if (this.autoCompleteRes.length >= 1) {
-        this.geneNames = this.autoCompleteRes.map(e => e.gene_symbol);
+        this.geneNames = this.autoCompleteRes.map(e => e.hgnc_id);
       } else if (this.gene !== ""){
         this.geneNames.push(this.gene);
       } else {
@@ -144,16 +144,18 @@ export default {
         };
       }
 
-      // Call router
+      // Call router when the dest path is different
       this.resetData();
-      this.$router.push(dest);
+      if (this.$route.path !== dest.path) {
+        this.$router.push(dest);
+      }
     },
     searchGenesFromAutoComplete(option) {
       // If searchGenes is iniated from autocomplete select, then reset the 
       // selection panel
       if (option && option.gene_symbol != "") {
         this.autoCompleteRes = [];
-        this.gene = option.gene_symbol;
+        this.gene = option.hgnc_id;
         this.searchGenes();
       }
     },

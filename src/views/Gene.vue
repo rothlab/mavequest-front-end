@@ -566,12 +566,20 @@
                     narrowed
                   >
                     <template slot-scope="props">
-                      <b-table-column field="source" label="Pubmed Source" width="150">
-                        <a
-                          :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source"
-                          target="_blank"
-                          v-if="props.row.source != 'NA'"
-                        >{{props.row.source}}</a>
+                      <b-table-column field="source" label="Pubmed Source(s)" width="150">
+                        <div v-if="props.row.source != 'NA'">
+                          <div
+                            v-for="(source) in props.row.source.split('|')"
+                            :key="source"
+                          >
+                            <a
+                              :href="'https://www.ncbi.nlm.nih.gov/pubmed/' + source"
+                              target="_blank"
+                            >
+                              {{source}}
+                            </a>
+                          </div>
+                        </div>
                         <span v-else>{{props.row.source}}</span>
                       </b-table-column>
 

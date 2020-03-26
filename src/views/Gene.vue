@@ -1280,11 +1280,7 @@ export default {
       let name;
       if (this.symbol == "") {
         name = this.$route.params.name;
-        // Handle C*orf* gene name
-        // TODO: fix this properly
-        if (!/C\d*orf\d*/g.test(name)) {
-          name = name.toUpperCase();
-        }
+        name = name.toUpperCase();
       } else {
         name = this.symbol;
       }

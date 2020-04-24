@@ -309,7 +309,7 @@
                         <template slot-scope="props">
                           <b-table-column field="transcript" label="Transcript ID" width="200">
                             <a
-                              :href="'https://www.ensembl.org/Homo_sapiens/transview??transcript=' + props.row.id"
+                              :href="'https://www.ensembl.org/Homo_sapiens/transview?transcript=' + props.row.id"
                               target="_blank"
                               rel="noopener noreferrer"
                             >{{props.row.id}}</a>

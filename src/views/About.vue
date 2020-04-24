@@ -50,6 +50,19 @@
               </span>
 
               <div class="in-paragraph">
+                <h4 class="in-list">Citation</h4>
+
+                <p>
+                  Kuang, Da, et al. "MaveQuest: a web resource for planning experimental tests of human variant effects." <i>Bioinformatics</i> (2020).
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://www.ncbi.nlm.nih.gov/pubmed/32251504"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+
                 <h4 class="in-list">Features</h4>
 
                 <ul>

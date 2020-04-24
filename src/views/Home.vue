@@ -28,6 +28,14 @@
             </div>
           </div>
         </div>
+        <div class="citation">
+          <h2 class="subtitle">
+            <a href="https://www.ncbi.nlm.nih.gov/pubmed/32251504" target="_blank" rel="noopener noreferrer">
+              <b-icon icon="far fa-file-alt" size="is-small"></b-icon>
+              Kuang, Da, et al. "MaveQuest: a web resource for planning experimental tests of human variant effects." <i>Bioinformatics</i> (2020).
+            </a>
+          </h2>
+        </div>
       </div>
     </div>
   </section>
@@ -92,6 +100,9 @@ export default {
 }
 .search-display {
   min-width: 60vw;
+}
+.citation {
+  margin-top: 2rem;
 }
 .fill-screen-withheader {
   min-height: calc(100vh - 3.25rem - 13.5rem);

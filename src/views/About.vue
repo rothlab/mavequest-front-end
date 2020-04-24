@@ -456,7 +456,7 @@
               <!-- Uniprot -->
               <div ref="uniprot" class="in-paragraph">
                 <h4 class="in-list" id="uniprot">
-                  InterPro &nbsp;
+                  Uniprot &nbsp;
                   <a href="https://www.uniprot.org/" target="_blank">
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
                   </a>

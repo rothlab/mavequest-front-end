@@ -10,6 +10,7 @@
           :spec-url = "this.$apiEntryPoint + '/public/swagger.yaml'"
           allow-spec-url-load	= "false"
           allow-spec-file-load = "false"
+          allow-authentication = "false"
           show-header = "false"
           show-info = "false"
           primary-color = "#209CEE"

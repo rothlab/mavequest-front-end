@@ -35,6 +35,18 @@
           </div>
           <div class="level-right">
             <div class="level-item">
+              <a href="https://www.ncbi.nlm.nih.gov/pubmed/32251504" target="_blank">
+                <b-icon icon="far fa-file-alt"></b-icon>
+                Kuang <i>et al.</i>, 2020
+              </a>
+            </div>
+            <div class="level-item">
+              <a href="https://github.com/kvnkuang/mavequest-front-end" target="_blank">
+                <b-icon pack="fab" icon="fab fa-github"></b-icon>
+                Github
+              </a>
+            </div>
+            <div class="level-item">
               <a href="/docs/tos" target="_blank">Terms</a>
             </div>
             <div class="level-item">

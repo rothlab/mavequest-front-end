@@ -79,7 +79,7 @@
           type="rangeBar"
           class="clickable"
           style="z-index: 0;"
-          :height="15 * numStructure"
+          :height="20 * numStructure"
           :options="structureChartOptions"
           :series="structureSeries"
         ></apexchart>
@@ -369,6 +369,7 @@ export default {
           bar: {
             horizontal: true,
             barHeight: "100%",
+            columnWidth: "0%"
           },
         },
         grid: {
@@ -378,7 +379,7 @@ export default {
             left: 40,
             right: 18,
             top: -15,
-            bottom: -20
+            bottom: 0
           }
         },
         xaxis: {
@@ -393,6 +394,7 @@ export default {
         yaxis: {
           show: false,
           title: {
+            show: false,
             text: "Structure",
             style: { fontSize: "16px" }
           },

@@ -46,6 +46,12 @@
           <div class="source">
             <b-tooltip :label="entry.ref" type="is-dark" position="is-left">
               <a
+                v-if="entry.pubmed_id.startsWith('biorxiv')"
+                :href="'https://www.biorxiv.org/search/' 
+                    + entry.pubmed_id.replace('biorxiv:', '')"
+              >BioRxiv</a>
+              <a
+                v-else
                 :href="'https://www.ncbi.nlm.nih.gov/pubmed/' 
                     + entry.pubmed_id"
               >PMID</a>

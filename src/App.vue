@@ -5,7 +5,7 @@
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
           <img src="./assets/logo.png" alt="MaveQuest">
-          <span class="is-size-5">&nbsp; {{ appName }}</span>
+          <span class="is-size-5" style="margin-left: 0.5rem">{{ appName }}</span>
         </a>
       </div>
 

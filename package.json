@@ -14,7 +14,7 @@
     "@sentry/browser": "^5.24.2",
     "@sentry/cli": "^1.58.0",
     "@sentry/integrations": "^5.24.2",
-    "apexcharts": "^3.21.0",
+    "apexcharts": "^3.24.0",
     "buefy": "^0.8.20",
     "bulma-divider": "^0.2.0",
     "core-js": "^3.6.5",

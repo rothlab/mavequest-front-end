@@ -6,6 +6,8 @@ jobs:
     steps:
     - uses: 'actions/checkout@v3'
     - uses: 'actions/setup-node@master'
+      with:
+        node-version: 12
     - run: npm install
     - run: npm run test:unit
     - run: npm run build

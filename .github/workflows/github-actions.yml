@@ -42,7 +42,7 @@ jobs:
         string: '${{ steps.package-version.outputs.current-version}}'
         pattern: '\\.'
         replace-with: '-'
-        flag: 'g'
+        flags: 'g'
 
     - name: Deploy to App Engine
       uses: 'google-github-actions/deploy-appengine@v0'

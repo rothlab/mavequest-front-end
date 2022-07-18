@@ -26,7 +26,6 @@ import 'bulma-divider'
 import BackToTop from 'vue-backtotop'
 import VueResource from 'vue-resource'
 import VueCytoscape from 'vue-cytoscape'
-import VueAnalytics from 'vue-analytics'
 import VueResize from 'vue-resize'
 import VueScrollactive from 'vue-scrollactive'
 import JsonCSV from 'vue-json-csv'
@@ -56,13 +55,6 @@ Vue.use(Buefy, {
 .use(BackToTop)
 .use(VueResource)
 .use(VueCytoscape)
-.use(VueAnalytics, {
-  id: 'UA-133761986-1',
-  router,
-  debug: {
-    sendHitTask: process.env.NODE_ENV === 'production'
-  }
-})
 .use(VueResize)
 .use(VueScrollactive)
 .component('downloadCsv', JsonCSV);

@@ -72,6 +72,17 @@ export default {
   methods: {
     updateActiveNavbarItem(value) {
       this.isActive = value;
+    },
+    initSimpleAnalytics() {
+      (function() {
+        var d = document
+        var s = d.createElement("script")
+        s.src = "https://sa.registry.varianteffect.org/latest.js"
+        s.async = 1
+        s.defer = 1
+        s.setAttribute("data-collect-dnt", "true")
+        d.head.appendChild(s)
+      })()
     }
   },
   mounted() {
@@ -96,6 +107,11 @@ export default {
             this.hasAgreedToCompliance = true;
           }
         })
+      }
+
+      // Load production third-party functionality
+      if (process.env.NODE_ENV !== "development") {
+        this.initSimpleAnalytics() // Simple Analytics
       }
     },
   watch: {

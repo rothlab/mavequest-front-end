@@ -37,18 +37,18 @@ jobs:
 
     - id: findandreplace
       name: Prepare Version Name for GAE Deployment
-      uses: andac-ozcan/actions-find-and-replace-string@3
+      uses: frabert/replace-string-action@v2.0
       with:
-        source: '${{ steps.package-version.outputs.current-version}}'
-        find: '.'
-        replace: '-'
+        string: '${{ steps.package-version.outputs.current-version}}'
+        pattern: '\[.]\g'
+        replace-with: '-'
 
     - name: Deploy to App Engine
       uses: 'google-github-actions/deploy-appengine@v0'
       with:
         deliverables: 'app.yaml'
         promote: true
-        version: '${{ steps.findandreplace.outputs.value }}'
+        version: '${{ steps.findandreplace.outputs.replaced }}'
     
     - name: Create Sentry release
       uses: getsentry/action-release@v1

@@ -1,5 +1,9 @@
 name: Automatic Deployment
-on: release
+on:
+  push:
+    branches:
+    - prod
+    
 jobs:
   automatic_deployment:
     runs-on: ubuntu-latest

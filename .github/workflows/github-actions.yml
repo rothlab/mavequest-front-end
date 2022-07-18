@@ -40,8 +40,9 @@ jobs:
       uses: frabert/replace-string-action@v2.0
       with:
         string: '${{ steps.package-version.outputs.current-version}}'
-        pattern: '\[.]\g'
+        pattern: '\\.'
         replace-with: '-'
+        flag: 'g'
 
     - name: Deploy to App Engine
       uses: 'google-github-actions/deploy-appengine@v0'

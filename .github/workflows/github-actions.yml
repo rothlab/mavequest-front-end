@@ -24,6 +24,9 @@ jobs:
       uses: 'google-github-actions/auth@v0'
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY }}'
+    
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'
 
     - name: 'Deploy to App Engine'
       uses: 'google-github-actions/deploy-appengine@v0'
@@ -42,3 +45,9 @@ jobs:
         environment: 'production'
         version: '${{ steps.package-version.outputs.current-version}}'
         sourcemaps: 'dist/js'
+
+    - id: remove
+      name: Remove old GAE versions
+      uses: Reviewable/appengine-remove-action@v2.1.2
+      with:
+        limit: 3

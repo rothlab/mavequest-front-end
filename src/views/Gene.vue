@@ -14,6 +14,12 @@
           <div class="column is-3 is-hidden-touch">
             <aside class="menu float">
               <scrollactive ref="scrollactive" :offset="400">
+                <p class="menu-label" v-if="hasMave.any">Existing MAVE Studies</p>
+                <ul class="menu-list" v-if="hasMave.any">
+                  <li v-if="hasMave.mavedb">
+                    <a href="#mavedb" class="scrollactive-item">MaveDB</a>
+                  </li>
+                </ul>
                 <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
                 <ul class="menu-list" v-if="hasAssay.any">
                   <li v-if="hasAssay.genome_crispr">
@@ -351,15 +357,59 @@
               </div>
             </section>
 
+            <section class="section is-paddingless in-paragraph" v-if="isPriorityGene">
+              <div class="card gene-basic has-background-priority">
+                <h5 class="title is-5 has-text-info">
+                  <span>
+                    <b-icon icon="star" size="is-small" style="margin-right: 0.5rem;"></b-icon>
+                    Priority Gene
+                  </span>
+                </h5>
+                <p style="vertical-align: baseline;" v-if="priorityGeneData.acmg_sf">
+                  <b-tag type="is-info" size="is-medium">
+                    ACMG SF v3.0
+                  </b-tag>
+                  <span>
+                    {{geneName}} is in the
+                    <a
+                      href="https://www.ncbi.nlm.nih.gov/clinvar/docs/acmg/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      ACMG SF 3.0
+                    </a>list, associated with
+                    <a
+                      :href="priorityGeneData.acmg_sf.medgen_url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >{{priorityGeneData.acmg_sf.disease_name}}</a>.</span>
+                </p>
+                <p style="vertical-align: baseline;" class="in-list" v-if="priorityGeneData.dais">
+                  <b-tag type="is-link" size="is-medium">
+                    DAIS Top 100
+                  </b-tag>
+                  <span>
+                    {{geneName}} is ranked <b>#{{priorityGeneData.dais.rank}}</b> in the
+                    <a
+                      href="/about#dais"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      DAIS Top 100
+                    </a>list (prioritizing genes for systematic variant effect mapping).</span>
+                </p>
+              </div>
+            </section>
+
             <!-- No assays and phenotypes banner -->
             <section v-if="(!hasAssay.any && !hasPhenotype.any) && !isLoading">
               <ErrorView icon="fas fa-file" response="No Potential Assays or Phenotypes Found"></ErrorView>
             </section>
 
-            <section class="section is-paddingless" v-if="hasAssay.any">
-              <h1 class="title">Potential Assay</h1>
+            <section class="section is-paddingless" v-if="hasMave.any">
+              <h1 class="title">Existing MAVE Studies</h1>
 
-              <div v-if="hasAssay.mavedb">
+              <div v-if="hasMave.mavedb">
                 <AssayTitle
                   anchor="mavedb"
                   title="MaveDB"
@@ -377,14 +427,6 @@
                     hoverable
                     narrowed
                   >
-                    <template slot="bottom-left">
-                      <b-tag
-                        size="is-medium"
-                        >
-                        <b-icon style="margin-left: 0rem;" pack="fas" size="is-small" icon="info-circle"></b-icon>
-                        <span>&nbsp;MAVE studies related to {{geneName}}</span>
-                      </b-tag>
-                    </template>
                     <template slot-scope="props">
                       <b-table-column field="id" label="ID">
                         <a
@@ -404,6 +446,10 @@
                   </b-table>
                 </div>
               </div>
+            </section> 
+
+            <section class="section is-paddingless" v-if="hasAssay.any">
+              <h1 class="title">Potential Assay</h1>
 
               <div v-if="hasAssay.genome_crispr">
                 <AssayTitle
@@ -1211,6 +1257,8 @@ function initialState() {
     alias: [],
     alias_description: [],
     structureData: undefined,
+    isPriorityGene: false,
+    hasMave: {},
     hasAssay: {},
     hasPhenotype: {},
     hasClinicalInterest: {},
@@ -1234,6 +1282,7 @@ function initialState() {
     ogeeData: [],
     ogeeStudy: [],
     overexprData: [],
+    priorityGeneData: {},
     clinvarData: {},
     variantStats: [],
     omimPhenotype: [],
@@ -1328,13 +1377,19 @@ export default {
               "-" +
               date.getDate();
 
-            // Populate Assay information
+            // Populate existing MAVE information
             if (Object.prototype.hasOwnProperty.call(json, "mavedb")) {
-              this.hasAssay.any = true;
-              this.hasAssay.mavedb = true;
+              this.hasMave.any = true;
+              this.hasMave.mavedb = true;
               this.mavedbData = json.mavedb.experiments;
             }
 
+            // Popluate priority gene information
+            if (Object.prototype.hasOwnProperty.call(json, "priority")) {
+              this.isPriorityGene = true;
+              this.priorityGeneData = json.priority;
+            }
+            // Populate Assay information
             if (Object.prototype.hasOwnProperty.call(json, "genome_rnai")) {
               this.hasAssay.any = true;
               this.hasAssay.genome_rnai = true;
@@ -1588,6 +1643,9 @@ export default {
 }
 .has-table-padding {
   padding: 0.5rem;
+}
+.has-background-priority {
+  background-color: #eff5fb;
 }
 .cell-line {
   margin-right: 5px;

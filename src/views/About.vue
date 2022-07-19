@@ -129,6 +129,28 @@
             <div class="content para-spacing">
               <h2 id="primary-data" class="subtitle is-anchor">Primary Data Source</h2>
 
+              <!-- Kuang et al prioritization list -->
+              <div ref="dais" class="in-paragraph">
+                <h4 class="in-list" id="mavedb">
+                  Difficulty-adjusted Impact Score (DAIS) &nbsp;
+                  <a href="https://mavedb.org/" target="_blank">
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  Kuang, D., Truty, R., Weile, J., Johnson, B., Nykamp, K., Araya, C., Nussbaum, R. L., Roth, F. P..
+                  <strong>Prioritizing genes for systematic variant effect mapping. </strong>
+                  <i>Bioinformatics</i> 36, (2021): 5448-5455.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://pubmed.ncbi.nlm.nih.gov/33300982/"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
+
               <!-- MaveDB -->
               <div ref="mavedb" class="in-paragraph">
                 <h4 class="in-list" id="mavedb">

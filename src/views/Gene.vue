@@ -451,6 +451,70 @@
             <section class="section is-paddingless" v-if="hasAssay.any">
               <h1 class="title">Potential Assay</h1>
 
+              <div v-if="hasAssay.biogrid_orcs">
+              <AssayTitle
+                  anchor="biogrid_orcs"
+                  title="BioGRID ORCS"
+                  icon="fas fa-bars"
+                  :dblink="'https://orcs.thebiogrid.org/Search?searchType=id&search=' + geneName + '&organism=9606'"
+                  reflink="/about#biogrid_orcs"
+                ></AssayTitle>
+                <div class="card has-table-padding in-paragraph in-list">
+                  <b-table
+                    :data="biogridORCSData.hit_screens"
+                    paginated
+                    per-page="10"
+                    pagination-simple
+                    hoverable
+                    narrowed
+                  >
+                    <template slot="bottom-left">
+                      <b-taglist attached>
+                        <b-tag size="is-medium" type="is-light">
+                          Hits / Total
+                          <b-tooltip
+                            type="is-dark"
+                            multilined
+                            label="Hits vs. Total screens in the BioGRID ORCS database"
+                          >
+                            <b-icon style="margin-left: 0.25rem;" pack="fas" size="is-small" icon="question-circle"></b-icon>
+                          </b-tooltip>
+                        </b-tag>
+                        <b-tag size="is-medium" type="has-background-white-bis">
+                          {{biogridORCSData.num_hits}}
+                          / {{biogridORCSData.num_screens}}
+                        </b-tag>
+                      </b-taglist>
+                    </template>
+
+                    <template slot-scope="props">
+                      <b-table-column field="id" label="Screen ID">
+                        <a
+                          :href="'https://orcs.thebiogrid.org/Screen/' + props.row.id"
+                          target="_blank"
+                        >{{props.row.id}}</a>
+                      </b-table-column>
+
+                      <b-table-column field="publication" label="Publication">
+                        <a
+                          :href="props.row.source_type == 'pubmed' ? 'https://www.ncbi.nlm.nih.gov/pubmed/' + props.row.source_id : 'https://doi.org/' + props.row.source_id"
+                          target="_blank"
+                        >{{props.row.authors}}</a>
+                      </b-table-column>
+
+                      <b-table-column
+                        field="phenotype"
+                        label="Phenotype"
+                      >{{props.row.phenotype}}</b-table-column>
+
+                      <b-table-column field="cellline" label="Cell Line">
+                        {{props.row.cellline}}
+                      </b-table-column>
+                    </template>
+                  </b-table>
+                </div>
+              </div>
+
               <div v-if="hasAssay.genome_crispr">
                 <AssayTitle
                   anchor="genome_crispr"
@@ -1279,6 +1343,7 @@ function initialState() {
     genomeRNAiData: [],
     genomeCRISPRData: [],
     genomeCRISPRStats: {},
+    biogridORCSData: {},
     ogeeData: [],
     ogeeStudy: [],
     overexprData: [],
@@ -1389,7 +1454,14 @@ export default {
               this.isPriorityGene = true;
               this.priorityGeneData = json.priority;
             }
+
             // Populate Assay information
+            if (Object.prototype.hasOwnProperty.call(json, "biogrid_orcs")) {
+              this.hasAssay.any = true;
+              this.hasAssay.biogrid_orcs = true;
+              this.biogridORCSData = json.biogrid_orcs;
+            }
+
             if (Object.prototype.hasOwnProperty.call(json, "genome_rnai")) {
               this.hasAssay.any = true;
               this.hasAssay.genome_rnai = true;

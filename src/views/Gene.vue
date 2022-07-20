@@ -22,6 +22,9 @@
                 </ul>
                 <p class="menu-label" v-if="hasAssay.any">Potential Assay</p>
                 <ul class="menu-list" v-if="hasAssay.any">
+                  <li v-if="hasAssay.biogrid_orcs">
+                    <a href="#biogrid_orcs" class="scrollactive-item">BioGRID ORCS</a>
+                  </li>
                   <li v-if="hasAssay.genome_crispr">
                     <a href="#genome_crispr" class="scrollactive-item">GenomeCRISPR</a>
                   </li>

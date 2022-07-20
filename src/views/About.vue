@@ -173,6 +173,28 @@
                 </p>
               </div>
 
+              <!-- BioGRID -->
+              <div ref="biogrid_orcs" class="in-paragraph">
+                <h4 class="in-list" id="genome_crispr">
+                  BioGRID Open Repository of CRISPR Screens (ORCS) &nbsp;
+                  <a href="https://orcs.thebiogrid.org/" target="_blank">
+                    <b-icon icon="external-link-alt" size="is-small"></b-icon>
+                  </a>
+                </h4>
+                <p>
+                  Oughtred, R., Rust, J., Chang, C., Breitkreutz, B-J., & Stark, C., Willems, A., Boucher, L., Leung, G., Kolas, N., Zhang, F., Dolma, S., Coulombe-Huntington, J., Chatr-Aryamontri, A., Dolinsk, K., Tyers, M.
+                  <strong>The BioGRID database: A comprehensive biomedical resource of curated protein, genetic, and chemical interactions. </strong>
+                  <i>Protein Science</i> (2021): 187-200.
+                  <b-tag type="is-light">
+                    <a
+                      class="has-text-dark"
+                      href="https://pubmed.ncbi.nlm.nih.gov/33070389/"
+                      target="_blank"
+                    >PubMed</a>
+                  </b-tag>
+                </p>
+              </div>
+
               <!-- Genome CRISPR -->
               <div ref="genome_crispr" class="in-paragraph">
                 <h4 class="in-list" id="genome_crispr">

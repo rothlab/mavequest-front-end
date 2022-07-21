@@ -80,9 +80,7 @@
               <div class="in-paragraph">
                 <h4 class="in-list">Database Statistics</h4>
                 
-                <span>
-                  <p v-if="false">MaveQuest database contains all annotated human genes in HGNC database (accessed on ).</p>
-                  
+                <span>                  
                   <p>A breakdown of human genes in MaveQuest database is the following.</p>
                 </span>
 
@@ -123,8 +121,12 @@
               <h2 id="database-versions" class="subtitle is-anchor">Database Versions</h2>
 
               <p>We check primary data sources periodically to make sure data in MaveQuest is up-to-date.</p>
+
+              <div v-if="showStatsErrorPanel">
+                <ErrorView :response="errorResponse" size="is-small"></ErrorView>
+              </div>
               
-              <div class="card has-table-padding">
+              <div v-else class="card has-table-padding">
                 <b-table
                   v-if="stats.database_versions"
                   class="is-fullwidth"

@@ -74,7 +74,10 @@
                     <a href="#genedx" class="scrollactive-item">GeneDx</a>
                   </li>
                 </ul>
-                <p class="menu-label" v-if="lastUpdate">Last Update: {{lastUpdate}}</p>
+                <p class="menu-label" v-if="lastUpdate">
+                  Last Update: {{lastUpdate}}<br/>
+                  (<a href="/about#database-versions" target="_blank">database versions</a>)
+                </p>
               </scrollactive>
             </aside>
           </div>
@@ -1715,9 +1718,6 @@ export default {
 .float {
   position: sticky;
   top: 4rem;
-}
-.has-table-padding {
-  padding: 0.5rem;
 }
 .has-background-priority {
   background-color: #eff5fb;

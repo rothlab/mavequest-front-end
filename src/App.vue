@@ -181,4 +181,7 @@ $menu-item-active-background-color: $grey-lighter;
     text-align: center;
   }
 }
+.has-table-padding {
+  padding: 0.5rem;
+}
 </style>

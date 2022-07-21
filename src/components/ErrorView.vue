@@ -97,6 +97,10 @@ export default {
             case 406: case 400:
               this.errorMessage = response.body;
               break;
+            case 501:
+              this.errorMessage = "Function is not implemented yet. <br />"
+                + "Please try again later.";
+              break;
             case 0:
               this.errorMessage = "Failed to connect to servers. <br /> "
                 + "Please check your Internet connection.";

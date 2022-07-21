@@ -10,11 +10,14 @@
           <!-- Table of content -->
           <div class="column is-3 is-hidden-touch">
             <aside class="menu float">
-              <scrollactive ref="scrollactive" :offset="400">
+              <scrollactive ref="scrollactive" :offset="150">
                 <p class="menu-label">MaveQuest</p>
                 <ul class="menu-list">
                   <li>
                     <a href="#what-is-mavequest" class="scrollactive-item">What is MaveQuest?</a>
+                  </li>
+                  <li>
+                    <a href="#database-versions" class="scrollactive-item">Database Versions</a>
                   </li>
                   <li>
                     <a href="#contact-us" class="scrollactive-item">Contact Us</a>
@@ -77,9 +80,7 @@
               <div class="in-paragraph">
                 <h4 class="in-list">Database Statistics</h4>
                 
-                <span>
-                  <p v-if="false">MaveQuest database contains all annotated human genes in HGNC database (accessed on ).</p>
-                  
+                <span>                  
                   <p>A breakdown of human genes in MaveQuest database is the following.</p>
                 </span>
 
@@ -116,6 +117,43 @@
               </div>
             </div>
 
+            <div class="content para-spacing" ref="database-versions">
+              <h2 id="database-versions" class="subtitle is-anchor">Database Versions</h2>
+
+              <p>We check primary data sources periodically to make sure data in MaveQuest is up-to-date.</p>
+
+              <div v-if="showStatsErrorPanel">
+                <ErrorView :response="errorResponse" size="is-small"></ErrorView>
+              </div>
+              
+              <div v-else class="card has-table-padding">
+                <b-table
+                  v-if="stats.database_versions"
+                  class="is-fullwidth"
+                  :data="stats.database_versions"
+                  paginated
+                  per-page="10"
+                  pagination-simple
+                  hoverable
+                  narrowed
+                >
+                  <template slot-scope="props">
+                    <b-table-column id="database" label="Database">
+                      <a :href="props.row.link" target="_blank">{{props.row.name}}</a>
+                    </b-table-column>
+                    <b-table-column id="description" label="Description" width="450">
+                      {{props.row.description}}
+                    </b-table-column>
+                    <b-table-column id="version" label="Version (Release Date)">
+                      <span v-if="props.row.version">{{props.row.version}}</span>
+                      <span v-if="props.row.release_date"> ({{props.row.release_date}})</span>
+                    </b-table-column>
+                    <b-table-column id="access_date" label="Access Date">{{props.row.access_date}}</b-table-column>
+                  </template>
+                </b-table>
+              </div>
+            </div>
+
             <div class="content para-spacing">
               <h2 id="contact-us" class="subtitle is-anchor">Contact Us</h2>
 
@@ -131,7 +169,7 @@
 
               <!-- Kuang et al prioritization list -->
               <div ref="dais" class="in-paragraph">
-                <h4 class="in-list" id="mavedb">
+                <h4 class="in-list" id="dais">
                   Difficulty-adjusted Impact Score (DAIS) &nbsp;
                   <a href="https://mavedb.org/" target="_blank">
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
@@ -243,7 +281,7 @@
               <div ref="ogee" class="in-paragraph">
                 <h4 class="in-list" id="ogee">
                   OGEE &nbsp;
-                  <a href="http://ogee.medgenius.info/browse/" target="_blank">
+                  <a href="https://v3.ogee.info" target="_blank">
                     <b-icon icon="external-link-alt" size="is-small"></b-icon>
                   </a>
                 </h4>
@@ -581,9 +619,11 @@ export default {
         total: 0,
         assay: 0,
         phenotype: 0,
-        clinical_interest: 0
+        clinical_interest: 0,
+        database_versions: undefined
       },
       showStatsErrorPanel: false,
+      isLoading: true,
       errorResponse: {}
     };
   },
@@ -591,45 +631,47 @@ export default {
     // Capture the hash before it's overwritten by vue-scrollactive
     this.hash = window.location.hash;
   },
-  mounted() {
+  async mounted() {
     // Update highlighted navbar item
     this.$emit("updateNav", "about");
 
-    // Update database stats
-    this.getDatabaseStats();
+    // Display loading animation
+    this.isLoading = true;
+    const loadingComponent = this.$buefy.loading.open();
 
-    // Check if scrolling needs to be handled separately
-    const autoScrollItems = this.$refs.scrollactive.$data.items;
-    let handleScrolling = true;
-    for (const item of autoScrollItems) {
-      if (item.getAttribute('href') === this.hash) {
-        handleScrolling = false;
-      }
-    }
-    if (handleScrolling) {
-      // Highlight data source if given as part of the url
+    // Update database stats
+    this.$http.get(this.$apiEntryPoint + "/stats")
+    .then(async (response) => {
+      this.stats = response.data;
+      this.$refs.scrollactive.initScrollactiveItems()
+      
+      // Check if scrolling needs to be handled separately
+      const autoScrollItems = this.$refs.scrollactive.$data.items;
+      let handleScrolling = true;
+      for (const item of autoScrollItems) {
+         if (item.getAttribute('href') === this.hash) {
+           handleScrolling = false;
+         }
+       }
       const elementID = this.hash.replace("#", "");
+      // Highlight data source if given as part of the url
       // eslint-disable-next-line no-prototype-builtins
-      if (this.$refs.hasOwnProperty(elementID)) {
+      if (handleScrolling & this.$refs.hasOwnProperty(elementID)) {
         this.$refs[elementID].className += " highlight";
-        this.$refs.scrollactive.scrollTo(this.$refs[elementID]);
       }
-    }
+      // Wait 100ms for the table to finish rendering before calling scrollTo() so that offset can be calculated correctly
+      await new Promise(r => setTimeout(r, 100));
+      this.$refs.scrollactive.scrollTo(this.$refs[elementID]);
+    })
+    .catch(error => {
+      this.showStatsErrorPanel = true;
+      this.errorResponse = error;
+    })
+    .finally(() => {
+      this.isLoading = false;
+      loadingComponent.close();
+    });
   },
-  methods: {
-    getDatabaseStats() {
-      this.$http
-        .get(this.$apiEntryPoint + "/stats")
-        .then(response => {
-          this.stats = response.body;
-        },
-        response => {
-          // Error handling
-          this.showStatsErrorPanel = true;
-          this.errorResponse = response;
-        });
-    }
-  }
 };
 </script>
 

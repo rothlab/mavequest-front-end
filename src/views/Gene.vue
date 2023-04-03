@@ -366,7 +366,7 @@
             <section class="section is-paddingless in-paragraph" v-if="isPriorityGene">
               <div class="card gene-basic has-background-priority">
                 <h5 class="title is-5 has-text-info">
-                  <span>
+                  <span v-if="priorityGeneData.acmg_sf || priorityGeneData.dais.rank <= '100'">
                     <b-icon icon="star" size="is-small" style="margin-right: 0.5rem;"></b-icon>
                     Priority Gene
                   </span>
@@ -391,7 +391,7 @@
                     >{{priorityGeneData.acmg_sf.disease_name}}</a>.</span>
                 </p>
                 <p style="vertical-align: baseline;" class="in-list" v-if="priorityGeneData.dais">
-                  <b-tag type="is-link" size="is-medium">
+                  <b-tag v-if="priorityGeneData.dais.rank <= '100'" type="is-link" size="is-medium">
                     DAIS Top 100
                   </b-tag>
                   <span>
@@ -401,7 +401,7 @@
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      DAIS Top 100
+                      DAIS
                     </a>list (prioritizing genes for systematic variant effect mapping).</span>
                 </p>
               </div>

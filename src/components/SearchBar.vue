@@ -162,7 +162,7 @@ export default {
     autocomplete({ text, resolve, reject }) {
       this.$http
         .get(
-          `https://clinicaltables.nlm.nih.gov/api/genes/v3/search?terms=${text}&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
+            `https://clinicaltables.nlm.nih.gov/api/genes/v4/search?terms=${text}&df=symbol,name,alias_symbol&sf=symbol,alias_symbol&maxList=`
         )
         .then(data => {
           const response = data.body;
@@ -176,7 +176,8 @@ export default {
             const content = fields[index];
 
             const res = {
-              hgnc_id: id,
+              hgnc_id: id
+                .substr(5),
               gene_symbol: content[0],
               gene_description: content[1],
               alias_symbol: content[2]

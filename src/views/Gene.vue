@@ -675,8 +675,8 @@
                   'https://www.alliancegenome.org/search?category=gene&q=' +geneName + '&species=Homo%20sapiens']"
                   :dblabel="['Inparanoid', 'P-POD', 'AGR']"
                   reflink="/about#orthology"
-                  :dbVersion="dbVersion('InParanoid') + ' (Inparanoid); ' + dbVersion('P-POD') +
-                  ' (P-POD); ' + dbVersion('AGR') + ' (AGR)'"
+                  :dbVersion="[dbVersion('InParanoid') + ' (Inparanoid); ' +
+                  dbVersion('P-POD') + ' (P-POD); ' + dbVersion('AGR') + ' (AGR)']"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -789,7 +789,7 @@
                   anchor="huri"
                   title="Human Interactome"
                   icon="fas fa-bars"
-                  :dblink="'http://www.interactome-atlas.org/'"
+                  :dblink="'http://www.interactome-atlas.org/search/' + geneName"
                   reflink="/about#huri"
                   :dbVersion="dbVersion('HuRI')"
                 ></AssayTitle>
@@ -1281,7 +1281,6 @@ const AssayTitle = {
     let linkBadge = undefined;
     let dbVersionLabel = undefined;
     if (this.dblink) {
-      //const dbLabel = `${this.dblabel} (v${this.dbVersion})`;
       linkBadge = (
         <LinkBadge
           reflink={this.dblink}
@@ -1386,10 +1385,6 @@ function initialState() {
     ambryData: [],
     genedxData: [],
     stats: {
-        total: 0,
-        assay: 0,
-        phenotype: 0,
-        clinical_interest: 0,
         database_versions: undefined
       },
   };
@@ -1409,6 +1404,7 @@ export default {
   beforeMount() {
     // Capture the hash before it's overwritten by vue-scrollactive
     this.hash = window.location.hash;
+
   },
   beforeRouteUpdate(to, from, next) {
     this.resetData();
@@ -1419,19 +1415,25 @@ export default {
     // Update highlighted navbar item
     this.$emit("updateNav", "search");
 
+    // Load data
     this.loadData(this.geneName);
-    // Update database stats
-    this.$http.get(this.$apiEntryPoint + "/stats")
-      .then(response => {
-        this.stats = response.data;
-      });
-
   },
+
   data() {
     return initialState();
   },
 
   computed: {
+    geneName: function() {
+      let name;
+      if (this.symbol == "") {
+        name = this.$route.params.name;
+        name = name.toUpperCase();
+      } else {
+        name = this.symbol;
+      }
+      return name;
+    },
     dbVersion() {
       return function(databaseName) {
         const dbObject = this.stats.database_versions.find(db => db.name === databaseName);
@@ -1449,16 +1451,6 @@ export default {
           return null;
         }
       }
-    },
-    geneName: function() {
-      let name;
-      if (this.symbol == "") {
-        name = this.$route.params.name;
-        name = name.toUpperCase();
-      } else {
-        name = this.symbol;
-      }
-      return name;
     }
   },
   methods: {
@@ -1468,7 +1460,11 @@ export default {
     loadData(gene) {
       // Display loading animation
       const loadingComponent = this.$buefy.loading.open();
-
+      // Get stats
+      this.$http.get(this.$apiEntryPoint + "/stats")
+        .then(response => {
+          this.stats = response.data;
+        });
       // Get detail info
       this.$http
         .get(this.$apiEntryPoint + "/detail/" + gene)

@@ -422,6 +422,7 @@
                   icon="fas fa-bars"
                   :dblink="'https://www.mavedb.org/search/?target=' + geneName"
                   reflink="/about#mavedb"
+                  :dbVersion="dbVersion('MaveDB')"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -464,6 +465,7 @@
                   icon="fas fa-bars"
                   :dblink="'https://orcs.thebiogrid.org/Search?searchType=id&search=' + geneName + '&organism=9606'"
                   reflink="/about#biogrid_orcs"
+                  :dbVersion="dbVersion('BioGRID ORCS')"
                 ></AssayTitle>
                 <div class="card has-table-padding in-paragraph in-list">
                   <b-table
@@ -528,6 +530,7 @@
                   icon="fas fa-bars"
                   :dblink="'http://genomecrispr.dkfz.de/#!/results/' + geneName"
                   reflink="/about#genome_crispr"
+                  :dbVersion="dbVersion('GenomeCRISPR')"
                 ></AssayTitle>
                 <GenomeCRISPRView
                   :genomeCRISPRData="genomeCRISPRData"
@@ -542,6 +545,7 @@
                   icon="fas fa-bars"
                   :dblink="'http://www.genomernai.org/v17/geneSearch/' + geneName"
                   reflink="/about#genome_rnai"
+                  :dbVersion="dbVersion('GenomeRNAi')"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -617,6 +621,7 @@
                   icon="fas fa-bars"
                   :dblink="['http://ogee.medgenius.info/browse/Homo%2520sapiens/'+ ensemblID]"
                   reflink="/about#ogee"
+                  :dbVersion="dbVersion('OGEE')"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -670,6 +675,8 @@
                   'https://www.alliancegenome.org/search?category=gene&q=' +geneName + '&species=Homo%20sapiens']"
                   :dblabel="['Inparanoid', 'P-POD', 'AGR']"
                   reflink="/about#orthology"
+                  :dbVersion="[dbVersion('InParanoid') + ' (Inparanoid); ' +
+                  dbVersion('P-POD') + ' (P-POD); ' + dbVersion('AGR') + ' (AGR)']"
                 ></AssayTitle>
 
                 <div class="card has-table-padding in-paragraph in-list">
@@ -782,7 +789,9 @@
                   anchor="huri"
                   title="Human Interactome"
                   icon="fas fa-bars"
+                  :dblink="'http://www.interactome-atlas.org/search/' + geneName"
                   reflink="/about#huri"
+                  :dbVersion="dbVersion('HuRI')"
                 ></AssayTitle>
                 <b-modal :active.sync="showCytoscapeView" has-modal-card width="500">
                   <CytoscapeView :head="geneName" :elements="huriData" />
@@ -822,6 +831,7 @@
                   :dblink="'https://www.ncbi.nlm.nih.gov/clinvar/?term=' + 
                     geneName + '[gene] AND &quot;single gene&quot;[Properties]'"
                   reflink="/about#clinvar"
+                  :dbVersion="dbVersion('ClinVar')"
                 ></AssayTitle>
                 <ClinvarView
                   :symbol="geneName"
@@ -839,6 +849,7 @@
                   icon="fas fa-bars"
                   :dblink="'https://omim.org/entry/' + omimID"
                   reflink="/about#omim"
+                  :dbVersion="dbVersion('OMIM')"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -904,6 +915,7 @@
                   icon="fas fa-bars"
                   :dblink="'https://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=' + geneName"
                   reflink="/about#cancer_census"
+                  :dbVersion="dbVersion('The Cancer Gene Census')"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -977,6 +989,7 @@
                   icon="fas fa-bars"
                   :dblink="'https://www.pharmgkb.org/gene/' + pharmgkbData.pharmgkb_id"
                   reflink="/about#pharmgkb"
+                  :dbVersion="dbVersion('PharmGKB')"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -1040,6 +1053,7 @@
                   :dblink="'https://www.orpha.net/consor/cgi-bin/Disease_Genes_Simple.php?lng=EN&Disease_Disease_Genes_diseaseGroup=' 
                     + geneName + '&Disease_Disease_Genes_diseaseType=Gen'"
                   reflink="/about#orphanet"
+                  :dbVersion="dbVersion('Orphanet')"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -1091,6 +1105,7 @@
                   icon="fas fa-bars"
                   :dblink="'https://www.invitae.com/search?q='+ geneName"
                   reflink="/about#invitae"
+                  :dbVersion="dbVersion('Invitae Test Catalog')"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -1128,6 +1143,7 @@
                   icon="fas fa-bars"
                   :dblink="'https://www.ambrygen.com/#search/'+ geneName"
                   reflink="/about#ambry"
+                  :dbVersion="dbVersion('Ambry Test Catalog')"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -1161,6 +1177,7 @@
                   icon="fas fa-bars"
                   :dblink="'https://www.genedx.com/?s=' + geneName + '&t=all'"
                   reflink="/about#genedx"
+                  :dbVersion="dbVersion('GeneDx Test Catalog')"
                 ></AssayTitle>
                 <div class="content">
                   <div class="card has-table-padding in-paragraph in-list">
@@ -1259,9 +1276,10 @@ const LinkBadge = {
 
 // Declare assay title as a little in-line component as it is not going to be used by another component/view
 const AssayTitle = {
-  props: ["title", "icon", "anchor", "dblink", "dblabel", "reflink"],
+  props: ["title", "icon", "anchor", "dblink", "dblabel", "reflink", "dbVersion"],
   render() {
     let linkBadge = undefined;
+    let dbVersionLabel = undefined;
     if (this.dblink) {
       linkBadge = (
         <LinkBadge
@@ -1270,6 +1288,9 @@ const AssayTitle = {
           style="vertical-align: super;"
         />
       );
+    }
+    if (this.dbVersion) {
+      dbVersionLabel = `${this.dbVersion}`;
     }
 
     return (
@@ -1288,7 +1309,7 @@ const AssayTitle = {
           style="display:initial;"
           type="is-light"
           position="is-bottom"
-          label="Visit source database(s)"
+          label={`Source database version ${dbVersionLabel}`}
         >
           {linkBadge}
         </b-tooltip>
@@ -1363,6 +1384,9 @@ function initialState() {
     invitaeData: [],
     ambryData: [],
     genedxData: [],
+    stats: {
+        database_versions: undefined
+      },
   };
 }
 export default {
@@ -1380,6 +1404,7 @@ export default {
   beforeMount() {
     // Capture the hash before it's overwritten by vue-scrollactive
     this.hash = window.location.hash;
+
   },
   beforeRouteUpdate(to, from, next) {
     this.resetData();
@@ -1390,11 +1415,14 @@ export default {
     // Update highlighted navbar item
     this.$emit("updateNav", "search");
 
+    // Load data
     this.loadData(this.geneName);
   },
+
   data() {
     return initialState();
   },
+
   computed: {
     geneName: function() {
       let name;
@@ -1405,6 +1433,24 @@ export default {
         name = this.symbol;
       }
       return name;
+    },
+    dbVersion() {
+      return function(databaseName) {
+        const dbObject = this.stats.database_versions.find(db => db.name === databaseName);
+        if (dbObject) {
+          if (dbObject.version && dbObject.release_date) {
+            return dbObject.version + ' (' + dbObject.release_date + ')';
+          } else if (dbObject.version) {
+            return dbObject.version;
+          } else if (dbObject.release_date) {
+            return dbObject.release_date;
+          } else {
+            return null;
+          }
+        } else {
+          return null;
+        }
+      }
     }
   },
   methods: {
@@ -1414,7 +1460,11 @@ export default {
     loadData(gene) {
       // Display loading animation
       const loadingComponent = this.$buefy.loading.open();
-
+      // Get stats
+      this.$http.get(this.$apiEntryPoint + "/stats")
+        .then(response => {
+          this.stats = response.data;
+        });
       // Get detail info
       this.$http
         .get(this.$apiEntryPoint + "/detail/" + gene)
@@ -1711,6 +1761,7 @@ export default {
         );
     }
   }
+
 };
 </script>
 
